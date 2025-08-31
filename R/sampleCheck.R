@@ -348,10 +348,13 @@ replicateSample<-function(hypothesis,design,evidence,sample,res) {
       
       use<-c(-5,5)
       for (i in 1:5) {
-        zs<-seq(use[1],use[2],length.out=1001)
+        zs<-seq(use[1],use[2],length.out=501)
         lk1<-SingleSamplingPDF(studies$rIV[1],zs,1/sqrt(studies$nval[1]),bias=oldEvidence$sigOnly)
-        lk2<-SingleSamplingPDF(studies$rIV[2:ns],zs,1/sqrt(studies$nval[2:ns]),bias=FALSE)
-        lk<-lk1$pdf*lk2$pdf
+        lk<-lk1$pdf
+        for (j in 2:ns) {
+          lk2<-SingleSamplingPDF(studies$rIV[j],zs,1/sqrt(studies$nval[j]),bias=FALSE)
+          lk<-lk*lk2$pdf
+        }
         use<-zs[which.max(lk)+c(-1,1)]
       }
       ze<-zs[which.max(lk)]
