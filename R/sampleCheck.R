@@ -344,18 +344,33 @@ replicateSample<-function(hypothesis,design,evidence,sample,res) {
     if (Replication$Keep=="MetaAnalysis") {
       studies<-list(rIV=ResultHistory$rIV,nval=ResultHistory$nval,df1=ResultHistory$df1,
                     rpIV=ResultHistory$rpIV,original=resOriginal)
-      metaAnalysis<-makeMetaAnalysis(TRUE,analysisType="fixed",
-                                     method="MLE",
-                                     modelNulls=FALSE,
-                                     sourceBias=FALSE,
-                                     analyseBias=1/length(studies$rIV))
-      metaResult<-runMetaAnalysis(metaAnalysis,studies,hypothesis,metaResult=NULL)
-      res$nval<-sum(ResultHistory$nval)
-      res$rIV<-sum(ResultHistory$rIV*ResultHistory$nval)/res$nval
-      res$rIV<-metaResult$fixed$param1
+      ns<-length(studies$rIV)
+      
+      use<-c(-5,5)
+      for (i in 1:5) {
+        zs<-seq(use[1],use[2],length.out=1001)
+        lk1<-SingleSamplingPDF(studies$rIV[1],zs,1/sqrt(studies$nval[1]),bias=oldEvidence$sigOnly)
+        lk2<-SingleSamplingPDF(studies$rIV[2:ns],zs,1/sqrt(studies$nval[2:ns]),bias=FALSE)
+        lk<-lk1$pdf*lk2$pdf
+        use<-zs[which.max(lk)+c(-1,1)]
+      }
+      ze<-zs[which.max(lk)]
+      res$nval<-sum(studies$nval)
       res$rpIV<-ResultHistory$rpIV[1]
       res$df1<-ResultHistory$df1[1]
+      res$rIV<-ze
       res$pIV<-rn2p(res$rIV,res$nval)
+      res$Smax<-max(lk)
+      
+      # metaAnalysis<-makeMetaAnalysis(TRUE,analysisType="fixed",
+      #                                method="MLE",
+      #                                modelNulls=FALSE,
+      #                                sourceBias=FALSE,
+      #                                analyseBias=1/length(studies$rIV))
+      # metaResult<-runMetaAnalysis(metaAnalysis,studies,hypothesis,metaResult=NULL)
+      # res$rIV<-metaResult$fixed$param1
+      # res$pIV<-rn2p(res$rIV,res$nval)
+      # res$Smax<-metaResult$fixed$Smax
       
       if (is.null(ResultHistory$Smax)) ResultHistory$Smax<-rep(NA,length(ResultHistory$rIV))
       
@@ -364,7 +379,7 @@ replicateSample<-function(hypothesis,design,evidence,sample,res) {
       ResultHistory$rIV<-c(ResultHistory$rIV,res$rIV)
       ResultHistory$rpIV<-c(ResultHistory$rpIV,res$rpIV)
       ResultHistory$pIV<-c(ResultHistory$pIV,res$pIV)
-      ResultHistory$Smax<-c(ResultHistory$Smax,metaResult$fixed$Smax)
+      ResultHistory$Smax<-c(ResultHistory$Smax,res$Smax)
     } else {
     switch(Replication$Keep,
            "Median"={
