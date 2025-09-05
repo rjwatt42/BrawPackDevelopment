@@ -107,10 +107,11 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   # param1 is kvals
   # param2 is normally nullvals
   
-  np1points<-21
-  np2points<-21
-  np3points<-21
-  np4points<-21
+  defaultnpoints<-11
+  np1points<-defaultnpoints
+  np2points<-defaultnpoints
+  np3points<-defaultnpoints
+  np4points<-defaultnpoints
   
   niterations<-10
   # reInc1<-(np1points-1)/2/3
@@ -130,7 +131,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   if (metaAnalysis$modelNulls) {
     param2Use<-seq(0,1,length.out=np2points)
   } else {
-    param2Use<-0
+    param2Use<-1
   }
   
   switch(dist,
@@ -153,7 +154,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   )
   
   if (metaAnalysis$analyseBias) {
-    if (is.element(dist,c("fixed","random"))) {
+    if (is.element(dist,c("fixed","random","Exp"))) {
       param3Use<-seq(0,1,length.out=np2points)
     } else param3Use<-1
   } else param3Use<-metaAnalysis$sourceBias
@@ -224,6 +225,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     param4<-param4Use[use[1,4]]
     lb4<-param4Use[max(1,use[1,4]-reInc4)]
     ub4<-param4Use[min(length(param4Use),use[1,4]+reInc4)]
+    
     # after 2 iterations, can we do a search?
     if (re==2) {
       result<-tryCatch( {
@@ -244,7 +246,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   param3<-result$par[3]
   param4<-result$par[4]
   Smax<- -result$value
-  
+
   Svals<-llfun(c(param1,param2,param3,param4))
   if (dist=="random" && metaAnalysis$analysisVar=="sd") param2<-sign(param2)*sqrt(abs(param2))
   return(list(param1=param1,param2=param2,param3=param3,param4=param4,Smax=Smax,Svals=Svals))

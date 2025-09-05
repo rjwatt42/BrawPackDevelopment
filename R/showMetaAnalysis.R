@@ -96,29 +96,30 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
     y<-plotAxis("n",hypothesis)
     disp2<-y$label
     if (autoYlim) {
-      ylim<-c(min(d2),max(d2))
+      ylim<-c(min(d2),max(d2))+c(-1,1)
       braw.env$minN<-ylim[1]
       braw.env$maxN<-ylim[2]
     }
     else
       ylim<-c(braw.env$minN-1,braw.env$maxN+1)
     yticks<-y$ticks
-    if (braw.env$nPlotScale=="log10") {
+    if (y$logScale) {
       d2<-log10(d2)
-      ylim<-log10(ylim)
-      if (autoYlim) {
-        ylim<-ylim+c(-1,1)*(ylim[2]-ylim[1])*0.05
-        braw.env$minN<-10^ylim[1]
-        braw.env$maxN<-10^ylim[2]
-      }
+      # ylim<-log10(ylim)
+      # if (autoYlim) {
+      #   ylim<-ylim+c(-1,1)*(ylim[2]-ylim[1])*0.05
+      #   braw.env$minN<-10^ylim[1]
+      #   braw.env$maxN<-10^ylim[2]
+      # }
       # yticks<-makeTicks(10^yticks,logScale=TRUE)
       ytick<-c(1,2,5,10,20,50,100,200,500,1000)
-      yticks<-makeTicks(ytick[log10(ytick)>ylim[1] & log10(ytick)<ylim[2]],logScale=TRUE)
+      yticks<-makeTicks(ytick[ytick>ylim[1] & ytick<ylim[2]],logScale=TRUE)
     }
   } else {
     disp2<-"1/se"
     ylim<-sqrt(c(braw.env$minN,braw.env$maxN))
-    yticks<-seq(ceil(sqrt(braw.env$minN)),floor(sqrt(braw.env$maxN)),1)
+    ytick<-seq(ceil(sqrt(braw.env$minN)),floor(sqrt(braw.env$maxN)),1)
+    yticks<-makeTicks(yticks)
     d2<-sqrt(metaResult$result$nval)
   }
   useAll<-(d2>ylim[1]) & (d2<ylim[2])
@@ -127,7 +128,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   ptsNull<-data.frame(x=d1[useNull],y=d2[useNull])
   
   assign("plotArea",c(0,0,1,1),braw.env)
-  g<-startPlot(xlim,ylim,
+  g<-startPlot(xlim,log10(ylim),
                xticks=makeTicks(x$ticks),xlabel=makeLabel(disp1),
                yticks=yticks,
                ylabel=makeLabel(disp2),
@@ -540,7 +541,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     }
     sigma<-1/sqrt(n-3)
     gain<-nDistrDens(n,design)
-    gain<-gain*n  # *n for the log scale
+    nGain<-gain*n  # *n for the log scale
     
     zdens<-c()
     switch (world$PDF,
@@ -548,65 +549,66 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
               for (i in 1:length(n)) {
                 zrow<-SingleSamplingPDF(z,lambda,sigma[i],shape)$pdf*pRPlus+
                   SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
-                if (metaResult$metaAnalysis$analyseBias & sigOnly>0) {
+                if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
                 }
                 densGain<-1/sum(zrow)
                 # densGain<-gain[i]
-                zdens<-rbind(zdens,zrow*densGain)
+                zdens<-rbind(zdens,zrow*densGain*nGain[i])
               }
             },
             "Gauss"={
               for (i in 1:length(n)) {
                 zrow<-GaussSamplingPDF(z,lambda,sigma[i],offset)$pdf*pRPlus+
                   SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
-                if (metaResult$metaAnalysis$analyseBias & sigOnly>0) {
+                if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
                 }
-                densGain<-1/max(zrow)
+                densGain<-1/sum(zrow)
                 # densGain<-gain[i]
-                zdens<-rbind(zdens,zrow*densGain)
+                zdens<-rbind(zdens,zrow*densGain*nGain[i])
               }
             },
             "Exp"={
               for (i in 1:length(n)) {
                 zrow<-ExpSamplingPDF(z,lambda,sigma[i])$pdf*pRPlus+
                   SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
-                if (metaResult$metaAnalysis$analyseBias & sigOnly>0) {
+                densGain<-1/sum(zrow)
+                
+                if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
                 }
-                densGain<-1/max(zrow)
                 # densGain<-gain[i]
-                zdens<-rbind(zdens,zrow*densGain)
+                zdens<-rbind(zdens,zrow*densGain*nGain[i])
               }
             },
             "Gamma"={
               for (i in 1:length(n)) {
                 zrow<-GammaSamplingPDF(z,lambda,sigma[i])$pdf*pRPlus+
                   SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
-                if (metaResult$metaAnalysis$analyseBias & sigOnly>0) {
+                if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
                 }
-                densGain<-1/max(zrow)
+                densGain<-1/sum(zrow)
                 # densGain<-gain[i]
-                zdens<-rbind(zdens,zrow*densGain)
+                zdens<-rbind(zdens,zrow*densGain*nGain[i])
               }
             },
             "GenExp"={
               for (i in 1:length(n)) {
                 zrow<-GenExpSamplingPDF(z,lambda,sigma[i])$pdf*pRPlus+
                   SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
-                if (metaResult$metaAnalysis$analyseBias & sigOnly>0) {
+                if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
                 }
-                densGain<-1/max(zrow)
+                densGain<-1/sum(zrow)
                 # densGain<-gain[i]
-                zdens<-rbind(zdens,zrow*densGain)
+                zdens<-rbind(zdens,zrow*densGain*nGain[i])
               }
             }
     )
@@ -667,7 +669,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       world$PDFk<-metaResult$best$param1
       world$pRPlus<-metaResult$best$param2
     }
-    zb<-makeWorldDist(metaResult,design,world,z,n,sigOnly=sigOnly,doTheory=FALSE)
+    zb<-makeWorldDist(metaResult,design,world,z,n,sigOnly=1,doTheory=FALSE)
     switch(braw.env$RZ,
            "r"={
              for (i in 1:nrow(zb)) zb[i,]<-zdens2rdens(zb[i,],r)
@@ -690,7 +692,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     # filled is the best fit world
     if (showTheory) {
       ptsa<-list(x=z,y=n,z=za)
-      g<-addG(g,dataContour(data=ptsa,colour="#000000",linewidth=0.5,linetype="dotted"))
+      g<-addG(g,dataContour(data=ptsa,fill=NA,colour="#000000",linewidth=0.5,linetype="dotted"))
     }
     
     if (showLines) {
@@ -737,8 +739,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     }
     
     # g<-addG(g,dataContour(data=ptsb,colour=colour,fill=NA,linewidth=0.5))
-    ptsb<-list(x=z,y=n,z=zb^svalExponent)
-    g<-addG(g,dataContour(data=ptsb,colour=NA,fill=colour,linewidth=0.5))
+    ptsb<-list(x=z,y=n,z=zb)
+    g<-addG(g,dataContour(data=ptsb,breaks=seq(0.1,0.9,0.2),colour="black",fill=colour,linewidth=0.1))
     return(g)
   }
   

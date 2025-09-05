@@ -1163,11 +1163,7 @@ runSimulation<-function(hypothesis,design,evidence,sigOnly=FALSE,onlyAnalysis=FA
     ntrials<-0
     p_min<-1
     while (1==1) {
-      # if (!evidence$shortHand) {
       res<-getSample(hypothesis,design,evidence)
-      # } else {
-      #   res<-sampleShortCut(hypothesis,design,evidence,1,FALSE)
-      # }
       res1<-res
       if (design$sBudgetOn) {
         if (res$pIV<p_min) {
@@ -1193,15 +1189,15 @@ runSimulation<-function(hypothesis,design,evidence,sigOnly=FALSE,onlyAnalysis=FA
 }
 
 getSample<-function(hypothesis,design,evidence) {
-  while (1==1) {
+  # while (1==1) {
     if (!evidence$shortHand) {
       sample<-doSample(hypothesis,design,autoShow=FALSE)
       res<-doAnalysis(sample,evidence,autoShow=FALSE)
     } else {
       res<-sampleShortCut(hypothesis,design,evidence,1,FALSE)
     }
-    if (!evidence$sigOnly || isSignificant(braw.env$STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) break
-  }
+  #   if (isSignificant(braw.env$STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence) || runif(1)>evidence$sigOnly) break
+  # }
   
   res$ResultHistory<-list(nval=res$nval,df1=res$df1,rIV=res$rIV,rpIV=res$rpIV,pIV=res$pIV,sequence=FALSE)
   # Cheating ?
