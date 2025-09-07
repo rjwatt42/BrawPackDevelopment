@@ -7,8 +7,11 @@
 showMetaSingle(
   metaResult = braw.res$metaSingle,
   showType = "n",
-  showTheory = FALSE,
-  autoYlim = TRUE
+  showTheory = TRUE,
+  xRange = "full",
+  autoYlim = TRUE,
+  fill = NULL,
+  alpha = NULL
 )
 }
 \value{

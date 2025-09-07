@@ -350,7 +350,7 @@ multipleAnalysis<-function(nsims=1,hypothesis,design,evidence,newResult=c(),only
     hypothesis$effect$rIV<-rho[i]
     if (!is.null(hypothesis$IV2)) {hypothesis$effect$rIV2<-rho2[i]}
     
-    res<-runSimulation(hypothesis,design,evidence,evidence$sigOnly,oldResult=oldResult)
+    res<-runSimulation(hypothesis,design,evidence,oldResult=oldResult)
     
     if (is.na(res$rIV)) {
       res$rIV<-0
@@ -1152,7 +1152,7 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
   
 }
 
-runSimulation<-function(hypothesis,design,evidence,sigOnly=FALSE,onlyAnalysis=FALSE,oldResult=NULL,autoShow=FALSE) {
+runSimulation<-function(hypothesis,design,evidence,onlyAnalysis=FALSE,oldResult=NULL,autoShow=FALSE) {
     if (onlyAnalysis && !is.null(oldResult)) {
     res<-doAnalysis(oldResult,evidence,autoShow=FALSE)
     return(res)
@@ -1178,7 +1178,7 @@ runSimulation<-function(hypothesis,design,evidence,sigOnly=FALSE,onlyAnalysis=FA
         }
       }
       if (isSignificant(braw.env$STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) break
-      if (runif(1)>sigOnly) break
+      if (runif(1)>evidence$sigOnly) break
     }
   }
   
@@ -1189,16 +1189,14 @@ runSimulation<-function(hypothesis,design,evidence,sigOnly=FALSE,onlyAnalysis=FA
 }
 
 getSample<-function(hypothesis,design,evidence) {
-  # while (1==1) {
+  
     if (!evidence$shortHand) {
       sample<-doSample(hypothesis,design,autoShow=FALSE)
       res<-doAnalysis(sample,evidence,autoShow=FALSE)
     } else {
       res<-sampleShortCut(hypothesis,design,evidence,1,FALSE)
     }
-  #   if (isSignificant(braw.env$STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence) || runif(1)>evidence$sigOnly) break
-  # }
-  
+
   res$ResultHistory<-list(nval=res$nval,df1=res$df1,rIV=res$rIV,rpIV=res$rpIV,pIV=res$pIV,sequence=FALSE)
   # Cheating ?
   res<-cheatSample(hypothesis,design,evidence,sample,res)

@@ -61,12 +61,12 @@ doDLLR<-function() {
 makeWorld<-function(On=TRUE,PDF="Uniform",RZ="r",
                     PDFk=0.0,PDFs=2,PDFmu=0.0,pRPlus=1,
                     PDFsample=FALSE,PDFsamplemn=0.0,PDFsamplesd=0.0,PDFsamplebias=FALSE,
-                    sigOnly=FALSE,worldAbs=FALSE) {
+                    worldAbs=FALSE) {
  world<-list(On=On,
              PDF=PDF,RZ=RZ,
              PDFk=PDFk,PDFs=PDFs,PDFmu=PDFmu,pRPlus=pRPlus,
              PDFsample=PDFsample,PDFsamplemn=PDFsamplemn,PDFsamplesd=PDFsamplesd,PDFsamplebias=PDFsamplebias,
-             sigOnly=sigOnly,worldAbs=worldAbs)
+             worldAbs=worldAbs)
  world  
 }
 
@@ -198,7 +198,7 @@ makeSampling<-function(type="Random") {
 #' @examples
 #' makeReplication(On=TRUE,Repeats=1,Keep="Cautious",RepAlpha=0.05,
 #'                 PowerOn=TRUE,Power=0.8,Tails=2,PowerPrior="None",
-#'                 forceSigOriginal="No",forceSign=TRUE,
+#'                 forceSigOriginal=FALSE,forceSign=TRUE,
 #'                 BudgetType="Unlimited",Budget=1000
 #'                 )
 #' @export
@@ -287,7 +287,7 @@ makeDesign<-function(sN=42, sMethod=makeSampling("Random"),sMethodSeverity=0.1,
 #' @param caseOrder   "Alphabetic","AsFound","Frequency"
 #' @param Transform   "None","Log","Exp"
 #' @examples
-#' makeEvidence(shortHand=FALSE,sigOnly=FALSE,
+#' makeEvidence(shortHand=FALSE,sigOnly=0,
 #'              AnalysisTerms=TRUE,rInteractionOnly=TRUE,ssqType="Type3",
 #'              caseOrder="Alphabetic",
 #'              llr=list(e1=c(),e2=0),
@@ -298,7 +298,7 @@ makeDesign<-function(sN=42, sMethod=makeSampling("Random"),sMethodSeverity=0.1,
 #'              metaAnalysis=makeMetaAnalysis()
 #'              )
 #' @export
-makeEvidence<-function(shortHand=FALSE,sigOnly=FALSE,
+makeEvidence<-function(shortHand=FALSE,sigOnly=0,
                        AnalysisTerms=c(TRUE,TRUE,FALSE),rInteractionOnly=TRUE,ssqType="Type3",
                        caseOrder="AsStated",
                        llr=list(e1=c(),e2=0),
@@ -368,7 +368,7 @@ setWorld<-function(On=braw.def$hypothesis$effect$world$On,
                    PDFk=braw.def$hypothesis$effect$world$PDFk,PDFs=braw.def$hypothesis$effect$world$PDFs,
                    PDFmu=braw.def$hypothesis$effect$world$PDFmu,pRPlus=braw.def$hypothesis$effect$world$pRPlus,
                    PDFsample=braw.def$hypothesis$effect$world$PDFsample,PDFsamplemn=braw.def$hypothesis$effect$world$PDFsamplemn,PDFsamplesd=braw.def$hypothesis$effect$world$PDFsamplesd,PDFsamplebias=braw.def$hypothesis$effect$world$PDFsamplebias,
-                   sigOnly=braw.def$hypothesis$effect$world$sigOnly,worldAbs=braw.def$hypothesis$effect$world$worldAbs) {
+                   worldAbs=braw.def$hypothesis$effect$world$worldAbs) {
   if (is.character(On)) e<-getWorld(On)
   else {
     if (is.list(On)) e<-On
@@ -377,7 +377,7 @@ setWorld<-function(On=braw.def$hypothesis$effect$world$On,
                    PDF=PDF,RZ=RZ,
                    PDFk=PDFk,PDFs=PDFs,PDFmu=PDFmu,pRPlus=pRPlus,
                    PDFsample=PDFsample,PDFsamplemn=PDFsamplemn,PDFsamplesd=PDFsamplesd,PDFsamplebias=PDFsamplebias,
-                   sigOnly=sigOnly,worldAbs=worldAbs)
+                   worldAbs=worldAbs)
   }
   h<-braw.def$hypothesis
   h$effect$world<-e

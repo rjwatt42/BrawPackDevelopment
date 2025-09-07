@@ -6,7 +6,7 @@
 \usage{
 makeEvidence(
   shortHand = FALSE,
-  sigOnly = FALSE,
+  sigOnly = 0,
   AnalysisTerms = c(TRUE, TRUE, FALSE),
   rInteractionOnly = TRUE,
   ssqType = "Type3",
@@ -33,7 +33,7 @@ makeEvidence(
 make an evidence definition
 }
 \examples{
-makeEvidence(shortHand=FALSE,sigOnly=FALSE,
+makeEvidence(shortHand=FALSE,sigOnly=0,
              AnalysisTerms=TRUE,rInteractionOnly=TRUE,ssqType="Type3",
              caseOrder="Alphabetic",
              llr=list(e1=c(),e2=0),

@@ -12,12 +12,11 @@ makeWorld(
   PDFk = 0,
   PDFs = 2,
   PDFmu = 0,
-  pRPlus = 0,
+  pRPlus = 1,
   PDFsample = FALSE,
   PDFsamplemn = 0,
   PDFsamplesd = 0,
   PDFsamplebias = FALSE,
-  sigOnly = FALSE,
   worldAbs = FALSE
 )
 }
@@ -35,7 +34,7 @@ make a world
 }
 \examples{
 makeWorld<-function(On=FALSE,PDF="Single",RZ="r",
-                    PDFk=0.2,pRPlus=0,worldAbs=FALSE
+                    PDFk=0.2,pRPlus=1,worldAbs=FALSE
 )
 }
 \seealso{

@@ -16,7 +16,7 @@
 #' @export
 makePossible<-function(targetSample=NULL,targetSampleN=NULL,UseSource="world",
                        targetPopulation=NULL,UsePrior="none",prior=getWorld("Psych"),
-                       sigOnly=FALSE,sigOnlyCompensate=FALSE,
+                       sigOnly=0,sigOnlyCompensate=FALSE,
                        axisType=braw.env$RZ,
                        sims=NULL,
                        hypothesis=braw.def$hypothesis,design=braw.def$design,

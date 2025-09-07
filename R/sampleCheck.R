@@ -210,7 +210,7 @@ replicateSample<-function(hypothesis,design,evidence,sample,res) {
   oldHypothesis<-hypothesis
   oldDesign<-design
   oldEvidence<-evidence
-  evidence$sigOnly<-FALSE
+  evidence$sigOnly<-0
   setBrawDef('evidence',evidence)
   
   design$sCheating<-"None"

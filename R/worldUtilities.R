@@ -61,7 +61,7 @@ zSamplingDistr<-function(zvals,Z,n){
   1/s/sqrt(2*pi)*exp(-0.5*((zvals-Z)/s)^2)
 }
 
-rSamplingDistr<-function(rvals,R,n,sigOnly=FALSE){
+rSamplingDistr<-function(rvals,R,n,sigOnly=0){
   # map to Fisher-z
   zvals<-atanh(rvals)
   Z<-atanh(R)
@@ -179,7 +179,7 @@ getRList<-function(world,addNulls=FALSE,HQ=FALSE) {
   list(pRho=pRho,pRhogain=pRhogain)  
 }
 
-getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE) {
+getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=0,HQ=FALSE) {
   if (HQ) npt<-1001 else npt=21
   nmax<-5
   if (logScale) {
@@ -215,19 +215,10 @@ getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE) {
 }
 
 getNList<-function(design,world,HQ=FALSE) {
-  # if (design$Replication$On) {
-  #   if (HQ) npt<-201 else npt=21
-  #   nmax<-5
-  #   nvals<-braw.env$minN+seq(0,nmax*design$sN,length.out=npt)
-  #   design$Replication$On<-FALSE
-  #   ndens<-fullRSamplingDist(nvals,world=world,design=design,"nw",logScale=FALSE,sigOnlyOutput=FALSE)
-  #   return(list(nvals=nvals,ndens=ndens,ndensSig=ndens))
-  # } else {
     if (!design$sNRand) {
       return(list(nvals=design$sN,ndens=1,ndensSig=1))
     }
-    return(getNDist(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=HQ))
-  # }
+    return(getNDist(design,world=NULL,logScale=FALSE,sigOnly=0,HQ=HQ))
 }
 
 rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
@@ -323,7 +314,7 @@ fullPSig<-function(world,design,HQ=FALSE,alpha=braw.env$alphaSig) {
   return(pSig)
 }
 
-fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnlyOutput=FALSE,sigOnlyCompensate=FALSE,HQ=FALSE,separate=FALSE,quantiles=NULL) {
+fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly=0,sigOnlyCompensate=FALSE,HQ=FALSE,separate=FALSE,quantiles=NULL) {
   # sampling distribution from specified populations (pRho)
   if (is.null(vals)) 
     vals<-seq(-1,1,length=braw.env$worldNPoints)*braw.env$r_range
@@ -419,9 +410,9 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
         if (logScale) addition<-addition*vals
         addition<-addition*ndens[ni]
         d1<-d1+addition
-        if (sigOnlyOutput>0) {
+        if (sigOnly>0) {
           critR<-tanh(qnorm(1-braw.env$alphaSig/2,0,1/sqrt(nvals[ni]-3)))
-          addition[abs(rp)<critR]<-addition[abs(rp)<critR]*(1-sigOnlyOutput)
+          addition[abs(rp)<critR]<-addition[abs(rp)<critR]*(1-sigOnly)
           if (sigOnlyCompensate) addition<-addition/sum(addition)
         }
         d<-d+addition

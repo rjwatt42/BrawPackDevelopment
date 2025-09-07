@@ -23,7 +23,7 @@ showSystem<-function(whichShow="all",hypothesis=braw.def$hypothesis,design=braw.
              g<-showHypothesis(hypothesis=hypothesis,evidence=evidence,doWorld=TRUE,plotArea=c(0.0,0.05,0.33,0.8),autoShow=FALSE,g=g)
            g<-showDesign(hypothesis=hypothesis,design=design,plotArea=c(0.3,0.3,0.28,0.33),autoShow=FALSE,g=g)
            g<-showPrediction(hypothesis=hypothesis,design=design,evidence=evidence,plotArea=c(0.65,0.55,0.33,0.4),autoShow=FALSE,g=g)
-           g<-showWorldSampling(hypothesis=hypothesis,design=design,sigOnly=FALSE,plotArea=c(0.7,0.05,0.28,0.4),autoShow=FALSE,g=g)
+           g<-showWorldSampling(hypothesis=hypothesis,design=design,evidence=evidence,plotArea=c(0.7,0.05,0.28,0.4),autoShow=FALSE,g=g)
            
            braw.env$plotArea<-c(0,0,1,1)
            g<-addG(g,axisText(data=data.frame(x=0.02,y=1),"Hypothesis",vjust=1,size=1.2,fontface="bold"))
@@ -344,7 +344,7 @@ showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotA
       hypothesis$effect$world$RZ<-"r"
       hypothesis$effect$world$pRPlus<-1
     }
-    nRepDens<-fullRSamplingDist(nbin,hypothesis$effect$world,design,"nw",logScale=(braw.env$nPlotScale=="log10"),sigOnlyOutput=FALSE)
+    nRepDens<-fullRSamplingDist(nbin,hypothesis$effect$world,design,"nw",logScale=(braw.env$nPlotScale=="log10"),sigOnly=0)
     y<-c(0,nRepDens,0)/max(nRepDens)*0.4
     x<-nbin[c(1,1:length(nbin),length(nbin))]
     pts=data.frame(x=log10(x),y=y)
@@ -475,9 +475,9 @@ showPrediction <- function(hypothesis=braw.def$hypothesis,design=braw.def$design
 #' 
 #' @return ggplot2 object - and printed
 #' @examples
-#' showWorldSampling(hypothesis=makeHypothesis(),design=makeDesign(),sigOnly=FALSE)
+#' showWorldSampling(hypothesis=makeHypothesis(),design=makeDesign(),evidence=makeEvidence())
 #' @export
-showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,sigOnly=FALSE,plotArea=c(0,0,1,1),autoShow=braw.env$autoShow,g=NULL) {
+showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,plotArea=c(0,0,1,1),autoShow=braw.env$autoShow,g=NULL) {
   world<-hypothesis$effect$world
   if (!world$On) 
     world<-list(On=TRUE,
@@ -500,7 +500,7 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   design1<-design
   design$Replication$On<-FALSE
   
-  dens<-fullRSamplingDist(vals,world,design,sigOnlyOutput=sigOnly) 
+  dens<-fullRSamplingDist(vals,world,design,sigOnly=evidence$sigOnly) 
   switch(braw.env$RZ,
          "r"={},
          "z"={
@@ -513,7 +513,7 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   )
   dens<-dens/sum(dens)
   if (design1$Replication$On) {
-    dens1<-fullRSamplingDist(vals,world,design1,sigOnlyOutput=sigOnly) 
+    dens1<-fullRSamplingDist(vals,world,design1,sigOnly=evidence$sigOnly) 
     dens1<-dens1/sum(dens1)
   } else dens1<-NA
   gain<-max(max(dens),max(dens1),na.rm=TRUE)

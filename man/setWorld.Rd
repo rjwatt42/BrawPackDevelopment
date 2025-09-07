@@ -16,7 +16,6 @@ setWorld(
   PDFsamplemn = braw.def$hypothesis$effect$world$PDFsamplemn,
   PDFsamplesd = braw.def$hypothesis$effect$world$PDFsamplesd,
   PDFsamplebias = braw.def$hypothesis$effect$world$PDFsamplebias,
-  sigOnly = braw.def$hypothesis$effect$world$sigOnly,
   worldAbs = braw.def$hypothesis$effect$world$worldAbs
 )
 }

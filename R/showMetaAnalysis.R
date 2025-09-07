@@ -505,7 +505,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     
   }
   
-  makeWorldDist<-function(metaResult,design,world,z,n,sigOnly=FALSE,doTheory=FALSE) {
+  makeWorldDist<-function(metaResult,design,world,z,n,sigOnly=0,doTheory=FALSE) {
     if (doTheory) {
       lambda<-world$PDFk
       offset<-0
@@ -620,7 +620,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
   }
   
   drawWorld<-function(hypothesis,design,metaResult,showType="n",g,colour="white",
-                      sigOnly=FALSE,
+                      sigOnly=0,
                       showTheory=FALSE,svalExponent=1,showLines=FALSE) {
     world<-hypothesis$effect$world
     if (!world$On) {

@@ -44,7 +44,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRPlus=0.5,
          "0"={
            hypothesis<-makeHypothesis(effect=makeEffect(world=getWorld("Plain")))
            design<-makeDesign(sN=42)
-           evidence<-makeEvidence(sigOnly=FALSE)
+           evidence<-makeEvidence(sigOnly=0)
          },
          "1"={
            switch(partMetaSci,
@@ -151,7 +151,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRPlus=0.5,
                   })
            design$sRangeProb<-rangeP
            design$sRangeVary<-rangeVar
-           evidence<-makeEvidence(AnalysisTerms=analysisTerms,sigOnly=FALSE)
+           evidence<-makeEvidence(AnalysisTerms=analysisTerms,sigOnly=0)
            if (replicateMS(doingMetaScience))  evidence$sigOnly<-sReplicationSigOriginal
          }
   )
