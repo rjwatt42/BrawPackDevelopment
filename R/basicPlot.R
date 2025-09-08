@@ -928,6 +928,20 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21) {
 
 dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),linewidth=0.25,linetype="solid") {
   data<-reRangeXY(data)
+  # because the x & y values may have been truncated to ylim
+  usex<-c(diff(data$x)>0,TRUE)
+  usey<-c(diff(data$y)>0,TRUE)
+  data$x<-data$x[usex]
+  data$y<-data$y[usey]
+  data$z<-data$z[usey,usex]
+  # now we need to worry about corners
+  ny<-length(data$y)
+  nx<-length(data$x)
+  data$x<-c(data$x[1]-diff(data$x[1:2]),data$x,data$x[nx]+diff(data$x[c(nx-1,nx)]))
+  data$y<-c(data$y[1]-diff(data$y[1:2]),data$y,data$y[ny]+diff(data$y[c(ny-1,ny)]))
+  data$z<-rbind(data$z[1,]*0,data$z,data$z[ny,]*0)
+  data$z<-cbind(data$z[,1]*0,data$z,data$z[,nx]*0)
+  # then proceed
   c<-contourLines(data$y,data$x,data$z/max(data$z),levels=breaks)
   ny<-length(data$y)
   nx<-length(data$x)

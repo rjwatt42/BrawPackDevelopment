@@ -101,7 +101,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
       braw.env$maxN<-ylim[2]
     }
     else
-      ylim<-c(braw.env$minN-1,braw.env$maxN+1)
+      ylim<-c(min(min(d2),braw.env$minN)-1,braw.env$maxN+1)
     yticks<-y$ticks
     if (y$logScale) {
       d2<-log10(d2)
