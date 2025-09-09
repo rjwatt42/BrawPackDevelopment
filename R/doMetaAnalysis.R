@@ -154,9 +154,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   )
   
   if (metaAnalysis$analyseBias) {
-    if (is.element(dist,c("fixed","random","Exp"))) {
       param3Use<-seq(0,1,length.out=np2points)
-    } else param3Use<-1
   } else param3Use<-metaAnalysis$sourceBias
   
   prior<-metaAnalysis$analysisPrior
@@ -254,6 +252,12 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
 
 
 runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
+  if (!metaAnalysis$analyseBias && metaAnalysis$sourceBias) {
+    use<-studies$pIV<0.05
+    studies$rIV<-studies$rIV[use]
+    studies$nval<-studies$nval[use]
+    studies$df1<-studies$df1[use]
+  }
   rs<-studies$rIV
   zs<-atanh(rs)
   ns<-studies$nval
