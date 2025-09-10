@@ -613,22 +613,22 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                 showMin<-apply(result$nFP,2,min)
               },
               "metaBias"={
-                showVals<-result$param3
+                showVals<-result$sigOnly
               },
               "metaRiv"={
-                showVals<-result$param1
+                showVals<-result$PDFk
               },
               "metaRsd"={
-                showVals<-result$param2
+                showVals<-result$pRPlus
               },
               "LambdaRn"={
-                showVals<-result$param2
+                showVals<-result$pRPlus
               },
               "Lambda"={
-                showVals<-result$param1
+                showVals<-result$PDFk
               },
               "p(R+)"={
-                showVals<-result$param2
+                showVals<-result$pRPlus
               },
               "metaS"={
                 showVals<-result$S

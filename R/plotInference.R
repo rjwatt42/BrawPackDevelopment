@@ -160,13 +160,13 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
             if (braw.env$nPlotScale=="log10") d1<-log10(d1)
           },
           "metaRiv"={
-            d1<-analysis$best$param1
+            d1<-analysis$best$PDFk
           },
           "metaRsd"={
-            d1<-analysis$best$param2
+            d1<-analysis$best$pRPlus
           },
           "metaBias"={
-            d1<-analysis$best$param3
+            d1<-analysis$best$sigOnly
           },
           "metaS"={
             d1<-analysis$best$S
@@ -224,13 +224,13 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
             if (braw.env$nPlotScale=="log10") d2<-log10(d2)
           },
           "metaRiv"={
-            d2<-analysis$best$param1
+            d2<-analysis$best$PDFk
           },
           "metaRsd"={
-            d2<-analysis$best$param2
+            d2<-analysis$best$pRPlus
           },
           "metaBias"={
-            d2<-analysis$best$param3
+            d2<-analysis$best$sigOnly
           },
           "metaS"={
             d2<-analysis$best$S

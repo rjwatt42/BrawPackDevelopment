@@ -131,13 +131,13 @@ summariseResult<-function(result) {
       result$p$total<-result$p$total
     }
   } else {
-    param1<-max(c(result$fixed$param1,result$random$param1,result$single$param1,result$gauss$param1,result$exp$param1),na.rm=TRUE)
-    param2<-max(c(result$fixed$param2,result$random$param2,result$single$param2,result$gauss$param2,result$exp$param2),na.rm=TRUE)
-    param3<-max(c(result$fixed$param3,result$random$param3,result$single$param3,result$gauss$param3,result$exp$param3),na.rm=TRUE)
+    PDFk<-max(c(result$fixed$PDFk,result$random$PDFk,result$single$PDFk,result$gauss$PDFk,result$exp$PDFk),na.rm=TRUE)
+    pRPlus<-max(c(result$fixed$pRPlus,result$random$pRPlus,result$single$pRPlus,result$gauss$pRPlus,result$exp$pRPlus),na.rm=TRUE)
+    sigOnly<-max(c(result$fixed$sigOnly,result$random$sigOnly,result$single$sigOnly,result$gauss$sigOnly,result$exp$sigOnly),na.rm=TRUE)
     S<-max(c(result$fixed$Smax,result$random$Smax,result$single$Smax,result$gauss$Smax,result$exp$Smax),na.rm=TRUE)
-    result$param1<-param1
-    result$param2<-param2
-    result$param3<-param3
+    result$PDFk<-PDFk
+    result$pRPlus<-pRPlus
+    result$sigOnly<-sigOnly
     result$S<-S
     sigs<-isSignificant(braw.env$STMethod,result$result$pIV,result$result$rIV,result$result$nval,result$result$df1,result$result$evidence)
     nSig<-sum(sigs)
@@ -154,7 +154,7 @@ summariseResult<-function(result) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               param1=b,param2=b,param3=b,S=b
+               PDFk=b,pRPlus=b,sigOnly=b,S=b
   )
   return(result)
 }
@@ -178,7 +178,7 @@ resetExploreResult<-function(nsims,n_vals,oldResult=NULL) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               param1=b,param2=b,param3=b,S=b
+               PDFk=b,pRPlus=b,sigOnly=b,S=b
   )
   if (!is.null(oldResult)) {
     result<-mergeExploreResult(oldResult,result)
@@ -235,15 +235,15 @@ storeExploreResult<-function(result,res,ri,vi) {
       result$p$total[ri,vi,1:n]<-res$p$total
     }
   } else {
-    param1<-max(c(res$fixed$param1,res$random$param1,res$single$param1,res$gauss$param1,res$exp$param1),na.rm=TRUE)
-    param2<-max(c(res$fixed$param2,res$random$param2,res$single$param2,res$gauss$param2,res$exp$param2),na.rm=TRUE)
-    param3<-max(c(res$fixed$param3,res$random$param3,res$single$param3,res$gauss$param3,res$exp$param3),na.rm=TRUE)
+    PDFk<-max(c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk),na.rm=TRUE)
+    pRPlus<-max(c(res$fixed$pRPlus,res$random$pRPlus,res$single$pRPlus,res$gauss$pRPlus,res$exp$pRPlus),na.rm=TRUE)
+    sigOnly<-max(c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly),na.rm=TRUE)
     S<-max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax),na.rm=TRUE)
     sigs<-isSignificant(braw.env$STMethod,res$result$pIV,res$result$rIV,res$result$nval,res$result$df1,res$result$evidence)
     nSig<-sum(sigs)
-    result$param1[ri,vi]<-param1
-    result$param2[ri,vi]<-param2
-    result$param3[ri,vi]<-param3
+    result$PDFk[ri,vi]<-PDFk
+    result$pRPlus[ri,vi]<-pRPlus
+    result$sigOnly[ri,vi]<-sigOnly
     result$S[ri,vi]<-S
     result$nSig[ri,vi]<-nSig
   }
@@ -297,9 +297,9 @@ mergeExploreResult<-function(res1,res2) {
     result$pIVIV2DV<-rbind(res1$pIVIV2DV,res2$pIVIV2DV)
   }
   
-  result$param1<-rbind(res1$param1,res2$param1)
-  result$param2<-rbind(res1$param2,res2$param2)
-  result$param3<-rbind(res1$param3,res2$param3)
+  result$PDFk<-rbind(res1$PDFk,res2$PDFk)
+  result$pRPlus<-rbind(res1$pRPlus,res2$pRPlus)
+  result$sigOnly<-rbind(res1$sigOnly,res2$sigOnly)
   result$S<-rbind(res1$S,res2$S)
   result$nSig<-rbind(res1$nSig,res2$nSig)
   result$nFP<-rbind(res1$nFP,res2$nFP)

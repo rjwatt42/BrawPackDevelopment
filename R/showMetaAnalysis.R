@@ -7,13 +7,13 @@ makeMetaHist<-function(vals,use,xlim) {
 }
 
 worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
-  if (is.null(whichMeta)) whichMeta<-metaResult$best$dist
+  if (is.null(whichMeta)) whichMeta<-metaResult$best$PDF
   if (whichMeta=="world") Dist<-modelPDF
   else Dist<-whichMeta
   Dist<-tolower(Dist)
-  p1<-metaResult[[Dist]]$param1
-  p2<-metaResult[[Dist]]$param2
-  p3<-metaResult[[Dist]]$param3
+  p1<-metaResult[[Dist]]$PDFk
+  p2<-metaResult[[Dist]]$pRPlus
+  p3<-metaResult[[Dist]]$sigOnly
   if (whichMeta!="world")
     switch(braw.env$RZ,
            "r"={},
@@ -124,7 +124,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   }
   useAll<-(d2>ylim[1]) & (d2<ylim[2])
   ptsAll<-data.frame(x=d1[useAll],y=d2[useAll])
-  useNull<-(d2>ylim[1]) & (d2<ylim[2] & d1n)
+  useNull<-(d2>ylim[1]) & (d2<ylim[2]) & d1n
   ptsNull<-data.frame(x=d1[useNull],y=d2[useNull])
   
   assign("plotArea",c(0,0,1,1),braw.env)
@@ -169,8 +169,8 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   fill2<-braw.env$plotColours$infer_nsigC
   if (showSval) {
     b<-getLogLikelihood(atanh(metaResult$result$rIV),metaResult$result$nval,rep(1,length(metaResult$result$nval)),
-                        distribution=metaResult$best$dist,
-                        location=metaResult$best$param1,spread=metaResult$best$param2,
+                        distribution=metaResult$best$PDF,
+                        location=metaResult$best$PDFk,spread=metaResult$best$pRPlus,
                         bias=metaResult$metaAnalysis$analyseBias,returnVals = TRUE)
     fill1<-hsv(0.9*round((b-min(b))/(max(b)-min(b))*4)/4)
     fill1<-hsv(0.9*round((b/max(b))^svalExponent*10)/10)
@@ -183,8 +183,8 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (nrow(ptsNull)>0)
     g<-addG(g,dataPoint(data=ptsNull,shape=braw.env$plotShapes$study, colour = col2, fill = fill2, alpha=alphaUse, size = dotSize))
   } else {
-    rBins<-seq(0,1,length.out=31)
-    nBins<-seq(log10(5),log10(500),length.out=21)
+    rBins<-seq(0,1,length.out=101)
+    nBins<-seq(log10(5),log10(500),length.out=101)
     z<-matrix(0,length(nBins)-1,length(rBins)-1)
     for (ir in 1:(length(rBins)-1)) {
       for (inv in 1:(length(nBins)-1)) {
@@ -201,7 +201,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   }
   
   if (showTheory) {
-  if (metaAnalysis$modelPDF=="All") metaAnalysis$modelPDF<-metaResult$best$dist
+  if (metaAnalysis$modelPDF=="All") metaAnalysis$modelPDF<-metaResult$best$PDF
   lb<-worldLabel(metaResult,metaAnalysis$analysisType,metaAnalysis$modelPDF)
   names=strsplit(lb,"\n")[[1]]
   if (length(names)==1) colours=braw.env$plotColours$metaAnalysis else colours=c(braw.env$plotColours$metaAnalysis,rep(NA,length(names)-1))
@@ -301,11 +301,11 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     xticks<-seq(-1,1,0.5)
     
     if (is.element(whichMeta,c("Single","Gauss","Exp","Gamma","GenExp"))) {
-      n1<-sum(metaResult$best$dist=="Single")
-      n2<-sum(metaResult$best$dist=="Gauss")
-      n3<-sum(metaResult$best$dist=="Exp")
-      n4<-sum(metaResult$best$dist=="Gamma")
-      n5<-sum(metaResult$best$dist=="GenExp")
+      n1<-sum(metaResult$best$PDF=="Single")
+      n2<-sum(metaResult$best$PDF=="Gauss")
+      n3<-sum(metaResult$best$PDF=="Exp")
+      n4<-sum(metaResult$best$PDF=="Gamma")
+      n5<-sum(metaResult$best$PDF=="GenExp")
       sAll<-c(metaResult$single$Smax,metaResult$gauss$Smax,metaResult$exp$Smax,metaResult$gamma$Smax,metaResult$genexp$Smax)
       
       use<-order(c(n1,n2,n3,n4,n5))
@@ -321,29 +321,29 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       } else {
         switch (whichMeta,
                 "Single"={
-                  x<-metaResult$single$param1
+                  x<-metaResult$single$PDFk
                   yS<-metaResult$single$Smax
-                  y1<-metaResult$single$param2
+                  y1<-metaResult$single$pRPlus
                 },
                 "Gauss"={
-                  x<-metaResult$gauss$param1
+                  x<-metaResult$gauss$PDFk
                   yS<-metaResult$gauss$Smax
-                  y1<-metaResult$gauss$param2
+                  y1<-metaResult$gauss$pRPlus
                 },
                 "Exp"={
-                  x<-metaResult$exp$param1
+                  x<-metaResult$exp$PDFk
                   yS<-metaResult$exp$Smax
-                  y1<-metaResult$exp$param2
+                  y1<-metaResult$exp$pRPlus
                 },
                 "Gamma"={
-                  x<-metaResult$gamma$param1
+                  x<-metaResult$gamma$PDFk
                   yS<-metaResult$gamma$Smax
-                  y1<-metaResult$gamma$param2
+                  y1<-metaResult$gamma$pRPlus
                 },
                 "GenExp"={
-                  x<-metaResult$genexp$param1
+                  x<-metaResult$genexp$PDFk
                   yS<-metaResult$genexp$Smax
-                  y1<-metaResult$genexp$param2
+                  y1<-metaResult$genexp$pRPlus
                 }
         )
       }
@@ -365,8 +365,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     yticks<-c()
     switch (showType,
             "metaRiv;metaRsd"={
-              x<-result$param1
-              y<-result$param2
+              x<-result$PDFk
+              y<-result$pRPlus
               y1<-0
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"r[sd]"
@@ -374,8 +374,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
               useBest<-1:length(x)
             },
             "metaRiv;metaBias"={
-              x<-result$param1
-              y<-result$param3
+              x<-result$PDFk
+              y<-result$sigOnly
               y1<-0
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylim<-c(0,1)
@@ -384,7 +384,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
               useBest<-1:length(x)
             },
             "metaRiv;metaS"={
-              x<-result$param1
+              x<-result$PDFk
               y<-result$Smax
               y1<-0
               sAll<-result$Smax
@@ -451,31 +451,31 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       vj<-1
     }
     if (showType=="metaS;metaS") {
-      fullText<-paste0(use2,"(",format(mean(metaY$param1),digits=3))
-      if (length(metaY$param1)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$param1),digits=2),")")
+      fullText<-paste0(use2,"(",format(mean(metaY$PDFk),digits=3))
+      if (length(metaY$PDFk)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$PDFk),digits=2),")")
       else fullText<-paste0(fullText,")")
       if (metaAnalysis$modelNulls) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaY$param2),digits=3))
-        if (length(metaY$param2)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$param2),digits=2),")")
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaY$pRPlus),digits=3))
+        if (length(metaY$pRPlus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$pRPlus),digits=2),")")
       }
       fullText<-paste0(fullText,"\nS= ",format(mean(metaY$Smax),digits=2))
       if (length(metaY$Smax)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$Smax),digits=2),")")
-      fullText<-paste0(fullText," (",format(sum(y>x)),"/",length(metaResult$best$dist),")")
+      fullText<-paste0(fullText," (",format(sum(y>x)),"/",length(metaResult$best$PDF),")")
       
       if (mean(y>x)) colM=braw.env$plotColours$metaMultiple  else colM="grey"
       names<-strsplit(fullText,"\n")[[1]]
       g<-addG(g,dataLegend(data.frame(names=names,colours=c(colM,rep(NA,length(names)-1))),title="",shape=braw.env$plotShapes$meta))
       
-      fullText<-paste0(use1,"(",format(mean(metaX$param1),digits=3))
-      if (length(metaX$param1)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$param1),digits=2),")")
+      fullText<-paste0(use1,"(",format(mean(metaX$PDFk),digits=3))
+      if (length(metaX$PDFk)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$PDFk),digits=2),")")
       else fullText<-paste0(fullText,")")
       if (metaAnalysis$modelNulls) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaX$param2),digits=3))
-        if (length(metaX$param2)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$param2),digits=2),")")
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaX$pRPlus),digits=3))
+        if (length(metaX$pRPlus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$pRPlus),digits=2),")")
       }
       fullText<-paste0(fullText,"\nS= ",format(mean(metaX$Smax),digits=2))
       if (length(metaX$Smax)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$Smax),digits=2),")")
-      fullText<-paste0(fullText," (",format(sum(x>y)),"/",length(metaResult$best$dist),")")
+      fullText<-paste0(fullText," (",format(sum(x>y)),"/",length(metaResult$best$PDF),")")
       
       if (mean(y>x)) colM="grey"  else colM=braw.env$plotColours$metaMultiple
       names<-strsplit(fullText,"\n")[[1]]
@@ -523,26 +523,32 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
         world$PDF<-"Single"
       }
     } else {
-      lambda<-metaResult$best$param1
-      pRPlus<-metaResult$best$param2
+      lambda<-metaResult$best$PDFk
+      pRPlus<-metaResult$best$pRPlus
       offset<-0
       shape<-0
       if (metaResult$metaAnalysis$analysisType=="random") {
-        lambda<-metaResult$random$param1
-        shape<-metaResult$random$param2
+        lambda<-metaResult$random$PDFk
+        shape<-metaResult$random$pRPlus
         pRPlus<-1
         world$PDF<-"Single"
       }
       if (metaResult$metaAnalysis$analysisType=="fixed") {
-        lambda<-metaResult$fixed$param1
+        lambda<-metaResult$fixed$PDFk
         pRPlus<-1
         world$PDF<-"Single"
       }
     }
     sigma<-1/sqrt(n-3)
+    # 
+    # q<-fitdistrplus::fitdist(metaResult$result$nval, distr = "gamma", method = "mle")
+    # design$sN<-1/q$estimate[2]
+    # design$sNRandSD<-design$sN/q$estimate[1]
     gain<-nDistrDens(n,design)
     nGain<-gain*n  # *n for the log scale
-    
+    # h<-hist(metaResult$result$nval,breaks=c(0,n,1000),plot=FALSE)
+    # nGain<-h$density
+
     zdens<-c()
     switch (world$PDF,
             "Single"={
@@ -665,9 +671,9 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     }
     
     if (!is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
-      world$PDF<-metaResult$best$dist
-      world$PDFk<-metaResult$best$param1
-      world$pRPlus<-metaResult$best$param2
+      world$PDF<-metaResult$best$PDF
+      world$PDFk<-metaResult$best$PDFk
+      world$pRPlus<-metaResult$best$pRPlus
     }
     zb<-makeWorldDist(metaResult,design,world,z,n,sigOnly=1,doTheory=FALSE)
     switch(braw.env$RZ,
@@ -692,7 +698,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     # filled is the best fit world
     if (showTheory) {
       ptsa<-list(x=z,y=n,z=za)
-      g<-addG(g,dataContour(data=ptsa,fill=NA,colour="#000000",linewidth=0.5,linetype="dotted"))
+      g<-addG(g,dataContour(data=ptsa,breaks=seq(0,1,0.1),fill=NA,colour="#000000",linewidth=0.5,linetype="dotted"))
     }
     
     if (showLines) {

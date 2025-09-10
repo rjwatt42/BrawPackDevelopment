@@ -442,19 +442,19 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
                   showVals<-r2llr(rVals,ns,df1,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
                 },
                 "metaBias"={
-                  showVals<-exploreResult$result$param3
+                  showVals<-exploreResult$result$sigOnly
                 },
                 "metaRiv"={
-                  showVals<-exploreResult$result$param1
+                  showVals<-exploreResult$result$PDFk
                 },
                 "metaRsd"={
-                  showVals<-exploreResult$result$param2
+                  showVals<-exploreResult$result$pRPlus
                 },
                 "Lambda"={
-                  showVals<-exploreResult$result$param1
+                  showVals<-exploreResult$result$PDFk
                 },
                 "p(R+)"={
-                  showVals<-exploreResult$result$param2
+                  showVals<-exploreResult$result$pRPlus
                 },
                 "PDF"={
                   showVals<-exploreResult$result$dist==effect$world$PDF

@@ -12,7 +12,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDFsample=TRUE,
                        RZ="r",
                        PDFsd=result$nval,
-                       PDFmu=result$rIV,
+                       PDFoffset=result$rIV,
                        pRPlus=1)
          },
          "SampleB"={
@@ -20,7 +20,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDFsample=TRUE,
                        RZ="r",
                        PDFsd=result$nval,
-                       PDFmu=result$rIV,
+                       PDFoffset=result$rIV,
                        pRPlus=0)
          },
          "Null"={
@@ -28,7 +28,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Single",
                        RZ="z",
                        PDFk=0,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=1,
                        PDFsample=FALSE
            )
@@ -38,7 +38,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Single",
                        RZ="z",
                        PDFk=0,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=1,
                        PDFsample=FALSE
            )
@@ -48,7 +48,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Uniform",
                        RZ="r",
                        PDFk=rp,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=1,
                        PDFsample=FALSE)
          },
@@ -57,7 +57,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Single",
                        RZ="r",
                        PDFk=rp,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=0.5,
                        PDFsample=FALSE)
          },
@@ -66,7 +66,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Single",
                        RZ="r",
                        PDFk=rp,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=1,
                        PDFsample=FALSE)
          },
@@ -75,7 +75,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Single",
                        RZ="r",
                        PDFk=rp,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=0.5,
                        PDFsample=FALSE)
          },
@@ -84,7 +84,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Double",
                        RZ="r",
                        PDFk=rp,
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=1,
                        PDFsample=FALSE)
          },
@@ -93,7 +93,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Gauss",
                        RZ="z",
                        PDFk=atanh(rp),
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=0.5,
                        PDFsample=FALSE)
          },
@@ -102,7 +102,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Exp",
                        RZ="z",
                        PDFk=atanh(rp),
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=0.26,
                        PDFsample=FALSE)
          },
@@ -111,7 +111,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Exp",
                        RZ="z",
                        PDFk=atanh(rp),
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=0.5,
                        PDFsample=FALSE)
          },
@@ -120,7 +120,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        PDF="Exp",
                        RZ="z",
                        PDFk=atanh(rp),
-                       PDFmu=0,
+                       PDFoffset=0,
                        pRPlus=1,
                        PDFsample=FALSE)
          }

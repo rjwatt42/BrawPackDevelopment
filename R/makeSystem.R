@@ -59,12 +59,12 @@ doDLLR<-function() {
 #' )
 #' @export
 makeWorld<-function(On=TRUE,PDF="Uniform",RZ="r",
-                    PDFk=0.0,PDFs=2,PDFmu=0.0,pRPlus=1,
+                    PDFk=0.0,PDFshape=2,PDFoffset=0.0,pRPlus=1,
                     PDFsample=FALSE,PDFsamplemn=0.0,PDFsamplesd=0.0,PDFsamplebias=FALSE,
                     worldAbs=FALSE) {
  world<-list(On=On,
              PDF=PDF,RZ=RZ,
-             PDFk=PDFk,PDFs=PDFs,PDFmu=PDFmu,pRPlus=pRPlus,
+             PDFk=PDFk,PDFshape=PDFshape,PDFoffset=PDFoffset,pRPlus=pRPlus,
              PDFsample=PDFsample,PDFsamplemn=PDFsamplemn,PDFsamplesd=PDFsamplesd,PDFsamplebias=PDFsamplebias,
              worldAbs=worldAbs)
  world  
@@ -365,8 +365,8 @@ setEffect<-function(rIV=braw.def$hypothesis$effect$rIV,rIV2=braw.def$hypothesis$
 #' @export
 setWorld<-function(On=braw.def$hypothesis$effect$world$On,
                    PDF=braw.def$hypothesis$effect$world$PDF,RZ=braw.def$hypothesis$effect$world$RZ,
-                   PDFk=braw.def$hypothesis$effect$world$PDFk,PDFs=braw.def$hypothesis$effect$world$PDFs,
-                   PDFmu=braw.def$hypothesis$effect$world$PDFmu,pRPlus=braw.def$hypothesis$effect$world$pRPlus,
+                   PDFk=braw.def$hypothesis$effect$world$PDFk,PDFshape=braw.def$hypothesis$effect$world$PDFshape,
+                   PDFoffset=braw.def$hypothesis$effect$world$PDFoffset,pRPlus=braw.def$hypothesis$effect$world$pRPlus,
                    PDFsample=braw.def$hypothesis$effect$world$PDFsample,PDFsamplemn=braw.def$hypothesis$effect$world$PDFsamplemn,PDFsamplesd=braw.def$hypothesis$effect$world$PDFsamplesd,PDFsamplebias=braw.def$hypothesis$effect$world$PDFsamplebias,
                    worldAbs=braw.def$hypothesis$effect$world$worldAbs) {
   if (is.character(On)) e<-getWorld(On)
@@ -375,7 +375,7 @@ setWorld<-function(On=braw.def$hypothesis$effect$world$On,
     else
       e<-makeWorld(On=On,
                    PDF=PDF,RZ=RZ,
-                   PDFk=PDFk,PDFs=PDFs,PDFmu=PDFmu,pRPlus=pRPlus,
+                   PDFk=PDFk,PDFshape=PDFshape,PDFoffset=PDFoffset,pRPlus=pRPlus,
                    PDFsample=PDFsample,PDFsamplemn=PDFsamplemn,PDFsamplesd=PDFsamplesd,PDFsamplebias=PDFsamplebias,
                    worldAbs=worldAbs)
   }

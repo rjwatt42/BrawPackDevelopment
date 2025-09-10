@@ -223,8 +223,8 @@ getNList<-function(design,world,HQ=FALSE) {
 
 rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
   k<-world$PDFk
-  mu<-world$PDFmu
-  sh<-world$PDFs
+  mu<-world$PDFoffset
+  sh<-world$PDFshape
   rangeMax<-braw.env$r_range
   rangeMax<-0.9999999
   if (world$RZ=="z") rangeMax<-atanh(rangeMax)
@@ -264,8 +264,8 @@ rPopulationDist<-function(rvals,world) {
     rdens1<-rSamplingDistr(mn,rvals,1/sd^2+3,sigOnly=world$PDFsamplebias)
   } else rdens1<-1
   k<-world$PDFk
-  mu<-world$PDFmu
-  sh<-world$PDFs
+  mu<-world$PDFoffset
+  sh<-world$PDFshape
   if (world$RZ=="z") rvals<-atanh(rvals)
   rdens<-rvals*0
   switch (world$PDF,
