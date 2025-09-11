@@ -665,12 +665,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       )
       za<-za/max(za,na.rm=TRUE)
 
-      if (!is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
-        world$PDF<-metaResult$best$PDF
-        world$PDFk<-metaResult$best$PDFk
-        world$pRPlus<-metaResult$best$pRPlus
-      }
-      zb<-makeWorldDist(metaResult,design,world,z,n,sigOnly=0,doTheory=FALSE)
+      zb<-makeWorldDist(metaResult,design,metaResult$best,z,n,sigOnly=0,doTheory=FALSE)
       switch(braw.env$RZ,
              "r"={ for (i in 1:nrow(zb)) zb[i,]<-zdens2rdens(zb[i,],r) },
              "z"={ },
