@@ -210,7 +210,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           
           braw.env$dist_zi<-0.05
           braw.env$dist_range<-4
-          braw.env$htmlDigits<-2
+          braw.env$htmlDigits<-4
           
           braw.env$allScatter<-TRUE
           braw.env$showMedians<-FALSE
