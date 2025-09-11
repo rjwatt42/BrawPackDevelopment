@@ -272,6 +272,7 @@ mergeMAResult<-function(multiple,single) {
   single$PDFspread<-c(multiple$PDFspread,tanh(single$PDFspread))
   single$PDFshape<-c(multiple$PDFshape,single$PDFshape)
   single$Smax<-c(multiple$Smax,single$Smax)
+  return(single)
 }
 
 runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
