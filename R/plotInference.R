@@ -307,7 +307,7 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
   }
   np<-nrow(pts)
   if (np>1) dotSize<-dotSize*0.65
-  if (np>100) dotSize<-dotSize*100/np
+  if (np>100) dotSize<-dotSize*50/np
   alpha<-max(0.5,min(1,50/np))
   if (np>50) {b1<-c1;b2<-c2} else {b1<-b2<-"#000000"}
   last<-length(pts$x)
