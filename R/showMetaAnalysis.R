@@ -69,7 +69,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   
   showSval<-FALSE
   showSig<-TRUE
-  svalExponent<-1
+  svalExponent<-2
   showLines<-FALSE # in jamovi the code for lines is very slow
   
   metaAnalysis<-metaResult$metaAnalysis
@@ -140,7 +140,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   g<-drawWorld(hypothesis,design,metaResult,showType,g,
                braw.env$plotColours$metaAnalysisTheory,
                # sigOnly=metaAnalysis$analyseBias,
-               showTheory=showTheory,svalExponent=svalExponent,showLines=showLines)
+               showTheory=FALSE,svalExponent=svalExponent,showLines=showLines)
   if (showSig && metaAnalysis$analyseBias) {
     nv<-10^seq(log10(braw.env$minN),log10(braw.env$maxN),length.out=101)
     rv<-p2r(0.05,nv,1)
@@ -164,7 +164,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (length(d1)<1200) {
   colgain<-1-min(1,sqrt(max(0,(length(d1)-50))/200))
   alphaUse<-1/(max(1,sqrt(length(d1)/100)))
-  dotSize<-min(4,braw.env$dotSize*alphaUse*4)
+  dotSize<-braw.env$dotSize*min(1,alphaUse)
   fill1<-rep(braw.env$plotColours$metaAnalysis,length(ptsAll$x))
   fill2<-braw.env$plotColours$infer_nsigC
   if (showSval) {
@@ -662,16 +662,16 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
              "d"={ for (i in 1:nrow(za)) za[i,]<-rdens2ddens(zdens2rdens(za[i,],r),d) }
       )
       za<-za/max(za,na.rm=TRUE)
-
+    }
       zb<-makeWorldDist(metaResult,design,metaResult$best,z,n,sigOnly=sigOnly)
+      zb[is.na(zb)]<-0
       switch(braw.env$RZ,
              "r"={ for (i in 1:nrow(zb)) zb[i,]<-zdens2rdens(zb[i,],r) },
              "z"={ },
              "d"={ for (i in 1:nrow(zb)) zb[i,]<-rdens2ddens(zdens2rdens(zb[i,],r),d) }
       ) 
       zb<-zb/max(zb,na.rm=TRUE)
-    }
-    
+
     if (showType=="n") {
       if (braw.env$nPlotScale=="log10") {n<-log10(n)}
     }   else n<-sqrt(n)
@@ -681,7 +681,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     # filled is the best fit world
     if (showTheory) {
       ptsa<-list(x=z,y=n,z=za)
-      g<-addG(g,dataContour(data=ptsa,breaks=seq(0,1,0.1),fill=NA,colour="#000000",linewidth=0.5,linetype="dotted"))
+      g<-addG(g,dataContour(data=ptsa,breaks=seq(0,1,0.1)^svalExponent,fill=NA,colour="#000000",linewidth=0.5,linetype="dotted"))
     }
     
     if (showLines) {
@@ -729,7 +729,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     
     # g<-addG(g,dataContour(data=ptsb,colour=colour,fill=NA,linewidth=0.5))
     ptsb<-list(x=z,y=n,z=zb)
-    g<-addG(g,dataContour(data=ptsb,breaks=seq(0.1,0.9,0.2),colour="black",fill=colour,linewidth=0.1))
+    g<-addG(g,dataContour(data=ptsb,breaks=seq(0,1,0.2)^svalExponent,colour="black",fill=colour,linewidth=0.1))
     return(g)
   }
   

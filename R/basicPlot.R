@@ -961,7 +961,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
       if (length(c[[i]]$x)>4) {
         cdata<-data.frame(x=c[[i]]$y,y=c[[i]]$x)
         fill1<-darken(desat(fill,i/length(c)),off=i/length(c))
-      ct<-c(ct,list(axisPolygon(cdata,colour=colour,fill=fill1,alpha=1,linewidth=linewidth)))
+      ct<-c(ct,list(axisPolygon(cdata,colour=colour,fill=fill1,alpha=0.4,linewidth=linewidth)))
       }
     }
   }
