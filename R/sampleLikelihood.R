@@ -200,7 +200,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,shape=1,bias=FALSE,df1=1) {
 }
 
 
-getLogLikelihood<-function(z,n,df1,distribution,location,spread=0,shape=1,bias=FALSE,returnVals=FALSE) {
+getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape=1,bias=FALSE,returnVals=FALSE) {
   if (is.null(spread)) spread<-0
   sigma<-1/sqrt(n-3)
   # if (length(sigma)==1) sigma<-sigma[1,1]
@@ -244,7 +244,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,spread=0,shape=1,bias=F
   } 
   
   # get nulls ready first
-  pRPluss<-spread
+  pRPluss<-prplus
   if (any(pRPluss<1)) {
     nullPDF<-SingleSamplingPDF(z,0,sigma,0,bias,df1)
   } else {
