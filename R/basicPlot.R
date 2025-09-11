@@ -508,8 +508,8 @@ is.mathLabel<-function(label) {
 }
 mathPrepText<-function(label,bold=FALSE) {
   label<-gsub("\\[([^ ]*)\\]","\\['\\1'\\]",label)
-  label<-gsub("\\(","\\(\\(",label)
-  label<-gsub("\\)","\\)\\)",label)
+  # label<-gsub("\\(","\\(\\(",label)
+  # label<-gsub("\\)","\\)\\)",label)
   label<-gsub("=","==",label)
   label<-gsub(" ","~",label)
   label<-gsub("\u00B1([0-9.]*)","~'\u00B1 \\1'",label)

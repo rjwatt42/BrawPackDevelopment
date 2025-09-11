@@ -242,6 +242,8 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$fullOutput<-fullOutput
           braw.env$reportCounts<-FALSE
 
+          braw.env$timeLimit<-timeLimit # seconds
+          
           ##################################
           # default variables
           
@@ -265,116 +267,40 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           # notation for world
           #
           
-          useLabels<-list(hypLabel="R",psig="psig",UD="D",P="0")
-          
-          Pchar<-"\u03c6"
-          HypChar<-useLabels$hypLabel
-          Lchar<-'\u03bb'
-          
-          switch(useLabels$psig,
-                 "psig"={pSigLabel<-"p[sig]"},
-                 "w"=   {pSigLabel<-"w"}
-          )
-          
+          worldChar<-"R"
           posChar<-"+"
+          nullChar<-"0"
           negChar<-"n"
-          switch(useLabels$P,
-                 "+"={
-                   nullChar<-"0"
-                   Ptypechar<-posChar 
-                 },
-                 "0"={
-                   nullChar<-"0"
-                   Ptypechar<-nullChar
-                 },
-                 "-"={
-                   nullChar<-'\u2013'
-                   Ptypechar<-nullChar
-                 }
-          )
-          
-          Ltypechar<-posChar
-          
-          switch (useLabels$UD, 
-                  "U"= {
-                    Plabel<-paste0(Pchar,"^",Ptypechar)
-                    Llabel<-paste0(Lchar,"^",Ltypechar)
-                    
-                    nullSig<-paste0(HypChar,"^",nullChar,'(sig)')  # "Z+ +ve"
-                    nullPositive<-paste0(HypChar,"^",nullChar,'(+sig)')  # "Z+ +ve"
-                    nullNS<-paste0(HypChar,"^",nullChar,'(ns) ')  # "Z+ -ve"
-                    nullNegative<-paste0(HypChar,"^",nullChar,'(-sig)')  # "Z+ -ve"
-                    nonNullSig<-paste0(HypChar,"^",posChar,'(sig)')  # "Z+ +ve"
-                    nonNullPositive<-paste0(HypChar,"^",posChar,'(+sig)')  # "Z+ +ve"
-                    nonNullNS<-paste0(HypChar,"^",posChar,'(ns) ')  # "Z+ -ve"
-                    nonNullNegative<-paste0(HypChar,"^",posChar,'(-sig)')  # "Z+ -ve"
-                  },
-                  "D"= {
-                    braw.env$nonNull<-paste0(HypChar,"[",posChar,"]")
-                    braw.env$Null<-paste0(HypChar,"[",nullChar,"]")
-                    braw.env$Inactive<-paste0(HypChar,"[",negChar,"]")
-                    # braw.env$nonNull<-paste0(HypChar,posChar)
-                    # braw.env$Null<-paste0(HypChar,nullChar)
-                    
-                    Plabel<-paste0(Pchar,"[",Ptypechar,"]")
-                    Llabel<-paste0(Lchar,"[",Ltypechar,"]")
 
-                    nullSig<-paste0(braw.env$Null,'(sig)')  # "Z+ +ve"
-                    nullPositive<-paste0(braw.env$Null,'(+sig)')  # "Z+ +ve"
-                    nullNS<-paste0(braw.env$Null,'(ns) ')  # "Z+ -ve"
-                    nullNegative<-paste0(braw.env$Null,'(-sig)')  # "Z+ -ve"
-                    nonNullSig<-paste0(braw.env$nonNull,'(sig)')  # "Z+ +ve"
-                    nonNullPositive<-paste0(braw.env$nonNull,'(+sig)')  # "Z+ +ve"
-                    nonNullNS<-paste0(braw.env$nonNull,'(ns) ')  # "Z+ -ve"
-                    nonNullNegative<-paste0(braw.env$nonNull,'(-sig)')  # "Z+ -ve"
-                  }
-          )
-          
-          braw.env$Pchar<-Pchar 
-          braw.env$HypChar<-HypChar
-          braw.env$Lchar<-Lchar
-          
-          braw.env$pSigLabel<-pSigLabel
-          braw.env$LabelUD<-useLabels$UD
-          braw.env$pPlusLabel<-paste0("P(",Ptypechar,")")
-          
-          braw.env$posChar<-"+"
-          braw.env$nullChar<-nullChar
-          
-          braw.env$Plabel<-Plabel
-          braw.env$Llabel<-Llabel
+          braw.env$nonNull<-paste0(worldChar,"[",posChar,"]")
+          braw.env$Null<-paste0(worldChar,"[",nullChar,"]")
+          braw.env$Inactive<-paste0(worldChar,"[",negChar,"]")
 
-          braw.env$nonNullSig<-nonNullSig
-          braw.env$nonNullPositive<-nonNullPositive
-          braw.env$nonNullNS<-nonNullNS
-          braw.env$nonNullNegative<-nonNullNegative
-          braw.env$nullSig<-nullSig
-          braw.env$nullPositive<-nullPositive
-          braw.env$nullNS<-nullNS
-          braw.env$nullNegative<-nullNegative
-          braw.env$nonNullSig<-paste0(HypChar,"[",posChar,"]~sig")
-          braw.env$nonNullPositive<-nonNullPositive
-          braw.env$nonNullNS<-paste0(HypChar,"[",posChar,"]~ns")
-          braw.env$nonNullNegative<-nonNullNegative
-          braw.env$nullSig<-paste0(HypChar,"[",nullChar,"]~sig")
-          braw.env$inactiveSig<-paste0(HypChar,"[n]~sig")
-          braw.env$nullPositive<-nullPositive
-          braw.env$nullNS<-paste0(HypChar,"[",nullChar,"]~ns")
-          braw.env$inactiveNS<-paste0(HypChar,"[n]~ns")
-          braw.env$nullNegative<-nullNegative
-          
-          braw.env$allPositive<-paste0(HypChar,"+ve")
-          braw.env$allNegative<-paste0(HypChar,"ns")
+          braw.env$pSigLabel<-"p[sig]"
+
+          braw.env$Plabel<-paste0("p(",braw.env$nonNull,")")
+          braw.env$Llabel<-paste0("mean(",braw.env$nonNull,")")
+
+          braw.env$nonNullSig<-     paste0(braw.env$nonNull,"~sig")
+          braw.env$nonNullPositive<-paste0(braw.env$nonNull,'(+sig)')
+          braw.env$nonNullNS<-      paste0(braw.env$nonNull,"~ns")
+          braw.env$nonNullNegative<-paste0(braw.env$nonNull,'(-sig)')
+          braw.env$nullSig<-        paste0(braw.env$Null,"~sig")
+          braw.env$nullPositive<-   paste0(braw.env$Null,'(+sig)')
+          braw.env$nullNS<-         paste0(braw.env$Null,"~ns")
+          braw.env$nullNegative<-   paste0(braw.env$Null,'(-sig)')
+          braw.env$inactiveSig<-    paste0(braw.env$Inactive,"~sig")
+          braw.env$inactiveNS<-     paste0(braw.env$Inactive,"~ns")
           
           braw.env$activeTitle<-"Active"
           braw.env$inactiveTitle<-"Inactive"
           
-          braw.env$nonnullTitle<-"Non Null"
-          braw.env$nullTitle<-"Null"
-          braw.env$nonnullTitle<-paste0(HypChar,"[",posChar,"]")
-          braw.env$nullTitle<-paste0(HypChar,"[",nullChar,"]")
+          # braw.env$nonnullTitle<-"Non Null"
+          # braw.env$nullTitle<-"Null"
+          braw.env$nonnullTitle<-braw.env$nonNull
+          braw.env$nullTitle<-braw.env$Null
           
-          braw.env$timeLimit<-timeLimit # seconds
+          ####################
           
 
 braw.res$result<-NULL 

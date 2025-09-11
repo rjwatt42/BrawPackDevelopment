@@ -27,15 +27,18 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
            }
     )
   
-  if (is.element(Dist,c("random","fixed"))) label1<-paste0(braw.env$RZ,"[m]") 
-  else                                      label1<-Dist
-  lb<-paste0(label1,"=",brawFormat(mean(p1,na.rm=TRUE),digits=3))
-  # if (length(p1)>1)
-  #   lb<-paste0(lb,"\u00B1",brawFormat(std(p1),digits=2))
+  if (is.element(Dist,c("random","fixed"))) {
+    label1<-paste0(braw.env$RZ,"[m]") 
+    lb<-paste0(label1,"=",brawFormat(mean(p1,na.rm=TRUE),digits=3))
+    # if (length(p1)>1)
+    #   lb<-paste0(lb,"\u00B1",brawFormat(std(p1),digits=2))
+  } else {
+    lb<-paste0(Dist,"(",metaResult$best$RZ,"=",brawFormat(mean(p1,na.rm=TRUE),digits=3),")")
+  }
   if (!is.null(p2)) {
-    label2<-braw.env$Pchar
+    label2<-braw.env$Plabel
     if (is.element(Dist,c("random","fixed"))) label2<-paste0(braw.env$RZ,"[sd]")
-    lb<-paste0(lb,"\n",label2,"=",brawFormat(mean(p2,na.rm=TRUE),digits=3))
+    lb<-paste0(lb,"\n",braw.env$Plabel,"=",brawFormat(mean(p2,na.rm=TRUE),digits=3))
     # if (length(p2)>1)
     #   lb<-paste0(lb,"\u00B1",brawFormat(std(p2),digits=2))
   }
@@ -46,7 +49,6 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
     }
   label4<-"S[max]"
   lb<-paste0(lb,"\n",label4,"=",brawFormat(metaResult[[Dist]]$Smax,digits=3))
-  
   return(lb)
 }
 
@@ -542,8 +544,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     sigma<-1/sqrt(n-3)
     # 
     # q<-fitdistrplus::fitdist(metaResult$result$nval, distr = "gamma", method = "mle")
-    # design$sN<-1/q$estimate[2]
-    # design$sNRandSD<-design$sN/q$estimate[1]
+    design<-getDesign("Psych")
     gain<-nDistrDens(n,design)
     nGain<-gain*n  # *n for the log scale
     # h<-hist(metaResult$result$nval,breaks=c(0,n,1000),plot=FALSE)
