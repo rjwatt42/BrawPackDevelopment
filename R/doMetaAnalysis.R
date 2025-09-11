@@ -342,20 +342,18 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
   use<-which.max(c(fixed$Smax,random$Smax,single$Smax,gauss$Smax,exp$Smax,gamma$Smax,genexp$Smax))
   bestDist<-c("fixed","random","Single","Gauss","Exp","Gamma","GenExp")[use]
   if (metaAnalysis$analysisType=="none")
-    bestR<-fixed
+    best<-fixed
     else
       switch(use,
-             {bestR<-fixed},
-             {bestR<-random},
-             {bestR<-single},
-             {bestR<-gauss},
-             {bestR<-exp},
-             {bestR<-gamma},
-             {bestR<-genexp}
+             {best<-fixed},
+             {best<-random},
+             {best<-single},
+             {best<-gauss},
+             {best<-exp},
+             {best<-gamma},
+             {best<-genexp}
       )
-  best<-mergeMAResult(bestR,best)
-  
-  count<-length(bestS)
+  best<-mergeMAResult(metaResult$best,best)
   
   switch(metaAnalysis$analysisType,
          "fixed"={
