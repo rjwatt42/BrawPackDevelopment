@@ -261,15 +261,15 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   Smax<- -result$value
 
   Svals<-llfun(c(PDFk,pRPlus,sigOnly,PDFspread,PDFshape))
-  if (dist=="random" && metaAnalysis$analysisVar=="sd") pRPlus<-sign(pRPlus)*sqrt(abs(pRPlus))
+  if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
   return(list(PDF=dist,PDFk=PDFk,pRPlus=pRPlus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals))
 }
 
 mergeMAResult<-function(multiple,single) {
-  single$PDFk<-c(multiple$PDFk,tanh(single$PDFk))
+  single$PDFk<-c(multiple$PDFk,single$PDFk)
   single$pRPlus<-c(multiple$pRPlus,single$pRPlus)
   single$sigOnly<-c(multiple$sigOnly,single$sigOnly)
-  single$PDFspread<-c(multiple$PDFspread,tanh(single$PDFspread))
+  single$PDFspread<-c(multiple$PDFspread,single$PDFspread)
   single$PDFshape<-c(multiple$PDFshape,single$PDFshape)
   single$Smax<-c(multiple$Smax,single$Smax)
   return(single)
@@ -288,13 +288,7 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
   ns<-studies$nval
   df1<-studies$df1
   
-  fixed<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
-  random<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
-  single<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
-  gauss<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
-  exp<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
-  gamma<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
-  genexp<-list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA)
+  genexp<-gamma<-exp<-gauss<-single<-random<-fixed<-list(PDF=NA,PDFk=NA,pRPlus=NA,sigOnly=NA,PDFspread=NA,PDFshape=NA,Smax=NA)
   switch(metaAnalysis$analysisType,
          "none"={},
          "fixed"={
