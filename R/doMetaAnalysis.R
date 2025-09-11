@@ -209,7 +209,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   #   if (length(param2Use)==1 && length(param3Use)==1)
   #     llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=param2Use,bias=param3Use,shape=x[4])+approx(prior_z,priorDens,x[1])$y)}
   # }
-  S<-array(0,c(length(param1Use),length(param2Use),length(param3Use),length(param4Use)))
+  S<-array(0,c(length(param1Use),length(param2Use),length(param3Use),length(param4Use),length(param5Use)))
   for (re in 1:niterations) {
     # get an approx result
     for (p1 in 1:length(param1Use))
