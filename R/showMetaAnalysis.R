@@ -98,7 +98,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
     y<-plotAxis("n",hypothesis)
     disp2<-y$label
     if (autoYlim) {
-      ylim<-c(min(d2),max(d2))+c(-1,1)
+      ylim<-c(min(d2),max(d2))
+      if (y$logScale) ylim<-ylim*c(0.75,1.25)
+      else ylim<-ylim+c(-1,1)*(max(d2)-min(d2))*0.25
       braw.env$minN<-ylim[1]
       braw.env$maxN<-ylim[2]
     }
@@ -106,14 +108,6 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
       ylim<-c(min(min(d2),braw.env$minN)-1,braw.env$maxN+1)
     yticks<-y$ticks
     if (y$logScale) {
-      d2<-log10(d2)
-      # ylim<-log10(ylim)
-      # if (autoYlim) {
-      #   ylim<-ylim+c(-1,1)*(ylim[2]-ylim[1])*0.05
-      #   braw.env$minN<-10^ylim[1]
-      #   braw.env$maxN<-10^ylim[2]
-      # }
-      # yticks<-makeTicks(10^yticks,logScale=TRUE)
       ytick<-c(1,2,5,10,20,50,100,200,500,1000)
       yticks<-makeTicks(ytick[ytick>ylim[1] & ytick<ylim[2]],logScale=TRUE)
     }
@@ -129,6 +123,10 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   useNull<-(d2>ylim[1]) & (d2<ylim[2]) & d1n
   ptsNull<-data.frame(x=d1[useNull],y=d2[useNull])
   
+  if (y$logScale) {
+    ptsAll$y<-log10(ptsAll$y)
+    ptsNull$y<-log10(ptsNull$y)
+  }
   assign("plotArea",c(0,0,1,1),braw.env)
   g<-startPlot(xlim,log10(ylim),
                xticks=makeTicks(x$ticks),xlabel=makeLabel(disp1),
@@ -507,7 +505,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     
   }
   
-  makeWorldDist<-function(metaResult,design,world,z,n,sigOnly=0,doTheory=FALSE) {
+  makeWorldDist<-function(metaResult,design,world,z,n,sigOnly=0,doTheory=TRUE) {
     if (doTheory) {
       lambda<-world$PDFk
       offset<-0
@@ -531,13 +529,13 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       shape<-0
       if (metaResult$metaAnalysis$analysisType=="random") {
         lambda<-metaResult$random$PDFk
-        shape<-metaResult$random$pRPlus
-        pRPlus<-1
+        shape<-metaResult$random$PDFshape
+        pRPlus<-metaResult$best$pRPlus
         world$PDF<-"Single"
       }
       if (metaResult$metaAnalysis$analysisType=="fixed") {
         lambda<-metaResult$fixed$PDFk
-        pRPlus<-1
+        pRPlus<-metaResult$best$pRPlus
         world$PDF<-"Single"
       }
     }
@@ -657,7 +655,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       n<-seq(sqrt(braw.env$minN),sqrt(braw.env$maxN),length.out=101)^2
     
     if (showTheory) {
-      za<-makeWorldDist(metaResult,design,world,z,n,sigOnly=sigOnly,doTheory=TRUE)
+      za<-makeWorldDist(metaResult,design,world,z,n,sigOnly=sigOnly)
       switch(braw.env$RZ,
              "r"={ for (i in 1:nrow(za)) za[i,]<-zdens2rdens(za[i,],r) },
              "z"={ },
@@ -665,7 +663,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       )
       za<-za/max(za,na.rm=TRUE)
 
-      zb<-makeWorldDist(metaResult,design,metaResult$best,z,n,sigOnly=0,doTheory=FALSE)
+      zb<-makeWorldDist(metaResult,design,metaResult$best,z,n,sigOnly=sigOnly)
       switch(braw.env$RZ,
              "r"={ for (i in 1:nrow(zb)) zb[i,]<-zdens2rdens(zb[i,],r) },
              "z"={ },
