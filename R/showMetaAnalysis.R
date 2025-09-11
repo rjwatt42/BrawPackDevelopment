@@ -659,36 +659,25 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     if (showTheory) {
       za<-makeWorldDist(metaResult,design,world,z,n,sigOnly=sigOnly,doTheory=TRUE)
       switch(braw.env$RZ,
-             "r"={
-               for (i in 1:nrow(za)) za[i,]<-zdens2rdens(za[i,],r)
-             },
-             "z"={
-             },
-             "d"={
-               for (i in 1:nrow(za)) za[i,]<-rdens2ddens(zdens2rdens(za[i,],r),d)
-             }
+             "r"={ for (i in 1:nrow(za)) za[i,]<-zdens2rdens(za[i,],r) },
+             "z"={ },
+             "d"={ for (i in 1:nrow(za)) za[i,]<-rdens2ddens(zdens2rdens(za[i,],r),d) }
       )
       za<-za/max(za,na.rm=TRUE)
+
+      if (!is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
+        world$PDF<-metaResult$best$PDF
+        world$PDFk<-metaResult$best$PDFk
+        world$pRPlus<-metaResult$best$pRPlus
+      }
+      zb<-makeWorldDist(metaResult,design,world,z,n,sigOnly=0,doTheory=FALSE)
+      switch(braw.env$RZ,
+             "r"={ for (i in 1:nrow(zb)) zb[i,]<-zdens2rdens(zb[i,],r) },
+             "z"={ },
+             "d"={ for (i in 1:nrow(zb)) zb[i,]<-rdens2ddens(zdens2rdens(zb[i,],r),d) }
+      ) 
+      zb<-zb/max(zb,na.rm=TRUE)
     }
-    
-    if (!is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
-      world$PDF<-metaResult$best$PDF
-      world$PDFk<-metaResult$best$PDFk
-      world$pRPlus<-metaResult$best$pRPlus
-    }
-    zb<-makeWorldDist(metaResult,design,world,z,n,sigOnly=1,doTheory=FALSE)
-    switch(braw.env$RZ,
-           "r"={
-             for (i in 1:nrow(zb)) zb[i,]<-zdens2rdens(zb[i,],r)
-           },
-           "z"={
-           },
-           "d"={
-             for (i in 1:nrow(zb)) zb[i,]<-rdens2ddens(zdens2rdens(zb[i,],r),d)
-           }
-    ) 
-    # zb<-zb-min(zb,na.rm=TRUE)
-    zb<-zb/max(zb,na.rm=TRUE)
     
     if (showType=="n") {
       if (braw.env$nPlotScale=="log10") {n<-log10(n)}
