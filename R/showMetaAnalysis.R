@@ -59,7 +59,8 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' showMetaSingle(metaResult=doMetaAnalysis(),showType="n",showTheory=FALSE)
 #' @export
 showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
-                         showTheory=TRUE,xRange="full",autoYlim=TRUE,
+                         showData=TRUE,showTheory=TRUE,
+                         xRange="full",autoYlim=TRUE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
@@ -161,6 +162,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   }
   
   # show individual studies
+  if (showData) {
   if (length(d1)<1200) {
   colgain<-1-min(1,sqrt(max(0,(length(d1)-50))/200))
   alphaUse<-1/(max(1,sqrt(length(d1)/100)))
@@ -198,6 +200,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                                           y=nBins[1:(length(nBins)-1)],
                                           z=z),
                           fill=fill))
+  }
   }
   
   if (showTheory) {
