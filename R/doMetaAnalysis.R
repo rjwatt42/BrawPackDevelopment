@@ -358,8 +358,6 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
          },
          "random"={
            random<-mergeMAResult(metaResult$random,random)
-           rpSDex<-sqrt(mean((random$PDFk-studies$rIV)^2*(studies$nval-3)))-1
-           random$rpSDex<-c(metaResult$random$rpSDex,rpSDex)
          },
          "world"={
            single<-mergeMAResult(metaResult$single,single)
