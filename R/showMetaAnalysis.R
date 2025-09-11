@@ -124,6 +124,10 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   useNull<-(d2>ylim[1]) & (d2<ylim[2]) & d1n
   ptsNull<-data.frame(x=d1[useNull],y=d2[useNull])
   
+  if (length(ptsAll$x)>100) {
+    ptsAll<-ptsAll[1:100,]
+    ptsNull<-ptsNull[1:100,]
+  }
   if (y$logScale) {
     ptsAll$y<-log10(ptsAll$y)
     ptsNull$y<-log10(ptsNull$y)
