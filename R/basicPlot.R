@@ -695,7 +695,7 @@ drawPath<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0
            y<-svgY(data$y)
            points<-' points="'
            for (i in 1:length(x))  {
-             points<-paste0(points,' ',format(x[i]),',',format(y[i]))
+             points<-paste0(points,' ',format(x[i],digits=braw.env$htmlDigits),',',format(y[i],digits=braw.env$htmlDigits))
            }
            points<-paste0(points,'"')
            g<-paste0(
@@ -717,9 +717,9 @@ drawPath<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0
              ay2<-y[i]-sin(direction-finAngle)*finLength
              g1<-paste0(
                '<polyline',
-               paste0(' points=" ',format(ax1),',',format(ay1),
-                               ' ',format(x[i]),',',format(y[i]),
-                               ' ',format(ax2),',',format(ay2),
+               paste0(' points=" ',format(ax1,digits=braw.env$htmlDigits),',',format(ay1,digits=braw.env$htmlDigits),
+                               ' ',format(x[i],digits=braw.env$htmlDigits),',',format(y[i],digits=braw.env$htmlDigits),
+                               ' ',format(ax2,digits=braw.env$htmlDigits),',',format(ay2,digits=braw.env$htmlDigits),
                       '"'),
                linestyle,
                ' />'
@@ -764,7 +764,7 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
              g<-""
              for (i in 1:length(x)) {
                g<-paste0(g,
-                         '<circle cx="',format(x[i]),'" cy="',format(y[i]),'" r="',sz,'"',
+                         '<circle cx="',format(x[i],digits=braw.env$htmlDigits),'" cy="',format(y[i],digits=braw.env$htmlDigits),'" r="',sz,'"',
                          ' fill="',fill,'"',
                          ' fill-opacity="',alpha,'"',
                          ' stroke="',colour,'" stroke-width="',format(size/5),'"',
@@ -777,9 +777,9 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
              g<-""
              for (i in 1:length(x)) {
                if (shape==22) tr="" 
-               else           tr=paste0(' transform=rotate(45,',format(x[i]),',',format(y[i]),')')
+               else           tr=paste0(' transform=rotate(45,',format(x[i],digits=braw.env$htmlDigits),',',format(y[i],digits=braw.env$htmlDigits),')')
                g<-paste0(g,
-                         '<rect x="',format(x[i]-sz/2),'" y="',format(y[i]-sz/2),'"',
+                         '<rect x="',format(x[i]-sz/2,digits=braw.env$htmlDigits),'" y="',format(y[i]-sz/2,digits=braw.env$htmlDigits),'"',
                          ' width="',sz,'"',' height="',sz,'"',
                          ' rx="0" ry="0"',
                          ' fill="',fill,'"',
@@ -832,7 +832,7 @@ drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25)
                                  ' stroke-width="',linewidth*2,'"',
                                  ' stroke-opacity="',1,'"')
                points<-' points="'
-               for (j in 1:4)  points<-paste0(points,' ',format(x[i+j-1]),',',format(y[i+j-1]))
+               for (j in 1:4)  points<-paste0(points,' ',format(x[i+j-1],digits=braw.env$htmlDigits),',',format(y[i+j-1],digits=braw.env$htmlDigits))
                points<-paste0(points,'"')
                g<-paste0(g,
                          '<polyline',
@@ -847,7 +847,7 @@ drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25)
                                ' stroke-width="',linewidth*2,'"',
                                ' stroke-opacity="',1,'"')
              points<-' points="'
-             for (i in 1:length(x)) points<-paste0(points,' ',format(x[i]),',',format(y[i]))
+             for (i in 1:length(x)) points<-paste0(points,' ',format(x[i],digits=braw.env$htmlDigits),',',format(y[i],digits=braw.env$htmlDigits))
              # points<-paste0(points,' ',format(x[1]),',',format(y[1]))
              points<-paste0(points,'"')
              

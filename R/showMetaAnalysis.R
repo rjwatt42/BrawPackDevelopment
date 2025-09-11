@@ -163,7 +163,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   
   # show individual studies
   if (showData) {
-  if (length(d1)<1200) {
+  if (length(d1)<=1000) {
   colgain<-1-min(1,sqrt(max(0,(length(d1)-50))/200))
   alphaUse<-1/(max(1,sqrt(length(d1)/100)))
   dotSize<-braw.env$dotSize*min(1,alphaUse)
