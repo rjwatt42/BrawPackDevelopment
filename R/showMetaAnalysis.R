@@ -60,7 +60,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' @export
 showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                          showData=TRUE,showTheory=TRUE,
-                         xRange="full",autoYlim=TRUE,
+                         xRange="full",autoYlim=FALSE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
