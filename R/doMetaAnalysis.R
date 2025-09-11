@@ -267,14 +267,11 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
 
 mergeMAResult<-function(multiple,single) {
   single$PDFk<-c(multiple$PDFk,tanh(single$PDFk))
-  single$PDFspread<-c(multiple$PDFspread,tanh(single$PDFspread))
   single$pRPlus<-c(multiple$pRPlus,single$pRPlus)
   single$sigOnly<-c(multiple$sigOnly,single$sigOnly)
+  single$PDFspread<-c(multiple$PDFspread,tanh(single$PDFspread))
   single$PDFshape<-c(multiple$PDFshape,single$PDFshape)
   single$Smax<-c(multiple$Smax,single$Smax)
-  single$rpIV<-c(multiple$rpIV,mean(studies$rpIV))
-  single$rpSD<-c(multiple$rpSD,0)
-  
 }
 
 runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
