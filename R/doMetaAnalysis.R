@@ -192,23 +192,6 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   # location refers to lambda for world metaA
   # spread refers to nulls for world metaA
   llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
-  # if (length(param4Use)==1) {
-  # llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=x[2],bias=x[3],shape=param4Use)+approx(prior_z,priorDens,x[1])$y)}
-  # if (length(param2Use)==1)
-  #   llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=param2Use,bias=x[3],shape=param4Use)+approx(prior_z,priorDens,x[1])$y)}
-  # if (length(param3Use)==1)
-  #   llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=x[2],bias=param3Use,shape=param4Use)+approx(prior_z,priorDens,x[1])$y)}
-  # if (length(param2Use)==1 && length(param3Use)==1)
-  #   llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=param2Use,bias=param3Use,shape=param4Use)+approx(prior_z,priorDens,x[1])$y)}
-  # } else {
-  #   llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=x[2],bias=x[3],shape=x[4])+approx(prior_z,priorDens,x[1])$y)}
-  #   if (length(param2Use)==1)
-  #     llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=param2Use,bias=x[3],shape=x[4])+approx(prior_z,priorDens,x[1])$y)}
-  #   if (length(param3Use)==1)
-  #     llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=x[2],bias=param3Use,shape=x[4])+approx(prior_z,priorDens,x[1])$y)}
-  #   if (length(param2Use)==1 && length(param3Use)==1)
-  #     llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=param2Use,bias=param3Use,shape=x[4])+approx(prior_z,priorDens,x[1])$y)}
-  # }
   S<-array(0,c(length(param1Use),length(param2Use),length(param3Use),length(param4Use),length(param5Use)))
   for (re in 1:niterations) {
     # get an approx result
@@ -266,6 +249,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
 }
 
 mergeMAResult<-function(multiple,single) {
+  single$PDF<-c(multiple$PDF,single$PDF)
   single$PDFk<-c(multiple$PDFk,single$PDFk)
   single$pRplus<-c(multiple$pRplus,single$pRplus)
   single$sigOnly<-c(multiple$sigOnly,single$sigOnly)

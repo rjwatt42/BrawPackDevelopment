@@ -123,7 +123,7 @@ reportMetaMultiple<-function(metaResult=braw.res$metaMultiple,reportStats="Media
            }
     )
   } else {
-    outputText<-c(outputText,"!H","!C","",braw.env$Llabel,"p[null]","log(lk)")
+    outputText<-c(outputText,"!H","!C","",braw.env$Llabel,braw.env$Plabel,"log(lk)")
     n1<-sum(metaResult$best$PDF=="Single")
     n2<-sum(metaResult$best$PDF=="Gauss")
     n3<-sum(metaResult$best$PDF=="Exp")
@@ -131,7 +131,7 @@ reportMetaMultiple<-function(metaResult=braw.res$metaMultiple,reportStats="Media
     n5<-sum(metaResult$best$PDF=="GenExp")
     use<-which.max(c(n1,n2,n3,n4,n5))
     bestD<-c("Single","Gauss","Exp","Gamma","GenExp")[use]
-    outputText<-c(outputText,"Best",bestD,paste0(sum(metaResult$best$PDF==bestD),"/",length(metaResult$best$PDF)),brawFormat(funcCT(metaResult$best$PDFk),digits=3),brawFormat(funcCT(metaResult$best$pRplus),digits=3),brawFormat(funcCT(metaResult$best$S),digits=3))
+    outputText<-c(outputText,"Best",bestD,paste0(sum(metaResult$best$PDF==bestD),"/",length(metaResult$best$PDF)),brawFormat(funcCT(metaResult$best$PDFk),digits=3),brawFormat(funcCT(metaResult$best$pRplus),digits=3),brawFormat(funcCT(metaResult$best$Smax),digits=3))
     outputText<-c(outputText,rep(" ",nc))
     
     if (metaResult$metaAnalysis$modelPDF=="Single" || (metaResult$metaAnalysis$modelPDF=="All" && braw.env$includeSingle)) {

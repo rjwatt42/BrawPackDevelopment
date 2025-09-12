@@ -47,7 +47,7 @@ sampleShortCut<-function(hypothesis,design,evidence,nsims,appendData,oldanalysis
     
     if (evidence$sigOnly>0) {
       keep1<-isSignificant(braw.env$STMethod,ps,rs,ns,df1,evidence)
-      keep0<-runif(length(keep))>evidence$sigOnly
+      keep0<-runif(length(keep1))>evidence$sigOnly
       keep<-keep1 | keep0
       pops<-pops[keep]
       rs<-rs[keep]
