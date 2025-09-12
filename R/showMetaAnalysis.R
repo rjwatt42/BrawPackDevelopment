@@ -59,7 +59,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' showMetaSingle(metaResult=doMetaAnalysis(),showType="n",showTheory=FALSE)
 #' @export
 showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
-                         showData=TRUE,showTheory=TRUE,
+                         showData=TRUE,showTheory=TRUE,limitNumber=FALSE,
                          xRange="full",autoYlim=FALSE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
@@ -119,13 +119,16 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
     yticks<-makeTicks(yticks)
     d2<-sqrt(metaResult$result$nval)
   }
+
+  if (limitNumber) {
+  if (length(d1)>100) d1<-d1[1:100]
+  if (length(d2)>100) d2<-d2[1:100]
+  }
+  
   useAll<-(d2>ylim[1]) & (d2<ylim[2])
   ptsAll<-data.frame(x=d1[useAll],y=d2[useAll])
   useNull<-(d2>ylim[1]) & (d2<ylim[2]) & d1n
   ptsNull<-data.frame(x=d1[useNull],y=d2[useNull])
-  
-  if (length(ptsAll$x)>100) ptsAll<-ptsAll[1:100,]
-  if (length(ptsNull$x)>100) ptsNull<-ptsNull[1:100,]
   
   if (y$logScale) {
     ptsAll$y<-log10(ptsAll$y)
@@ -177,8 +180,8 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                         distribution=metaResult$best$PDF,
                         location=metaResult$best$PDFk,spread=metaResult$best$pRPlus,
                         bias=metaResult$metaAnalysis$analyseBias,returnVals = TRUE)
-    fill1<-hsv(0.9*round((b-min(b))/(max(b)-min(b))*4)/4)
-    fill1<-hsv(0.9*round((b/max(b))^svalExponent*10)/10)
+    b<-((b-min(b))/(max(b)-min(b)))[1:length(d1)]
+    fill1<-hsv(0.9*floor(b*10)/10)
   }
   col1<-hsv(1,0,1-alphaUse)
   col2<-fill2
