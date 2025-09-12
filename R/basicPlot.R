@@ -759,6 +759,7 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
            x<-svgX(data$x)
            y<-svgY(data$y)
            if (length(x)==0) return("")
+           if (length(size)<length(x)) size<-rep(size,ceiling(length(x)/length(size)))
            if (length(colour)<length(x)) colour<-rep(colour,ceiling(length(x)/length(colour)))
            if (length(fill)<length(x)) fill<-rep(fill,ceiling(length(x)/length(fill)))
            if (length(alpha)<length(x)) alpha<-rep(alpha,ceiling(length(x)/length(alpha)))
@@ -770,10 +771,10 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
              for (i in 1:length(x)) {
                g<-paste0(g,
                          '<circle cx="',format(x[i],digits=braw.env$htmlDigits),'" cy="',format(y[i],digits=braw.env$htmlDigits),'"',
-                         ' r="',sz,'"',
+                         ' r="',sz[i],'"',
                          ' fill="',fill[i],'"',
                          ' fill-opacity="',alpha[i],'"',
-                         ' stroke="',colour[i],'" stroke-width="',sw,'"',
+                         ' stroke="',colour[i],'" stroke-width="',sw[i],'"',
                          ' stroke-opacity="',alpha[i],'"',
                          ' />'
                )
@@ -785,12 +786,12 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
                if (shape==22) tr="" 
                else           tr=paste0(' transform=rotate(45,',format(x[i],digits=braw.env$htmlDigits),',',format(y[i],digits=braw.env$htmlDigits),')')
                g<-paste0(g,
-                         '<rect x="',format(x[i]-size*2,digits=braw.env$htmlDigits),'" y="',format(y[i]-size*2,digits=braw.env$htmlDigits),'"',
-                         ' width="',sz,'"',' height="',sz,'"',
+                         '<rect x="',format(x[i]-size[i]*2,digits=braw.env$htmlDigits),'" y="',format(y[i]-size[i]*2,digits=braw.env$htmlDigits),'"',
+                         ' width="',sz[i],'"',' height="',sz[i],'"',
                          ' rx="0" ry="0"',
                          ' fill="',fill[i],'"',
                          ' fill-opacity="',alpha[i],'"',
-                         ' stroke="',colour[i],'" stroke-width="',sw,'"',
+                         ' stroke="',colour[i],'" stroke-width="',sw[i],'"',
                          ' stroke-opacity="',alpha[i],'"',
                          tr,
                          ' />'
