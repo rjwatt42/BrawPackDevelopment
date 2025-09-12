@@ -191,7 +191,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   
   # location refers to lambda for world metaA
   # spread refers to nulls for world metaA
-  llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],spread=x[4],bias=x[3],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
+  llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
   # if (length(param4Use)==1) {
   # llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],spread=x[2],bias=x[3],shape=param4Use)+approx(prior_z,priorDens,x[1])$y)}
   # if (length(param2Use)==1)
