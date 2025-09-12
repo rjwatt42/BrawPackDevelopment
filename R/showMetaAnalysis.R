@@ -357,7 +357,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
         )
       }
       keep<- !is.na(x) & !is.na(yS)
-      best<-metaResult$best$S[keep]
+      best<-metaResult$best$Smax[keep]
       yS<-yS[keep]
       y1<-y1[keep]
       x<-x[keep]
@@ -405,7 +405,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
             "metaK;null"={
               y<-y1
               ylim<-c(-0.02,1.1)
-              ylabel<-"p[null]"
+              ylabel<-braw.env$Plabel
               xlabel<-braw.env$Llabel
             },
             "metaK;metaS"={
