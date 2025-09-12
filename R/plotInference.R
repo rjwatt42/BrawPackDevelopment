@@ -163,7 +163,7 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
             d1<-analysis$best$PDFk
           },
           "metaRsd"={
-            d1<-analysis$best$pRPlus
+            d1<-analysis$best$pRplus
           },
           "metaBias"={
             d1<-analysis$best$sigOnly
@@ -227,7 +227,7 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
             d2<-analysis$best$PDFk
           },
           "metaRsd"={
-            d2<-analysis$best$pRPlus
+            d2<-analysis$best$pRplus
           },
           "metaBias"={
             d2<-analysis$best$sigOnly

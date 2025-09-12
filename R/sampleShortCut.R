@@ -22,7 +22,7 @@ sampleShortCut<-function(hypothesis,design,evidence,nsims,appendData,oldanalysis
       effect$world$PDF<-"Single"
       effect$world$RZ<-"r"
       effect$world$PDFk<-tanh(atanh(effect$rIV)+rnorm(1,0,atanh(effect$rSD)))
-      effect$world$pRPlus<-1
+      effect$world$pRplus<-1
     }
     pops<-rRandomValue(effect$world,sample_increase)
     popsOld<-pops$old

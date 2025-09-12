@@ -12,7 +12,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
   else Dist<-whichMeta
   Dist<-tolower(Dist)
   p1<-metaResult[[Dist]]$PDFk
-  p2<-metaResult[[Dist]]$pRPlus
+  p2<-metaResult[[Dist]]$pRplus
   p3<-metaResult[[Dist]]$sigOnly
   if (whichMeta!="world")
     switch(braw.env$RZ,
@@ -178,7 +178,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (showSval) {
     b<-getLogLikelihood(atanh(metaResult$result$rIV),metaResult$result$nval,rep(1,length(metaResult$result$nval)),
                         distribution=metaResult$best$PDF,
-                        location=metaResult$best$PDFk,spread=metaResult$best$pRPlus,
+                        location=metaResult$best$PDFk,spread=metaResult$best$pRplus,
                         bias=metaResult$metaAnalysis$analyseBias,returnVals = TRUE)
     b<-((b-min(b))/(max(b)-min(b)))[1:length(d1)]
     fill1<-hsv(0.9*floor(b*10)/10)
@@ -332,27 +332,27 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
                 "Single"={
                   x<-metaResult$single$PDFk
                   yS<-metaResult$single$Smax
-                  y1<-metaResult$single$pRPlus
+                  y1<-metaResult$single$pRplus
                 },
                 "Gauss"={
                   x<-metaResult$gauss$PDFk
                   yS<-metaResult$gauss$Smax
-                  y1<-metaResult$gauss$pRPlus
+                  y1<-metaResult$gauss$pRplus
                 },
                 "Exp"={
                   x<-metaResult$exp$PDFk
                   yS<-metaResult$exp$Smax
-                  y1<-metaResult$exp$pRPlus
+                  y1<-metaResult$exp$pRplus
                 },
                 "Gamma"={
                   x<-metaResult$gamma$PDFk
                   yS<-metaResult$gamma$Smax
-                  y1<-metaResult$gamma$pRPlus
+                  y1<-metaResult$gamma$pRplus
                 },
                 "GenExp"={
                   x<-metaResult$genexp$PDFk
                   yS<-metaResult$genexp$Smax
-                  y1<-metaResult$genexp$pRPlus
+                  y1<-metaResult$genexp$pRplus
                 }
         )
       }
@@ -375,7 +375,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     switch (showType,
             "metaRiv;metaRsd"={
               x<-result$PDFk
-              y<-result$pRPlus
+              y<-result$pRplus
               y1<-0
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"r[sd]"
@@ -464,8 +464,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       if (length(metaY$PDFk)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$PDFk),digits=2),")")
       else fullText<-paste0(fullText,")")
       if (metaAnalysis$modelNulls) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaY$pRPlus),digits=3))
-        if (length(metaY$pRPlus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$pRPlus),digits=2),")")
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaY$pRplus),digits=3))
+        if (length(metaY$pRplus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$pRplus),digits=2),")")
       }
       fullText<-paste0(fullText,"\nS= ",format(mean(metaY$Smax),digits=2))
       if (length(metaY$Smax)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$Smax),digits=2),")")
@@ -479,8 +479,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       if (length(metaX$PDFk)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$PDFk),digits=2),")")
       else fullText<-paste0(fullText,")")
       if (metaAnalysis$modelNulls) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaX$pRPlus),digits=3))
-        if (length(metaX$pRPlus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$pRPlus),digits=2),")")
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaX$pRplus),digits=3))
+        if (length(metaX$pRplus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$pRplus),digits=2),")")
       }
       fullText<-paste0(fullText,"\nS= ",format(mean(metaX$Smax),digits=2))
       if (length(metaX$Smax)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$Smax),digits=2),")")
@@ -519,32 +519,32 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       lambda<-world$PDFk
       offset<-0
       shape<-0
-      pRPlus<-world$pRPlus
+      pRplus<-world$pRplus
       if (metaResult$metaAnalysis$analysisType=="random") {
         lambda<-metaResult$hypothesis$effect$rSD
         offset<-metaResult$hypothesis$effect$rIV
-        pRPlus<-1
+        pRplus<-1
         world$PDF<-"Gauss"
       }
       if (metaResult$metaAnalysis$analysisType=="fixed") {
         lambda<-metaResult$hypothesis$effect$rIV
-        pRPlus<-1
+        pRplus<-1
         world$PDF<-"Single"
       }
     } else {
       lambda<-metaResult$best$PDFk
-      pRPlus<-metaResult$best$pRPlus
+      pRplus<-metaResult$best$pRplus
       offset<-0
       shape<-0
       if (metaResult$metaAnalysis$analysisType=="random") {
         lambda<-metaResult$random$PDFk
         shape<-metaResult$random$PDFshape
-        pRPlus<-metaResult$best$pRPlus
+        pRplus<-metaResult$best$pRplus
         world$PDF<-"Single"
       }
       if (metaResult$metaAnalysis$analysisType=="fixed") {
         lambda<-metaResult$fixed$PDFk
-        pRPlus<-metaResult$best$pRPlus
+        pRplus<-metaResult$best$pRplus
         world$PDF<-"Single"
       }
     }
@@ -561,8 +561,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     switch (world$PDF,
             "Single"={
               for (i in 1:length(n)) {
-                zrow<-SingleSamplingPDF(z,lambda,sigma[i],shape)$pdf*pRPlus+
-                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
+                zrow<-SingleSamplingPDF(z,lambda,sigma[i],shape)$pdf*pRplus+
+                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRplus)
                 if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
@@ -574,8 +574,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
             },
             "Gauss"={
               for (i in 1:length(n)) {
-                zrow<-GaussSamplingPDF(z,lambda,sigma[i],offset)$pdf*pRPlus+
-                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
+                zrow<-GaussSamplingPDF(z,lambda,sigma[i],offset)$pdf*pRplus+
+                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRplus)
                 if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
@@ -587,8 +587,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
             },
             "Exp"={
               for (i in 1:length(n)) {
-                zrow<-ExpSamplingPDF(z,lambda,sigma[i])$pdf*pRPlus+
-                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
+                zrow<-ExpSamplingPDF(z,lambda,sigma[i])$pdf*pRplus+
+                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRplus)
                 densGain<-1/sum(zrow)
                 
                 if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
@@ -601,8 +601,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
             },
             "Gamma"={
               for (i in 1:length(n)) {
-                zrow<-GammaSamplingPDF(z,lambda,sigma[i])$pdf*pRPlus+
-                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
+                zrow<-GammaSamplingPDF(z,lambda,sigma[i])$pdf*pRplus+
+                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRplus)
                 if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
@@ -614,8 +614,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
             },
             "GenExp"={
               for (i in 1:length(n)) {
-                zrow<-GenExpSamplingPDF(z,lambda,sigma[i])$pdf*pRPlus+
-                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRPlus)
+                zrow<-GenExpSamplingPDF(z,lambda,sigma[i])$pdf*pRplus+
+                  SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRplus)
                 if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))
                   zrow[abs(z)<zcrit]<-zrow[abs(z)<zcrit]*(1-sigOnly)
@@ -639,7 +639,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     world<-hypothesis$effect$world
     if (!world$On) {
       world<-makeWorld(On=TRUE,PDF="Single",RZ="r",
-                       PDFk=hypothesis$effect$rIV,pRPlus=1)
+                       PDFk=hypothesis$effect$rIV,pRplus=1)
     }
     switch(braw.env$RZ,
            "r"={

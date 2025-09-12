@@ -153,12 +153,12 @@ r2llr<-function(r,n,df1,method=braw.env$STMethod,llr=list(e1=c(),e2=0),world=NUL
     }
     if (is.null(world) || is.null(world$On) || !world$On) {
       world$PDF<-"Single"
-      world$pRPlus<-0.5
+      world$pRplus<-0.5
     }
     lk1<-getLogLikelihood(z,n,df1,world$PDF,world$PDFk,spread=0,bias=FALSE,returnVals=TRUE)
     lk2<-getLogLikelihood(z,n,df1,world$PDF,world$PDFk,spread=1,bias=FALSE,returnVals=TRUE)
-    lk1<-lk1+log(world$pRPlus)
-    lk2<-lk2+log(1-world$pRPlus)
+    lk1<-lk1+log(world$pRplus)
+    lk2<-lk2+log(1-world$pRplus)
     llk<-lk1-lk2
   } else {
     if (isempty(llr$e1) || is.na(llr$e1)) { llr1=z }

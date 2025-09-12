@@ -60,7 +60,7 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
            "Main 2"=effectTheory$world$PDFk<-effect$rIV2,
            "Interaction"=effectTheory$world$PDFk<-effect$rIVIV2DV
     )
-    effectTheory$world$pRPlus<-1
+    effectTheory$world$pRplus<-1
   }
   
   theoryDens_sig<-NULL
@@ -77,8 +77,8 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
       yvUse<-theoryVals
     }
     oldEffect<-effectTheory
-    if (showType=="e1p") effectTheory$world$pRPlus<-0
-    if (showType=="e2p") effectTheory$world$pRPlus<-1
+    if (showType=="e1p") effectTheory$world$pRplus<-0
+    if (showType=="e2p") effectTheory$world$pRplus<-1
     theoryDens_all<-fullRSamplingDist(yvUse,effectTheory$world,design,"p",logScale=logScale,sigOnly=0,HQ=braw.env$showTheoryHQ)
     theoryDens_sig<-fullRSamplingDist(yvUse,effectTheory$world,design,"p",logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
     effectTheory<-oldEffect
@@ -86,8 +86,8 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
   
   if (is.element(showType,c("rs","rse","sig","ns","nonnulls","nulls","rss","re","ro","ci1","ci2","e1r","e2r","e1+","e2+","e1-","e2-"))) {
     npt<-braw.env$npoints
-    if (is.element(showType,c("e1r","e1+","e1-"))) effectTheory$world$pRPlus<-0
-    if (is.element(showType,c("e2r","e2+","e2-"))) effectTheory$world$pRPlus<-1
+    if (is.element(showType,c("e1r","e1+","e1-"))) effectTheory$world$pRplus<-0
+    if (is.element(showType,c("e2r","e2+","e2-"))) effectTheory$world$pRplus<-1
     if (showType=="re") rOff<-"re"
     else rOff<-"rs"
     switch(braw.env$RZ,
@@ -112,13 +112,13 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
                     },
                     "nonnulls"={
                       ew<-effectTheory$world
-                      ew$pRPlus<-1
+                      ew$pRplus<-1
                       theoryDens_all<-fullRSamplingDist(rvals,ew,design,rOff,logScale=logScale,sigOnly=0,HQ=braw.env$showTheoryHQ)
                       theoryDens_sig<-fullRSamplingDist(rvals,ew,design,rOff,logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
                     },
                     "nulls"={
                       ew<-effectTheory$world
-                      ew$pRPlus<-0
+                      ew$pRplus<-0
                       theoryDens_all<-fullRSamplingDist(rvals,ew,design,rOff,logScale=logScale,sigOnly=0,HQ=braw.env$showTheoryHQ)
                       theoryDens_sig<-fullRSamplingDist(rvals,ew,design,rOff,logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
                     },
@@ -144,7 +144,7 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
                         # for each possible population effect size
                         for (i in 1:length(rSourceVals)) {
                           # make original sample & get replication sample size
-                          samp1Dens<-fullRSamplingDist(rvals,makeWorld(TRUE,"Single","r",rSourceVals[i],pRPlus = 1),
+                          samp1Dens<-fullRSamplingDist(rvals,makeWorld(TRUE,"Single","r",rSourceVals[i],pRplus = 1),
                                                        design=design,rOff,logScale=logScale,
                                                        sigOnly=1,HQ=braw.env$showTheoryHQ)
                           n2<-replicationNewN(rvals,design$sN,hypothesis,design,evidence)
@@ -1352,7 +1352,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
             "metaRiv"={sampleVals<-cbind(analysis$best$PDFk)},
             "metaRsd"={sampleVals<-cbind(analysis$best$PDFspread)},
             "metaPDFk"={sampleVals<-cbind(analysis$best$PDFk)},
-            "metaPRPlus"={sampleVals<-cbind(analysis$best$pRPlus)},
+            "metaPRplus"={sampleVals<-cbind(analysis$best$pRplus)},
             "metaBias"={sampleVals<-cbind(analysis$best$sigOnly)},
             "metaS"={sampleVals<-cbind(analysis$best$S)},
             "llknull"={sampleVals<-exp(cbind(-0.5*(analysis$AIC-analysis$AICnull)))},
@@ -1502,14 +1502,14 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                 ns<-1-s
               },
               "e1p"={
-                pRPlus<-hypothesis$effect$world$pRPlus
-                hypothesis$effect$world$pRPlus<-0
+                pRplus<-hypothesis$effect$world$pRplus
+                hypothesis$effect$world$pRplus<-0
                 s<-fullPSig(hypothesis$effect$world,design)
-                hypothesis$effect$world$pRPlus<-pRPlus
+                hypothesis$effect$world$pRplus<-pRplus
                 ns<-1-s
                 if (hypothesis$effect$world$On) {
-                  s<-s*hypothesis$effect$world$pRPlus
-                  ns<-ns*hypothesis$effect$world$pRPlus
+                  s<-s*hypothesis$effect$world$pRplus
+                  ns<-ns*hypothesis$effect$world$pRplus
                 }
                 if (labelSig != labelNSig) {
                   s<-s/fullPSig(hypothesis$effect$world,design)
@@ -1517,14 +1517,14 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                 }
               },
               "e2p"={
-                pRPlus<-hypothesis$effect$world$pRPlus
-                hypothesis$effect$world$pRPlus<-1
+                pRplus<-hypothesis$effect$world$pRplus
+                hypothesis$effect$world$pRplus<-1
                 s<-fullPSig(hypothesis$effect$world,design)
-                hypothesis$effect$world$pRPlus<-pRPlus
+                hypothesis$effect$world$pRplus<-pRplus
                 ns<-1-s
                 if (hypothesis$effect$world$On) {
-                  s<-s*(hypothesis$effect$world$pRPlus)
-                  ns<-ns*(hypothesis$effect$world$pRPlus)
+                  s<-s*(hypothesis$effect$world$pRplus)
+                  ns<-ns*(hypothesis$effect$world$pRplus)
                 }
                 if (labelSig != labelNSig) {
                   s<-s/fullPSig(hypothesis$effect$world,design)
@@ -1594,7 +1594,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                     labels<-c(labels,paste0(braw.env$Null," '",reportNumber(isc,n,braw.env$reportCounts),"'"," correct"))
                     colours<-c(colours,braw.env$plotColours$infer_isigNull)
                   }
-                  if (hypothesis$effect$world$On && hypothesis$effect$world$pRPlus<1) {
+                  if (hypothesis$effect$world$On && hypothesis$effect$world$pRplus<1) {
                   if (evidence$sigOnly<1 || design$Replication$On) {
                       labels<-c(labels,paste0(nlab," '",reportNumber(nsc,n,braw.env$reportCounts),"'",sLabel))
                   colours<-c(colours,braw.env$plotColours$infer_nsigNull)
@@ -1819,7 +1819,7 @@ e2_plot<-function(analysis,disp,otheranalysis=NULL,orientation="vert",showTheory
   
   switch (braw.env$STMethod,
           "NHST"={
-            analysis$hypothesis$effect$world$pRPlus<-1
+            analysis$hypothesis$effect$world$pRplus<-1
             switch(disp,
                    "e2r"={
                      g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
@@ -1860,7 +1860,7 @@ e1_plot<-function(nullanalysis,disp,otheranalysis=NULL,orientation="vert",showTh
   lab<-"Null"
   switch (braw.env$STMethod,
           "NHST"={
-            nullanalysis$hypothesis$effect$world$pRPlus<-0
+            nullanalysis$hypothesis$effect$world$pRplus<-0
             # g<-r_plot(nullanalysis,"rs_e1",otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,g=g)
             switch(disp,
                    "e1r"={

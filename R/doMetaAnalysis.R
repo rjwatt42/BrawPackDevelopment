@@ -82,30 +82,30 @@ getTrimFill<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
              nFill<-q$k-length(zs)
              bias<-nFill/(nFill+sum(!sigs))
              Smax<-getLogLikelihood(zs,ns,df1,dist,q$TE.common,spread=0,bias=bias)
-             list(PDF="fixed",PDFk=q$TE.common,PDFshape=0,pRPlus=0,sigOnly=bias,Smax=Smax,Svals=q$seTE)
+             list(PDF="fixed",PDFk=q$TE.common,PDFshape=0,pRplus=0,sigOnly=bias,Smax=Smax,Svals=q$seTE)
            },
            "random"={
              q<-trimfill(zs,1/sqrt(ns-3),ma.common=FALSE,common=FALSE,random=TRUE)
              nFill<-q$k-length(zs)
              bias<-nFill/(nFill+sum(!sigs))
              Smax<-getLogLikelihood(zs,ns,df1,dist,q$TE.random,spread=q$tau,bias=bias)
-             list(PDF="random",PDFk=q$TE.random,PDFshape=q$tau,pRPlus=0,sigOnly=bias,Smax=Smax,Svals=q$seTE)
+             list(PDF="random",PDFk=q$TE.random,PDFshape=q$tau,pRplus=0,sigOnly=bias,Smax=Smax,Svals=q$seTE)
            }
            )
   },
-  error=function(e){list(PDFk=NA,pRPlus=NA,sigOnly=NA,Smax=NA,Svals=NA)},
+  error=function(e){list(PDFk=NA,pRplus=NA,sigOnly=NA,Smax=NA,Svals=NA)},
   warning={},
   finally={}
   )
   if (is.infinite(res$PDFk)) res$PDFk<-NA
-  if (is.infinite(res$pRPlus)) res$pRPlus<-NA
+  if (is.infinite(res$pRplus)) res$pRplus<-NA
   if (is.infinite(res$sigOnly)) res$sigOnly<-NA
   return(res)
 }
 
 getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   # PDFk is kvals
-  # pRPlus is normally nullvals
+  # pRplus is normally nullvals
   
   defaultnpoints<-11
   np1points<-defaultnpoints
@@ -224,7 +224,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     PDFk<-param1Use[use[1,1]]
     lb1<-param1Use[max(1,use[1,1]-reInc1)]
     ub1<-param1Use[min(length(param1Use),use[1,1]+reInc1)]
-    pRPlus<-param2Use[use[1,2]]
+    pRplus<-param2Use[use[1,2]]
     lb2<-param2Use[max(1,use[1,2]-reInc2)]
     ub2<-param2Use[min(length(param2Use),use[1,2]+reInc2)]
     sigOnly<-param3Use[use[1,3]]
@@ -240,7 +240,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     # after 2 iterations, can we do a search?
     if (re==2) {
       result<-tryCatch( {
-        fmincon(c(PDFk,pRPlus,sigOnly,PDFspread,PDFshape),llfun,ub=c(ub1,ub2,ub3,ub4,ub5),lb=c(lb1,lb2,lb3,lb4,lb5))
+        fmincon(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape),llfun,ub=c(ub1,ub2,ub3,ub4,ub5),lb=c(lb1,lb2,lb3,lb4,lb5))
       }, 
       error = function(e){NULL}
       )
@@ -251,23 +251,23 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     if (length(param3Use)>1) param3Use<-seq(lb3,ub3,length.out=np3points)
     if (length(param4Use)>1) param4Use<-seq(lb4,ub4,length.out=np4points)
     if (length(param5Use)>1) param5Use<-seq(lb5,ub5,length.out=np5points)
-    result<-list(par=c(PDFk,pRPlus,sigOnly,PDFspread,PDFshape),value=-Smax)
+    result<-list(par=c(PDFk,pRplus,sigOnly,PDFspread,PDFshape),value=-Smax)
   }
   PDFk<-result$par[1]
-  pRPlus<-result$par[2]
+  pRplus<-result$par[2]
   sigOnly<-result$par[3]
   PDFspread<-result$par[4]
   PDFshape<-result$par[5]
   Smax<- -result$value
 
-  Svals<-llfun(c(PDFk,pRPlus,sigOnly,PDFspread,PDFshape))
+  Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
   if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
-  return(list(PDF=dist,PDFk=PDFk,pRPlus=pRPlus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals))
+  return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals))
 }
 
 mergeMAResult<-function(multiple,single) {
   single$PDFk<-c(multiple$PDFk,single$PDFk)
-  single$pRPlus<-c(multiple$pRPlus,single$pRPlus)
+  single$pRplus<-c(multiple$pRplus,single$pRplus)
   single$sigOnly<-c(multiple$sigOnly,single$sigOnly)
   single$PDFspread<-c(multiple$PDFspread,single$PDFspread)
   single$PDFshape<-c(multiple$PDFshape,single$PDFshape)
@@ -288,7 +288,7 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
   ns<-studies$nval
   df1<-studies$df1
   
-  genexp<-gamma<-exp<-gauss<-single<-random<-fixed<-list(PDF=NA,PDFk=NA,pRPlus=NA,sigOnly=NA,PDFspread=NA,PDFshape=NA,Smax=NA)
+  genexp<-gamma<-exp<-gauss<-single<-random<-fixed<-list(PDF=NA,PDFk=NA,pRplus=NA,sigOnly=NA,PDFspread=NA,PDFshape=NA,Smax=NA)
   switch(metaAnalysis$analysisType,
          "none"={},
          "fixed"={

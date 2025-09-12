@@ -28,7 +28,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
              if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
            },
            "random"={showType<-"metaRiv;metaRsd"},
-           {showType<-"Lambda;pRPlus"})
+           {showType<-"Lambda;pRplus"})
   
   showType<-strsplit(showType,";")[[1]]
   if (length(showType)==1) {
@@ -448,13 +448,13 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
                   showVals<-exploreResult$result$PDFk
                 },
                 "metaRsd"={
-                  showVals<-exploreResult$result$pRPlus
+                  showVals<-exploreResult$result$pRplus
                 },
                 "Lambda"={
                   showVals<-exploreResult$result$PDFk
                 },
                 "p(R+)"={
-                  showVals<-exploreResult$result$pRPlus
+                  showVals<-exploreResult$result$pRplus
                 },
                 "PDF"={
                   showVals<-exploreResult$result$dist==effect$world$PDF

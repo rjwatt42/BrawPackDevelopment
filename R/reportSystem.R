@@ -92,13 +92,13 @@ reportWorld<-function(hypothesis=braw.def$hypothesis,plain=FALSE){
   else pdf<-paste0(world$PDF,"(",world$RZ,"=",brawFormat(world$PDFk,digits=2),")")
   outputText<-c(outputText,
                 paste0(braw.env$nonnullTitle),
-                paste0("!j",reportNumber(world$pRPlus,1,FALSE)),
+                paste0("!j",reportNumber(world$pRplus,1,FALSE)),
                 paste0("r[p]"," ~ ",tolower(pdf)),
                 rep("",nc-3)
                 )
   outputText<-c(outputText,
                 paste0(braw.env$nullTitle),
-                paste0("!j",reportNumber(1-world$pRPlus,1,FALSE)),
+                paste0("!j",reportNumber(1-world$pRplus,1,FALSE)),
                 paste0("r[p]"," = ",0),
                 rep("",nc-3)
   )

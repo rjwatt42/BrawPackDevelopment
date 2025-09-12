@@ -244,14 +244,14 @@ getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape
   } 
   
   # get nulls ready first
-  pRPluss<-prplus
-  if (any(pRPluss<1)) {
+  pRpluss<-prplus
+  if (any(pRpluss<1)) {
     nullPDF<-SingleSamplingPDF(z,0,sigma,0,bias,df1)
   } else {
     nullPDF<-list(pdf=0,sig_pdf=1)
     zcrit<-0
   } 
-  res<-matrix(-Inf,nrow=length(location),ncol=length(pRPluss))
+  res<-matrix(-Inf,nrow=length(location),ncol=length(pRpluss))
   switch(distribution,
          "Uniform"={
            PDF<-UniformSamplingPDF
@@ -275,12 +275,12 @@ getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape
   for (i in 1:length(location)) {
     lambda<-location[i]
     mainPDF<-PDF(z,lambda,sigma,shape=shape,bias=bias,df1=df1)
-    for (j in 1:length(pRPluss)) {
-      pRPlus<-pRPluss[j]
+    for (j in 1:length(pRpluss)) {
+      pRplus<-pRpluss[j]
       # make the whole source first
-      likelihoods<-mainPDF$pdf*pRPlus+nullPDF$pdf*(1-pRPlus)
+      likelihoods<-mainPDF$pdf*pRplus+nullPDF$pdf*(1-pRplus)
       # now normalize for the non-sig
-      likelihoods<-likelihoods/(mainPDF$sig_pdf*pRPlus+nullPDF$sig_pdf*(1-pRPlus))
+      likelihoods<-likelihoods/(mainPDF$sig_pdf*pRplus+nullPDF$sig_pdf*(1-pRplus))
       likelihoods[(likelihoods<1e-300)]<- 1e-300
       res[i,j]<-sum(log(likelihoods),na.rm=TRUE)
       if (res[i,j]==max(res,na.rm=TRUE)) lksHold<-log(likelihoods)

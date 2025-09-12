@@ -168,9 +168,9 @@ getRList<-function(world,addNulls=FALSE,HQ=FALSE) {
   )
   
   if (addNulls)
-  if (world$pRPlus<1) {
+  if (world$pRplus<1) {
     pRho<-c(0,pRho)
-    pRhogain<-c(1-world$pRPlus,pRhogain/sum(pRhogain)*world$pRPlus)
+    pRhogain<-c(1-world$pRplus,pRhogain/sum(pRhogain)*world$pRplus)
   } else {
     pRho<-c(pRho,0)
     pRhogain<-c(pRhogain/sum(pRhogain),0)
@@ -250,8 +250,8 @@ rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
   }
   
   popsOld<-pops
-  if (world$pRPlus<1) {
-    change<-rand(length(pops),1)>=world$pRPlus
+  if (world$pRplus<1) {
+    change<-rand(length(pops),1)>=world$pRplus
     pops[change]<-0
   }
   return(list(old=popsOld,use=pops))
@@ -290,9 +290,9 @@ fullPSig<-function(world,design,HQ=FALSE,alpha=braw.env$alphaSig) {
   if (length(rvals)>1) rdens<-rdens*diff(rvals[1:2])
   # next line is precautionary
   rdens<-rdens/sum(rdens)
-  if (world$On && world$pRPlus<1) {
+  if (world$On && world$pRplus<1) {
     rvals<-c(rvals,0)
-    rdens<-c(rdens*(world$pRPlus),1-world$pRPlus)
+    rdens<-c(rdens*(world$pRplus),1-world$pRplus)
   }
   
   # distribution of sample sizes
@@ -325,10 +325,10 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
   rvals<-pR$pRho
   rPopdens<-pR$pRhogain
   if (length(rvals)>1) rPopdens<-rPopdens*diff(rvals[1:2])
-  if (!world$On) world$pRPlus<-1
+  if (!world$On) world$pRplus<-1
   if (!is.element(world$PDF,c("sample"))) {
   rvals<-c(rvals,0)
-  rPopdens<-c(rPopdens/sum(rPopdens)*(world$pRPlus),1-world$pRPlus)
+  rPopdens<-c(rPopdens/sum(rPopdens)*(world$pRplus),1-world$pRplus)
   }
 
   # distribution of sample sizes

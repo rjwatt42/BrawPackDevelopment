@@ -13,7 +13,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFsd=result$nval,
                        PDFoffset=result$rIV,
-                       pRPlus=1)
+                       pRplus=1)
          },
          "SampleB"={
            world<-list(On=TRUE,
@@ -21,7 +21,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFsd=result$nval,
                        PDFoffset=result$rIV,
-                       pRPlus=0)
+                       pRplus=0)
          },
          "Null"={
            world<-list(On=TRUE,
@@ -29,7 +29,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="z",
                        PDFk=0,
                        PDFoffset=0,
-                       pRPlus=1,
+                       pRplus=1,
                        PDFsample=FALSE
            )
          },
@@ -39,7 +39,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="z",
                        PDFk=0,
                        PDFoffset=0,
-                       pRPlus=1,
+                       pRplus=1,
                        PDFsample=FALSE
            )
          },
@@ -49,7 +49,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFk=rp,
                        PDFoffset=0,
-                       pRPlus=1,
+                       pRplus=1,
                        PDFsample=FALSE)
          },
          "Single"={
@@ -58,7 +58,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFk=rp,
                        PDFoffset=0,
-                       pRPlus=0.5,
+                       pRplus=0.5,
                        PDFsample=FALSE)
          },
          "Plain"={
@@ -67,7 +67,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFk=rp,
                        PDFoffset=0,
-                       pRPlus=1,
+                       pRplus=1,
                        PDFsample=FALSE)
          },
          "Binary"={
@@ -76,7 +76,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFk=rp,
                        PDFoffset=0,
-                       pRPlus=0.5,
+                       pRplus=0.5,
                        PDFsample=FALSE)
          },
          "Double"={
@@ -85,7 +85,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="r",
                        PDFk=rp,
                        PDFoffset=0,
-                       pRPlus=1,
+                       pRplus=1,
                        PDFsample=FALSE)
          },
          "Gaussian"={
@@ -94,7 +94,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="z",
                        PDFk=atanh(rp),
                        PDFoffset=0,
-                       pRPlus=0.5,
+                       pRplus=0.5,
                        PDFsample=FALSE)
          },
          "Psych"={
@@ -103,7 +103,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="z",
                        PDFk=atanh(rp),
                        PDFoffset=0,
-                       pRPlus=0.26,
+                       pRplus=0.26,
                        PDFsample=FALSE)
          },
          "Psych50"={
@@ -112,7 +112,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="z",
                        PDFk=atanh(rp),
                        PDFoffset=0,
-                       pRPlus=0.5,
+                       pRplus=0.5,
                        PDFsample=FALSE)
          },
          "PsychF"={
@@ -121,7 +121,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
                        RZ="z",
                        PDFk=atanh(rp),
                        PDFoffset=0,
-                       pRPlus=1,
+                       pRplus=1,
                        PDFsample=FALSE)
          }
   )

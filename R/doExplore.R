@@ -19,8 +19,8 @@ makeExplore<-function(exploreType="n",exploreNPoints=11,
                       vals=NULL,minVal=NA,maxVal=NA,xlog=FALSE
 ) {
   if (exploreType=="alpha") exploreType<-"Alpha"
-  if (exploreType=="pRPlus") exploreType<-"p(R+)"
-  if (exploreType=="meanRPlus") exploreType<-"mean(R+)"
+  if (exploreType=="pRplus") exploreType<-"p(R+)"
+  if (exploreType=="meanRplus") exploreType<-"mean(R+)"
   
   explore<-list(exploreType=exploreType,
                 exploreNPoints=exploreNPoints,
@@ -132,11 +132,11 @@ summariseResult<-function(result) {
     }
   } else {
     PDFk<-max(c(result$fixed$PDFk,result$random$PDFk,result$single$PDFk,result$gauss$PDFk,result$exp$PDFk),na.rm=TRUE)
-    pRPlus<-max(c(result$fixed$pRPlus,result$random$pRPlus,result$single$pRPlus,result$gauss$pRPlus,result$exp$pRPlus),na.rm=TRUE)
+    pRplus<-max(c(result$fixed$pRplus,result$random$pRplus,result$single$pRplus,result$gauss$pRplus,result$exp$pRplus),na.rm=TRUE)
     sigOnly<-max(c(result$fixed$sigOnly,result$random$sigOnly,result$single$sigOnly,result$gauss$sigOnly,result$exp$sigOnly),na.rm=TRUE)
     S<-max(c(result$fixed$Smax,result$random$Smax,result$single$Smax,result$gauss$Smax,result$exp$Smax),na.rm=TRUE)
     result$PDFk<-PDFk
-    result$pRPlus<-pRPlus
+    result$pRplus<-pRplus
     result$sigOnly<-sigOnly
     result$S<-S
     sigs<-isSignificant(braw.env$STMethod,result$result$pIV,result$result$rIV,result$result$nval,result$result$df1,result$result$evidence)
@@ -154,7 +154,7 @@ summariseResult<-function(result) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               PDFk=b,pRPlus=b,sigOnly=b,S=b
+               PDFk=b,pRplus=b,sigOnly=b,S=b
   )
   return(result)
 }
@@ -178,7 +178,7 @@ resetExploreResult<-function(nsims,n_vals,oldResult=NULL) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               PDFk=b,pRPlus=b,sigOnly=b,S=b
+               PDFk=b,pRplus=b,sigOnly=b,S=b
   )
   if (!is.null(oldResult)) {
     result<-mergeExploreResult(oldResult,result)
@@ -236,13 +236,13 @@ storeExploreResult<-function(result,res,ri,vi) {
     }
   } else {
     PDFk<-max(c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk),na.rm=TRUE)
-    pRPlus<-max(c(res$fixed$pRPlus,res$random$pRPlus,res$single$pRPlus,res$gauss$pRPlus,res$exp$pRPlus),na.rm=TRUE)
+    pRplus<-max(c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus),na.rm=TRUE)
     sigOnly<-max(c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly),na.rm=TRUE)
     S<-max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax),na.rm=TRUE)
     sigs<-isSignificant(braw.env$STMethod,res$result$pIV,res$result$rIV,res$result$nval,res$result$df1,res$result$evidence)
     nSig<-sum(sigs)
     result$PDFk[ri,vi]<-PDFk
-    result$pRPlus[ri,vi]<-pRPlus
+    result$pRplus[ri,vi]<-pRplus
     result$sigOnly[ri,vi]<-sigOnly
     result$S[ri,vi]<-S
     result$nSig[ri,vi]<-nSig
@@ -298,7 +298,7 @@ mergeExploreResult<-function(res1,res2) {
   }
   
   result$PDFk<-rbind(res1$PDFk,res2$PDFk)
-  result$pRPlus<-rbind(res1$pRPlus,res2$pRPlus)
+  result$pRplus<-rbind(res1$pRplus,res2$pRplus)
   result$sigOnly<-rbind(res1$sigOnly,res2$sigOnly)
   result$S<-rbind(res1$S,res2$S)
   result$nSig<-rbind(res1$nSig,res2$nSig)
@@ -407,7 +407,7 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
   
   design$sNReps<-1
   
-  if (hypothesis$effect$world$On && hypothesis$effect$world$pRPlus<1) 
+  if (hypothesis$effect$world$On && hypothesis$effect$world$pRplus<1) 
     doingNull<-FALSE
   
   if (nsims==0) doingNonNull<-FALSE
@@ -803,7 +803,7 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
                 },
                 "p(R+)"={
                   effect$world$On<-TRUE
-                  effect$world$pRPlus<-vals[vi]
+                  effect$world$pRplus<-vals[vi]
                   # metaAnalysis$modelNulls<-TRUE
                 },
                 

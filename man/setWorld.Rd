@@ -11,7 +11,7 @@ setWorld(
   PDFk = braw.def$hypothesis$effect$world$PDFk,
   PDFshape = braw.def$hypothesis$effect$world$PDFshape,
   PDFoffset = braw.def$hypothesis$effect$world$PDFoffset,
-  pRPlus = braw.def$hypothesis$effect$world$pRPlus,
+  pRplus = braw.def$hypothesis$effect$world$pRplus,
   PDFsample = braw.def$hypothesis$effect$world$PDFsample,
   PDFsamplemn = braw.def$hypothesis$effect$world$PDFsamplemn,
   PDFsamplesd = braw.def$hypothesis$effect$world$PDFsamplesd,

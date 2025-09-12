@@ -341,7 +341,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
     theoryVals2<-c()
     if (showTheory) {
       # if (!hypothesis$effect$world$On)
-      #   hypothesis$effect$world<-list(On=TRUE,PDF="Single",RZ="r",PDFk=hypothesis$effect$rIV,pRPlus<-1)
+      #   hypothesis$effect$world<-list(On=TRUE,PDF="Single",RZ="r",PDFk=hypothesis$effect$rIV,pRplus<-1)
       n75=qnorm(0.75)
       newvals<-seq(min(vals),max(vals),length.out=51)
       if (explore$xlog) newvals<-10^newvals
@@ -353,19 +353,19 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                rVals<-newvals
                nVals<-rep(design$sN,length(newvals))
                alphas<-rep(braw.env$alphaSig,length(newvals))
-               rplusPs<-rep(hypothesis$effect$world$pRPlus,length(newvals))
+               rplusPs<-rep(hypothesis$effect$world$pRplus,length(newvals))
              },
              "n"={
                rVals<-rep(rVal,length(newvals))
                nVals<-newvals
                alphas<-rep(braw.env$alphaSig,length(newvals))
-               rplusPs<-rep(hypothesis$effect$world$pRPlus,length(newvals))
+               rplusPs<-rep(hypothesis$effect$world$pRplus,length(newvals))
              },
              "Alpha"={
                rVals<-rep(rVal,length(newvals))
                nVals<-rep(design$sN,length(newvals))
                alphas<-newvals
-               rplusPs<-rep(hypothesis$effect$world$pRPlus,length(newvals))
+               rplusPs<-rep(hypothesis$effect$world$pRplus,length(newvals))
              },
              "p(R+)"={
                rVals<-rep(rVal,length(newvals))
@@ -377,7 +377,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                rVals<-rep(rVal,length(newvals))
                nVals<-rep(design$sN,length(newvals))
                alphas<-rep(braw.env$alphaSig,length(newvals))
-               rplusPs<-rep(hypothesis$effect$world$pRPlus,length(newvals))
+               rplusPs<-rep(hypothesis$effect$world$pRplus,length(newvals))
              }
       )
       basenpts<-51
@@ -419,11 +419,11 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                                         PDF="Single",
                                         RZ="r",
                                         PDFk=hypothesis$effect$rIV,
-                                        pRPlus=1)
+                                        pRplus=1)
         for (i in 1:length(newvals)) {
           hypothesis$effect$world$PDFk<-rVals[i]
           design$sN<-nVals[i]
-          hypothesis$effect$world$pRPlus<-rplusPs[i]
+          hypothesis$effect$world$pRplus<-rplusPs[i]
           r<-fullRSamplingDist(basevals,hypothesis$effect$world,design,
                                doStat=showType[si],logScale=logScale,quantiles=c(quants,0.5,1-quants))
           if (length(r)==1) theoryVals<-c(theoryVals,r)
@@ -443,19 +443,19 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
         for (i in 1:length(newvals)) {
           hypothesis$effect$world$PDFk<-rVals[i]
           design$sN<-nVals[i]
-          hypothesis$effect$world$pRPlus<-rplusPs[i]
+          hypothesis$effect$world$pRplus<-rplusPs[i]
           r<-fullPSig(hypothesis$effect$world,design,alpha=alphas[i])
           theoryVals<-c(theoryVals,r)
         }
       }
       if (is.element(showType[si],c("NHST","Inference","Source","Hits","Misses"))) {
-        pRPlus<-hypothesis$effect$world$pRPlus
-        hypothesis$effect$world$pRPlus<-1
+        pRplus<-hypothesis$effect$world$pRplus
+        hypothesis$effect$world$pRplus<-1
         theoryVals1<-c()
         for (i in 1:length(newvals)) {
           hypothesis$effect$world$PDFk<-rVals[i]
           design$sN<-nVals[i]
-          # hypothesis$effect$world$pRPlus<-rplusPs[i]
+          # hypothesis$effect$world$pRplus<-rplusPs[i]
           r<-fullPSig(hypothesis$effect$world,design,alpha=alphas[i])
           theoryVals1<-c(theoryVals1,r)
         }
@@ -484,7 +484,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                  theoryVals1<-c()
                }
         )
-        hypothesis$effect$world$pRPlus<-pRPlus
+        hypothesis$effect$world$pRplus<-pRplus
       }
       if (explore$xlog) newvals<-log10(newvals)
     }
@@ -619,16 +619,16 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                 showVals<-result$PDFk
               },
               "metaRsd"={
-                showVals<-result$pRPlus
+                showVals<-result$pRplus
               },
               "LambdaRn"={
-                showVals<-result$pRPlus
+                showVals<-result$pRplus
               },
               "Lambda"={
                 showVals<-result$PDFk
               },
               "p(R+)"={
-                showVals<-result$pRPlus
+                showVals<-result$pRplus
               },
               "metaS"={
                 showVals<-result$S
@@ -750,8 +750,8 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                 }
                 np<-sum(!is.na(pVals[,1]))
                 if (fixNulls) {
-                  adjustNulls<-(1-effect$world$pRPlus)/(colSums(nulls)/np)
-                  adjustNonNulls<-effect$world$pRPlus/(colSums(!nulls)/np)
+                  adjustNulls<-(1-effect$world$pRplus)/(colSums(nulls)/np)
+                  adjustNonNulls<-effect$world$pRplus/(colSums(!nulls)/np)
                 } else {
                   adjustNulls<-1
                   adjustNonNulls<-1
