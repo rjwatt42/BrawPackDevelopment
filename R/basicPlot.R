@@ -759,32 +759,36 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
            x<-svgX(data$x)
            y<-svgY(data$y)
            if (length(x)==0) return("")
+           if (length(fill)<length(x)) fill<-rep(fill,ceiling(length(x)/length(fill)))
+           alpha<-format(alpha,digits=braw.env$htmlDigits)
+           sw<-format(size/5,digits=braw.env$htmlDigits)
            if (shape==21) {
-             sz<-size*7/pi
+             sz<-format(size*7/pi,digits=braw.env$htmlDigits)
              g<-""
              for (i in 1:length(x)) {
                g<-paste0(g,
-                         '<circle cx="',format(x[i],digits=braw.env$htmlDigits),'" cy="',format(y[i],digits=braw.env$htmlDigits),'" r="',sz,'"',
-                         ' fill="',fill,'"',
+                         '<circle cx="',format(x[i],digits=braw.env$htmlDigits),'" cy="',format(y[i],digits=braw.env$htmlDigits),'"',
+                         ' r="',sz,'"',
+                         ' fill="',fill[i],'"',
                          ' fill-opacity="',alpha,'"',
-                         ' stroke="',colour,'" stroke-width="',format(size/5),'"',
+                         ' stroke="',colour,'" stroke-width="',sw,'"',
                          ' stroke-opacity="',alpha,'"',
                          ' />'
                )
              }
            } else {
-             sz<-size*4
+             sz<-format(size*4,digits=braw.env$htmlDigits)
              g<-""
              for (i in 1:length(x)) {
                if (shape==22) tr="" 
                else           tr=paste0(' transform=rotate(45,',format(x[i],digits=braw.env$htmlDigits),',',format(y[i],digits=braw.env$htmlDigits),')')
                g<-paste0(g,
-                         '<rect x="',format(x[i]-sz/2,digits=braw.env$htmlDigits),'" y="',format(y[i]-sz/2,digits=braw.env$htmlDigits),'"',
+                         '<rect x="',format(x[i]-size*2,digits=braw.env$htmlDigits),'" y="',format(y[i]-size*2,digits=braw.env$htmlDigits),'"',
                          ' width="',sz,'"',' height="',sz,'"',
                          ' rx="0" ry="0"',
-                         ' fill="',fill,'"',
+                         ' fill="',fill[i],'"',
                          ' fill-opacity="',alpha,'"',
-                         ' stroke="',colour,'" stroke-width="',format(size/5),'"',
+                         ' stroke="',colour,'" stroke-width="',sw,'"',
                          ' stroke-opacity="',alpha,'"',
                          tr,
                          ' />'
@@ -827,9 +831,9 @@ drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25)
              g<-""
              for (i in seq(1,length(x),4)) {
                linestyle<-paste0(' fill="',fill,'" stroke="',colour,'"',
-                                 ' fill-opacity="',alpha*data$value[i],'"',
+                                 ' fill-opacity="',format(alpha*data$value[i],digits=braw.env$htmlDigits),'"',
                                  ' stroke="',colour,'"',
-                                 ' stroke-width="',linewidth*2,'"',
+                                 ' stroke-width="',format(linewidth*2,digits=braw.env$htmlDigits),'"',
                                  ' stroke-opacity="',1,'"')
                points<-' points="'
                for (j in 1:4)  points<-paste0(points,' ',format(x[i+j-1],digits=braw.env$htmlDigits),',',format(y[i+j-1],digits=braw.env$htmlDigits))
