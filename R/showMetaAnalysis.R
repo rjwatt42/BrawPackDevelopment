@@ -59,7 +59,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' showMetaSingle(metaResult=doMetaAnalysis(),showType="n",showTheory=FALSE)
 #' @export
 showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
-                         showData=TRUE,showTheory=TRUE,limitNumber=FALSE,
+                         showData=TRUE,showTheory=TRUE,limitNumber=0,
                          xRange="full",autoYlim=FALSE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
@@ -120,9 +120,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
     d2<-sqrt(metaResult$result$nval)
   }
 
-  if (limitNumber) {
-  if (length(d1)>100) d1<-d1[1:100]
-  if (length(d2)>100) d2<-d2[1:100]
+  if (limitNumber>0) {
+  if (length(d1)>limitNumber) d1<-d1[1:limitNumber]
+  if (length(d2)>limitNumber) d2<-d2[1:limitNumber]
   }
   
   useAll<-(d2>ylim[1]) & (d2<ylim[2])
