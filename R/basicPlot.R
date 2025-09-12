@@ -759,7 +759,9 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
            x<-svgX(data$x)
            y<-svgY(data$y)
            if (length(x)==0) return("")
+           if (length(colour)<length(x)) colour<-rep(colour,ceiling(length(x)/length(colour)))
            if (length(fill)<length(x)) fill<-rep(fill,ceiling(length(x)/length(fill)))
+           if (length(alpha)<length(x)) alpha<-rep(alpha,ceiling(length(x)/length(alpha)))
            alpha<-format(alpha,digits=braw.env$htmlDigits)
            sw<-format(size/5,digits=braw.env$htmlDigits)
            if (shape==21) {
@@ -770,9 +772,9 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
                          '<circle cx="',format(x[i],digits=braw.env$htmlDigits),'" cy="',format(y[i],digits=braw.env$htmlDigits),'"',
                          ' r="',sz,'"',
                          ' fill="',fill[i],'"',
-                         ' fill-opacity="',alpha,'"',
-                         ' stroke="',colour,'" stroke-width="',sw,'"',
-                         ' stroke-opacity="',alpha,'"',
+                         ' fill-opacity="',alpha[i],'"',
+                         ' stroke="',colour[i],'" stroke-width="',sw,'"',
+                         ' stroke-opacity="',alpha[i],'"',
                          ' />'
                )
              }
@@ -787,9 +789,9 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
                          ' width="',sz,'"',' height="',sz,'"',
                          ' rx="0" ry="0"',
                          ' fill="',fill[i],'"',
-                         ' fill-opacity="',alpha,'"',
-                         ' stroke="',colour,'" stroke-width="',sw,'"',
-                         ' stroke-opacity="',alpha,'"',
+                         ' fill-opacity="',alpha[i],'"',
+                         ' stroke="',colour[i],'" stroke-width="',sw,'"',
+                         ' stroke-opacity="',alpha[i],'"',
                          tr,
                          ' />'
                )
