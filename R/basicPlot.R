@@ -733,15 +733,15 @@ drawPath<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0
          })
   return(g)
 }
-dataPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) {
+dataPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3,strokewidth=1) {
   data<-reRangeXY(data)
-  axisPoint(data=data,shape=shape,colour=colour,fill=fill,alpha=alpha,size=size)
+  axisPoint(data=data,shape=shape,colour=colour,fill=fill,alpha=alpha,size=size,strokewidth=strokewidth)
 }
-axisPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) {
-  addGraphElement(list(type="Point",args=list(data,shape,colour,fill,alpha,size)))
-  drawPoint(data,shape,colour,fill,alpha,size)
+axisPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3,strokewidth=1) {
+  addGraphElement(list(type="Point",args=list(data,shape,colour,fill,alpha,size,strokewidth=strokewidth)))
+  drawPoint(data,shape,colour,fill,alpha,size,strokewidth=strokewidth)
 }
-drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) {
+drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3,strokewidth=1) {
   size<-0.75*size*(braw.env$plotArea[4])^0.5
   # if (alpha<1) colour=fill
   switch(braw.env$graphicsType,
@@ -749,10 +749,10 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
            sz<-size*1.35
            if (is.null(data$fill)) {
              g<-geom_point(data=data,aes(x=x,y=y),shape=shape,size=sz,
-                           stroke=size/6.7,colour=colour,fill=fill,alpha=alpha)
+                           stroke=strokewidth*size/6.7,colour=colour,fill=fill,alpha=alpha)
            } else {
              g<-geom_point(data=data,aes(x=x,y=y,fill=fill),shape=shape,sz=size,
-                           stroke=size/6.7,colour=colour,alpha=alpha)
+                           stroke=strokewidth*size/6.7,colour=colour,alpha=alpha)
            }
          },
          "HTML"={
@@ -764,7 +764,7 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3) 
            if (length(fill)<length(x)) fill<-rep(fill,ceiling(length(x)/length(fill)))
            if (length(alpha)<length(x)) alpha<-rep(alpha,ceiling(length(x)/length(alpha)))
            alpha<-format(alpha,digits=braw.env$htmlDigits)
-           sw<-format(size/5,digits=braw.env$htmlDigits)
+           sw<-format(strokewidth*size/5,digits=braw.env$htmlDigits)
            if (shape==21) {
              sz<-format(size*7/pi,digits=braw.env$htmlDigits)
              g<-""

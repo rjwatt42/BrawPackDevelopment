@@ -33,7 +33,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
     # if (length(p1)>1)
     #   lb<-paste0(lb,"\u00B1",brawFormat(std(p1),digits=2))
   } else {
-    lb<-paste0(Dist,"(",metaResult$best$RZ,"=",brawFormat(mean(p1,na.rm=TRUE),digits=3),")")
+    lb<-paste0(Dist,"(","z","/",brawFormat(mean(p1,na.rm=TRUE),digits=3),")")
   }
   if (!is.null(p2)) {
     label2<-braw.env$Plabel
@@ -306,9 +306,6 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     
     metaAnalysis<-metaResult$metaAnalysis
     
-    xlim<-c(-1,1)
-    xticks<-seq(-1,1,0.5)
-    
     if (is.element(whichMeta,c("Single","Gauss","Exp","Gamma","GenExp"))) {
       n1<-sum(metaResult$best$PDF=="Single")
       n2<-sum(metaResult$best$PDF=="Gauss")
@@ -366,64 +363,97 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       if (isempty(x)) {return(nullPlot())}
     }
     
-    if (is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
-      switch(metaResult$metaAnalysis$analysisType,
-             "fixed"={result<-metaResult$fixed},
-             "random"={result<-metaResult$random})
-    }
+    useBest<-1:length(x)
+    switch(metaResult$metaAnalysis$analysisType,
+           "fixed"={result<-metaResult$fixed},
+           "random"={result<-metaResult$random},
+           "world"={
+             useBest<-(metaResult$best$PDF==whichMeta)
+             switch(whichMeta,
+               "Single"={result<-metaResult$single},
+               "Gauss"={result<-metaResult$gauss},
+               "Exp"={result<-metaResult$exp},
+               "Gamma"={result<-metaResult$gamma},
+               "GenExp"={result<-metaResult$genexp}
+             )
+           }
+    )
+    
+    xticks<-c()
     yticks<-c()
-    switch (showType,
-            "metaRiv;metaRsd"={
-              x<-result$PDFk
-              y<-result$pRplus
-              y1<-0
+    showTypes<-strsplit(showType,";")[[1]]
+    switch(showTypes[1],
+           "metaRiv"={
+             x<-result$PDFk
+             xlim<-c(-1,1)
+             xlabel<-"r[m]"
+           },
+           "metaK"={
+             x<-result$PDFk
+             xlim<-c(0,1)+c(-1,1)*(1-0)*0.1
+             xlabel<-braw.env$Llabel
+           },
+           "metaRsd"={
+             x<-result$PDFshape
+             xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
+             xlabel<-"r[sd]"
+           },
+           "metaBias"={
+             x<-result$sigOnly
+             xlim<-c(0,1)+c(-1,1)*(1-0)*0.1
+             xlabel<-"bias[m]"
+           },
+           "metaS"={
+             x<-result$Smax
+             xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
+             xlabel<-"log(lk)"
+           },
+           "metapRplus"={
+             x<-result$pRplus
+             xlim<-c(0,1)+c(-1,1)*(1-0)*0.1
+             xlabel<-braw.env$Plabel
+           },
+           "null"={
+             x<-result$pRplus
+             xlim<-c(0,1)+c(-1,1)*(1-0)*0.1
+             xlabel<-braw.env$Plabel
+           }
+    )
+    switch (showTypes[2],
+            "metaRiv"={
+              y<-result$PDFk
+              ylim<-c(-1,1)
+              ylabel<-"r[m]"
+            },
+            "metaK"={
+              y<-result$PDFk
+              ylim<-c(-1,1)
+              ylabel<-braw.env$Llabel
+            },
+            "metaRsd"={
+              y<-result$PDFshape
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"r[sd]"
-              xlabel<-"r[m]"
-              useBest<-1:length(x)
             },
-            "metaRiv;metaBias"={
-              x<-result$PDFk
+            "metaBias"={
               y<-result$sigOnly
-              y1<-0
-              ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylim<-c(0,1)
               ylabel<-"bias[m]"
-              xlabel<-"r[m]"
-              useBest<-1:length(x)
             },
-            "metaRiv;metaS"={
-              x<-result$PDFk
+            "metaS"={
               y<-result$Smax
-              y1<-0
-              sAll<-result$Smax
-              ylim<-c(min(sAll,na.rm=TRUE),max(sAll,na.rm=TRUE))+c(-1,1)*(max(sAll,na.rm=TRUE)-min(sAll,na.rm=TRUE))/4
+              ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"log(lk)"
-              xlabel<-"r[m]"
-              useBest<-1:length(x)
             },
-            "metaK;null"={
-              y<-y1
+            "metapRplus"={
+              y<-result$pRplus
               ylim<-c(-0.02,1.1)
               ylabel<-braw.env$Plabel
-              xlabel<-braw.env$Llabel
             },
-            "metaK;metaS"={
-              xlabel<-braw.env$Llabel
-              y<-yS
-              ylim<-c(min(sAll,na.rm=TRUE),max(sAll,na.rm=TRUE))
-              ylabel<-paste0("log(lk ",use2,")")
-              useBest<- (metaResult$hypothesis$effect$world$PDF==use2) | (metaResult$hypothesis$effect$world$PDF==use1)
-            },
-            "metaS;metaS"={
-              y<-yS
-              xlim<-c(min(sAll,na.rm=TRUE),max(sAll,na.rm=TRUE))
-              if (length(x)==1) xlim<-xlim+c(-1,1)
-              else xlim=xlim+c(-1,1)*(max(sAll,na.rm=TRUE)-min(sAll,na.rm=TRUE))/4
-              xlabel<-paste0("log(lk ",use1,")")
-              ylim<-xlim
-              ylabel<-paste0("log(lk ",use2,")")
-              useBest<- (y>x & metaResult$hypothesis$effect$world$PDF==use2) | (y<x & metaResult$hypothesis$effect$world$PDF==use1)
+            "null"={
+              y<-result$pRplus
+              ylim<-c(-0.02,1.1)
+              ylabel<-braw.env$Plabel
             }
     )
     pts<-data.frame(x=x,y=y)
@@ -440,76 +470,24 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     
     dotSize=16*min(0.25,16/length(x))
     
-    g<-addG(g,dataPoint(data=pts,shape=braw.env$plotShapes$meta, 
-                        colour="#000000", fill="grey", alpha=min(1,2.5/sqrt(length(x))), 
+    f1<-darken(braw.env$plotColours$metaMultiple,off=-0.2)
+    if (any(!useBest))
+      g<-addG(g,dataPoint(data=pts[!useBest,],shape=braw.env$plotShapes$meta, 
+                        colour=f1, 
+                        fill=f1, alpha=min(1,2.5/sqrt(length(x))), 
                         size = dotSize))
-    pts<-data.frame(x=x[useBest],y=y[useBest])
-    g<-addG(g,dataPoint(data=pts,shape=braw.env$plotShapes$meta,
-                        colour="#000000", fill=braw.env$plotColours$metaMultiple, alpha=min(1,2.5/sqrt(length(x))), 
-                        size = dotSize))
+    if (any(useBest))
+    g<-addG(g,dataPoint(data=pts[useBest,],shape=braw.env$plotShapes$meta,
+                        colour="#FFFFFF", fill=braw.env$plotColours$metaMultiple, alpha=min(1,2.5/sqrt(length(x))), 
+                        size = dotSize,strokewidth=3))
     
-    if (showType=="metaS;metaS") {
-      g<-addG(g,dataPath(data=data.frame(x=xlim,y=ylim),colour="red"))
-    }
+    use<-which.max(c(n1,n2,n3))
+    bestD<-c("Single","Gauss","Exp")[use]
+    if (whichMeta==bestD)  colM=braw.env$plotColours$metaMultiple else colM="grey"
+    lb<-worldLabel(metaResult,whichMeta)
+    lb<-strsplit(lb,"\n")[[1]]
+    g<-addG(g,dataLegend(data.frame(names=lb,colours=c(colM,rep(NA,length(lb)-1))),title="",shape=braw.env$plotShapes$meta))
     
-    if (mean(y1)>0.5) {
-      yp<-ylim[1]+diff(ylim)/10
-      vj<-0
-    } else {
-      yp<-ylim[2]-diff(ylim)/10
-      vj<-1
-    }
-    if (showType=="metaS;metaS") {
-      fullText<-paste0(use2,"(",format(mean(metaY$PDFk),digits=3))
-      if (length(metaY$PDFk)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$PDFk),digits=2),")")
-      else fullText<-paste0(fullText,")")
-      if (metaAnalysis$modelNulls) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaY$pRplus),digits=3))
-        if (length(metaY$pRplus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$pRplus),digits=2),")")
-      }
-      fullText<-paste0(fullText,"\nS= ",format(mean(metaY$Smax),digits=2))
-      if (length(metaY$Smax)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaY$Smax),digits=2),")")
-      fullText<-paste0(fullText," (",format(sum(y>x)),"/",length(metaResult$best$PDF),")")
-      
-      if (mean(y>x)) colM=braw.env$plotColours$metaMultiple  else colM="grey"
-      names<-strsplit(fullText,"\n")[[1]]
-      g<-addG(g,dataLegend(data.frame(names=names,colours=c(colM,rep(NA,length(names)-1))),title="",shape=braw.env$plotShapes$meta))
-      
-      fullText<-paste0(use1,"(",format(mean(metaX$PDFk),digits=3))
-      if (length(metaX$PDFk)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$PDFk),digits=2),")")
-      else fullText<-paste0(fullText,")")
-      if (metaAnalysis$modelNulls) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaX$pRplus),digits=3))
-        if (length(metaX$pRplus)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$pRplus),digits=2),")")
-      }
-      fullText<-paste0(fullText,"\nS= ",format(mean(metaX$Smax),digits=2))
-      if (length(metaX$Smax)>1) fullText<-paste0(fullText,"\u00B1",format(std(metaX$Smax),digits=2),")")
-      fullText<-paste0(fullText," (",format(sum(x>y)),"/",length(metaResult$best$PDF),")")
-      
-      if (mean(y>x)) colM="grey"  else colM=braw.env$plotColours$metaMultiple
-      names<-strsplit(fullText,"\n")[[1]]
-      g<-addG(g,dataLegend(data.frame(names=names,colours=c(colM,rep(NA,length(names)-1))),title="",shape=braw.env$plotShapes$meta))
-    } else {
-      
-      if (is.element(showType,c("metaRiv;metaS","metaRiv;metaBias","metaRiv;metaRsd"))) {
-        colM=braw.env$plotColours$metaMultiple
-        lb<-worldLabel(metaResult,whichMeta)
-        names<-strsplit(lb,"\n")[[1]]
-        
-        colours<-c(colM,rep(NA,length(names)-1))
-        # if (whichMeta=="fixed") {names<-names[1]; colours<-colM;}
-        
-        g<-addG(g,dataLegend(data.frame(names=names,colours=colours),title="",
-                             shape=braw.env$plotShapes$meta))
-      } else {
-        use<-which.max(c(n1,n2,n3))
-        bestD<-c("Single","Gauss","Exp")[use]
-        if (whichMeta==bestD)  colM=braw.env$plotColours$metaMultiple else colM="grey"
-        lb<-worldLabel(metaResult,whichMeta)
-        lb<-strsplit(lb,"\n")[[1]]
-        g<-addG(g,dataLegend(data.frame(names=lb,colours=c(colM,rep(NA,length(lb)-1))),title="",shape=braw.env$plotShapes$meta))
-      }     
-    }
     return(g)
     
   }
