@@ -54,7 +54,7 @@ GaussSamplingCDF<-function(zcrit,lambda,sigma,offset=0) {
 
 
 ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
-  if (lambda==0) return(GaussSamplingPDF(z,lambda,sigma,offset=0,shape=NA,bias=FALSE,df1=1))
+  if (all(lambda==0)) return(GaussSamplingPDF(z,lambda,sigma,offset=0,shape=NA,bias=FALSE,df1=1))
   # lambda1<-1/lambda
   # d1a<-0.25*(lambda1*exp(-lambda1*(z-sigma^2*lambda1/2))*(1+erf((z-sigma^2*lambda1)/sqrt(2)/sigma)) +
   #             lambda1*exp(-lambda1*(-z-sigma^2*lambda1/2))*(1+erf((-z-sigma^2*lambda1)/sqrt(2)/sigma)))
@@ -72,13 +72,14 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
     p2[zv2>0]<-1-pnorm(-zv2[zv2>0])
   }
   
-  e1<-exp(-( z-sl/2)/lambda)
+  e1<-exp(-(z-sl/2)/lambda)
   e2<-exp(-(-z-sl/2)/lambda)
-  e1[e1==Inf]<-1
-  e2[e2==Inf]<-1
+  e1[lambda==0]<-0
+  e2[lambda==0]<-0
   d1<-e1*p1+e2*p2
   d1<-d1/lambda/2
   d1[is.na(d1)]<-0.5
+  d1[lambda==0]<-GaussSamplingPDF(z,0,sigma,offset=0,shape=NA,bias=FALSE,df1=1)$pdf
   
   if (bias>0) {
     zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))

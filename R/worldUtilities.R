@@ -346,6 +346,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
                 "rs"={
                   rp<-vals
                   addition<-rSamplingDistr(vals,rvals[ei],nvals[ni])
+                  if (length(vals)>1)
                   addition<-addition*(vals[2]-vals[1])
                 },
                 "re"={
@@ -417,6 +418,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
         }
         d<-d+addition
       }
+      if (length(vals)>1)
       d<-d/sum(d1,na.rm=TRUE)*rPopdens[ei]
       sourceSampDens_r<-rbind(sourceSampDens_r,d)
   }

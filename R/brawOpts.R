@@ -188,7 +188,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$RZ<-"r"
           
           braw.env$r_range<-0.95
-          braw.env$z_range<-atanh(braw.env$r_range)
+          braw.env$z_range<-2
           braw.env$d_range<-5
           braw.env$w_range<-c(0.05,1)
           braw.env$npoints<-101

@@ -88,7 +88,7 @@ doPossible <- function(possible=NULL,possibleResult=NULL){
   priorPopDens_r<-priorPopDens_r/mean(priorPopDens_r)/2
   if (max(priorPopDens_r)>0.9) priorPopDens_r<-priorPopDens_r/max(priorPopDens_r)*0.9
   priorPopDens_r_full<-priorPopDens_r*(prior$pRplus)
-  priorPopDens_r_full[rp==0]<-priorPopDens_r_full[rp==0]+(1-prior$pRplus)$pRplus
+  priorPopDens_r_full[rp==0]<-priorPopDens_r_full[rp==0]+(1-prior$pRplus)
   if (prior$PDF=="Single" || prior$PDF=="Double") {
     priorPopDens_r_show<-priorPopDens_r_full/max(priorPopDens_r_full)
   } else {
