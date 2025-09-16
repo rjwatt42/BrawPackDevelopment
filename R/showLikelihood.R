@@ -31,10 +31,10 @@ showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
   ylim[1]<-0
   
   braw.env$plotArea<-plotArea
-  
+  if (plotArea[1]<0.1) ylabel<-"S" else ylabel=""
   if (new)
   g<-startPlot(xlim=xlim,ylim=ylim,top=TRUE,
-               xlabel=makeLabel(xlabel),ylabel=makeLabel("S"),
+               xlabel=makeLabel(xlabel),ylabel=makeLabel(ylabel),
                xticks=makeTicks(seq(0,0.6,0.1)),yticks=makeTicks(),
                fontScale=fontsize,g=g
                )
