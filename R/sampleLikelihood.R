@@ -79,7 +79,9 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
   d1<-e1*p1+e2*p2
   d1<-d1/lambda/2
   # NaN arise where pnorm() collapses to zero (pnorm(-39))
-  d1[is.na(d1) | lambda==0]<-GaussSamplingPDF(z,0,sigma,offset=0,shape=NA,bias=FALSE,df1=1)$pdf
+  replace<-is.na(d1) | is.infinite(d1) | lambda==0
+  if (any(replace))
+    d1[replace]<-GaussSamplingPDF(z[replace],0,sigma[replace],offset=0,shape=NA,bias=FALSE,df1=1)$pdf
   
   if (bias>0) {
     zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))

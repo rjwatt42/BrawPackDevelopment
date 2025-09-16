@@ -1,20 +1,15 @@
 
 
-showLikelihood<-function(rs=braw.res$result$rIV,n=NULL,showType="mean(R+)",
-                         world=braw.def$hypothesis$effect$world,design=braw.def$design,
+showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
+                         norm=FALSE,
                          fontsize=1.2,markRs=NULL,
                          plotArea=c(0,0,1,1),g=NULL,new=TRUE) {
+  world<-result$hypothesis$effect$world
+  design<-result$design
   
-  switch(world$PDF,
-         "Uniform"={PDF<-SingleSamplingPDF},
-         "Single"={PDF<-SingleSamplingPDF},
-         "Gauss"={PDF<-GaussSamplingPDF},
-         "Exp"={PDF<-ExpSamplingPDF},
-         "Gamma"={PDF<-GammaSamplingPDF},
-         "GenExp"={PDF<-GenExpSamplingPDF}
-  )
+  rs<-result$rIV
+  n<-result$nval
   if (is.null(n)) n<-design$sN
-  if (world$RZ=="z") rs<-atanh(rs)
   if (length(n)<length(rs)) n<-rep(n,length(rs))
   
   switch(showType,
@@ -22,15 +17,11 @@ showLikelihood<-function(rs=braw.res$result$rIV,n=NULL,showType="mean(R+)",
       range<-seq(0,0.6,length.out=201)
       xlabel<-sub("[+]","[+]",showType)
       if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
-      dens<-0
-      for (i in 1:length(rs)) {
-        nextDens<-PDF(rs[i],range,1/sqrt(n[i]-3))$pdf
-        if (any(nextDens>0))
-          dens<-dens+log(nextDens)
-      }
+      dens<-getLogLikelihood(atanh(rs),n,1,world$PDF,location=range)
     }
   )
   dens[is.infinite(dens)]<-NA
+  if (norm) dens<-dens-max(dens,na.rm=TRUE)
   dens<-exp(dens)
   dens[is.na(dens)]<-0
   use<-which.max(dens)
