@@ -204,7 +204,7 @@ showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NUL
                     plotArea=c(0,0,1,1),fontScale=1,autoShow=FALSE,g=NULL) {
 # world diagram
 
-  totalArea<-40
+  totalArea<-30
   
   world<-hypothesis$effect$world
   if (!world$On) {
@@ -214,36 +214,22 @@ showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NUL
     
   braw.env$plotArea<-plotArea
 
-  range<-braw.env$r_range
-  switch(braw.env$RZ,
-      "r"={},
-      "z"={range<-braw.env$z_range}
-  )
-
-  switch(braw.env$RZ,
-         "r"={ xticks<-makeTicks(seq(-1,1,0.5));xlabel<-makeLabel(braw.env$rpLabel)},
-         "z"={ xticks<-makeTicks(seq(-2,2,1));xlabel<-makeLabel(braw.env$zpLabel)}
-  )
-  g<-startPlot(xlim=c(-1,1)*range,ylim=c(0,1.05),
-               xticks=xticks,xlabel=xlabel,fontScale = fontScale,unitGap=0.45,
-               top=TRUE,box="x",g=g)
-  # if (world$worldAbs) {
-  #   rx<-seq(0,1,length.out=braw.env$worldNPoints)*range
-  # } else {
-    rx<-seq(-1,1,length.out=braw.env$worldNPoints)*range
-    if (braw.env$RZ=="z") rx<-tanh(rx)
-  # }
-
+  np<-braw.env$worldNPoints
+  if(braw.env$RZ=="r")
+    rx<-seq(-1,1,length=np)*braw.env$r_range
+  else
+    rx<-seq(-1,1,length=np)*braw.env$z_range
+  xlim<-c(min(rx),max(rx))
+  
+  if (braw.env$RZ=="z") rx<-tanh(rx)
   rdens<-rPopulationDist(rx,world)
-  switch(braw.env$RZ,
-         "r"={},
-         "z"={
+  if (braw.env$RZ=="z") {
     rdens<-rdens2zdens(rdens,rx)
     rx<-atanh(rx)
-         }
-  )
+  }
+  
   if (is.element(world$PDF,c("Single","Double"))) {
-    width<-0.02
+    width<-0.01*diff(xlim)
     rx<-world$PDFk+c(-1,-1,1,1)*width
     rdens<-c(0,1,1,0)*(world$pRplus)
     if (world$PDF=="Double") {
@@ -256,16 +242,25 @@ showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NUL
       rx<-c(rx,c(-1,-1,1,1)*width)
       rdens<-c(rdens,c(0,1,1,0)*(1-world$pRplus))
     }
-    
-    # rdens[rx==0]<-rdens[rx==0]+world$pRplus
-  } 
+  }
+  rdens<-rdens/sum(rdens)*totalArea
+  
   if (!is.element(world$PDF,c("sample","biasedsample"))) {
     rdens<-rdens*(world$pRplus)
   }
-  rdens<-rdens/max(rdens)
-  rx<-c(rx[1],rx,rx[length(rx)])
-  rdens<-c(0,rdens,0)/sum(rdens)*totalArea
-  pts=data.frame(x=rx,y=rdens)
+  
+  switch(braw.env$RZ,
+         "r"={ xticks<-makeTicks(seq(-1,1,0.5));xlabel<-makeLabel(braw.env$rpLabel)},
+         "z"={ xticks<-makeTicks(seq(-2,2,1));xlabel<-makeLabel(braw.env$zpLabel)}
+  )
+  g<-startPlot(xlim=xlim,ylim=c(0,1.05),
+               xticks=xticks,xlabel=xlabel,fontScale = fontScale,unitGap=0.45,
+               top=TRUE,box="x",g=g)
+  
+  
+  x<-c(rx[1],rx,rx[length(rx)])
+  y<-c(0,rdens,0)
+  pts=data.frame(x=x,y=y)
   fill<-braw.env$plotColours$populationC
   if (!is.null(showSingle)) fill<-darken(desat(fill,0.5),off=0)
   g<-addG(g,dataPolygon(pts,fill=fill,colour=NA))
@@ -494,7 +489,7 @@ showPrediction <- function(hypothesis=braw.def$hypothesis,design=braw.def$design
 #' @export
 showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,
                             showSinglePopulation=NULL,showSingleSample=NULL,plotArea=c(0,0,1,1),fontScale=1,autoShow=braw.env$autoShow,g=NULL) {
-  totalArea<-65
+  totalArea<-30
   
   world<-hypothesis$effect$world
   if (!world$On) 
@@ -505,44 +500,32 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
                 pRplus=1)
   
   np<-braw.env$worldNPoints
-  # if (world$worldAbs) np<-braw.env$worldNPoints*2+1
-  
-  vals<-seq(-1,1,length=np)*braw.env$r_range
-  switch(braw.env$RZ,
-         "r"={},
-         "z"={
-    vals<-tanh(seq(-1,1,length=np*2)*braw.env$z_range)
-         }
-  )
-  
+  if(braw.env$RZ=="r")
+    rx<-seq(-1,1,length=np)*braw.env$r_range
+  else
+    rx<-tanh(seq(-1,1,length=np)*braw.env$z_range)
+
   design1<-design
   design$Replication$On<-FALSE
   
-  dens<-fullRSamplingDist(vals,world,design,sigOnly=evidence$sigOnly) 
-  switch(braw.env$RZ,
-         "r"={},
-         "z"={
-           dens<-rdens2zdens(dens,vals)
-           vals<-atanh(vals)
-           use<-abs(vals)<=braw.env$z_range
-           dens<-dens[use]
-           vals<-vals[use]
-         }
-  )
-  dens<-dens/sum(dens)
+  rdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly) 
+  if (braw.env$RZ=="z") {
+           rdens<-rdens2zdens(rdens,rx)
+           rx<-atanh(rx)
+  }
+  rdens<-rdens/sum(rdens)*totalArea
+
   if (design1$Replication$On) {
-    dens1<-fullRSamplingDist(vals,world,design1,sigOnly=evidence$sigOnly) 
+    dens1<-fullRSamplingDist(rx,world,design1,sigOnly=evidence$sigOnly) 
     dens1<-dens1/sum(dens1)
   } else dens1<-NA
-  gain<-max(max(dens),max(dens1),na.rm=TRUE)
-  dens<-dens/gain
+  gain<-max(max(rdens),max(dens1),na.rm=TRUE)
   dens1<-dens1/gain
-  dens<-dens/sum(dens)*totalArea
   
-  x<-c(vals[1],vals,vals[length(vals)])
-  y<-c(0,dens,0)
+  x<-c(rx[1],rx,rx[length(rx)])
+  y<-c(0,rdens,0)
   pts=data.frame(x=x,y=y)
-  xlim<-c(min(vals),max(vals))
+  xlim<-c(min(rx),max(rx))
   braw.env$plotArea<-plotArea
 
   switch(braw.env$RZ,
@@ -560,16 +543,22 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   
   if (!is.null(showSinglePopulation)) {
     world<-makeWorld(TRUE,"Single","r",showSinglePopulation,pRplus=1)
-    sdens<-fullRSamplingDist(vals,world,design,sigOnly=evidence$sigOnly) 
-    sdens<-sdens/max(sdens)*approx(vals,dens,showSinglePopulation)$y
-    pts<-data.frame(x=c(vals[1],vals,vals[length(vals)]),y=c(0,sdens,0))
+    if (braw.env$RZ=="r")
+      sdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly) 
+    else
+      sdens<-fullRSamplingDist(tanh(rx),world,design,sigOnly=evidence$sigOnly) 
+    
+    sdens<-sdens/max(sdens)*approx(rx,rdens,showSinglePopulation)$y
+    pts<-data.frame(x=c(rx[1],rx,rx[length(rx)]),y=c(0,sdens,0))
     g<-addG(g,dataPolygon(data=pts,fill=braw.env$plotColours$descriptionC))
     g<-addG(g,dataLine(data=pts))
+  } else {
+    sdens<-rdens
   }
   if (!is.null(showSingleSample)) {
-    width<-0.02
+    width<-0.01*diff(xlim)
     srx<-showSingleSample+c(-1,-1,1,1)*width
-    srdens<-c(0,1,1,0)*approx(vals,dens,showSingleSample)$y
+    srdens<-c(0,1,1,0)*approx(rx,sdens,showSingleSample)$y
     
     pts<-data.frame(x=srx,y=srdens)
     g<-addG(g,dataPolygon(pts,fill=braw.env$plotColours$sampleC))

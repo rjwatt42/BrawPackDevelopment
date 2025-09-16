@@ -59,7 +59,7 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
   # d1a<-0.25*(lambda1*exp(-lambda1*(z-sigma^2*lambda1/2))*(1+erf((z-sigma^2*lambda1)/sqrt(2)/sigma)) +
   #             lambda1*exp(-lambda1*(-z-sigma^2*lambda1/2))*(1+erf((-z-sigma^2*lambda1)/sqrt(2)/sigma)))
 
-  # pnorm approximation breaks down at pnorm(8) and at pnorm(-37)
+  # pnorm function breaks down at pnorm(8) and at pnorm(-37)
   sl<-sigma^2/lambda
   zv1<-(z-sl)/sigma
   p1<-pnorm(zv1)
@@ -78,8 +78,8 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
   e2[lambda==0]<-0
   d1<-e1*p1+e2*p2
   d1<-d1/lambda/2
-  d1[is.na(d1)]<-0.5
-  d1[lambda==0]<-GaussSamplingPDF(z,0,sigma,offset=0,shape=NA,bias=FALSE,df1=1)$pdf
+  # NaN arise where pnorm() collapses to zero (pnorm(-39))
+  d1[is.na(d1) | lambda==0]<-GaussSamplingPDF(z,0,sigma,offset=0,shape=NA,bias=FALSE,df1=1)$pdf
   
   if (bias>0) {
     zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))

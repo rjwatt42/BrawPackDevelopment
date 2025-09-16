@@ -279,7 +279,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   fontScale<-fontScale*fontShrink
 
   minGap<-0.1
-  unitGap<-unitGap*braw.env$fontSize*fontShrink
+  unitGap<-unitGap*braw.env$fontSize*fontScale
   # if (braw.env$graphicsType!="HTML") 
     unitGap<-unitGap*1.7
   labelGapx<-labelGapy<-unitGap

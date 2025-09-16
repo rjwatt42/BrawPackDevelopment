@@ -2,7 +2,7 @@
 
 showLikelihood<-function(rs=braw.res$result$rIV,n=NULL,showType="mean(R+)",
                          world=braw.def$hypothesis$effect$world,design=braw.def$design,
-                         fontsize=1,markRs=NULL,
+                         fontsize=1.2,markRs=NULL,
                          plotArea=c(0,0,1,1),g=NULL,new=TRUE) {
   
   switch(world$PDF,
@@ -20,7 +20,8 @@ showLikelihood<-function(rs=braw.res$result$rIV,n=NULL,showType="mean(R+)",
   switch(showType,
     "mean(R+)"={
       range<-seq(0,0.6,length.out=201)
-      xlabel<-showType
+      xlabel<-sub("[+]","[+]",showType)
+      if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
       dens<-0
       for (i in 1:length(rs)) {
         nextDens<-PDF(rs[i],range,1/sqrt(n[i]-3))$pdf
