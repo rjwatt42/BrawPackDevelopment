@@ -201,11 +201,11 @@ showFullWorld<-function(hypothesis=braw.def$hypothesis,plotArea=c(0,0,1,1),fontS
 #' showWorld(world=makeWorld())
 #' @export
 showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NULL,
+                    totalArea=1,
                     plotArea=c(0,0,1,1),fontScale=1,autoShow=FALSE,g=NULL) {
 # world diagram
 
-  totalArea<-30
-  
+  totalArea<-totalArea*30
   world<-hypothesis$effect$world
   if (!world$On) {
     world<-makeWorld(On=TRUE,PDF="Single",RZ="r",
@@ -488,8 +488,10 @@ showPrediction <- function(hypothesis=braw.def$hypothesis,design=braw.def$design
 #' showWorldSampling(hypothesis=makeHypothesis(),design=makeDesign(),evidence=makeEvidence())
 #' @export
 showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,
-                            showSinglePopulation=NULL,showSingleSample=NULL,plotArea=c(0,0,1,1),fontScale=1,autoShow=braw.env$autoShow,g=NULL) {
-  totalArea<-30
+                            showSinglePopulation=NULL,showSingleSample=NULL,HQ=FALSE,totalArea=1,
+                            plotArea=c(0,0,1,1),fontScale=1,autoShow=braw.env$autoShow,g=NULL) {
+
+  totalArea<-totalArea*30-evidence$sigOnly*10
   
   world<-hypothesis$effect$world
   if (!world$On) 
@@ -508,7 +510,7 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   design1<-design
   design$Replication$On<-FALSE
   
-  rdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly) 
+  rdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly,HQ=HQ) 
   if (braw.env$RZ=="z") {
            rdens<-rdens2zdens(rdens,rx)
            rx<-atanh(rx)
@@ -516,7 +518,7 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   rdens<-rdens/sum(rdens)*totalArea
 
   if (design1$Replication$On) {
-    dens1<-fullRSamplingDist(rx,world,design1,sigOnly=evidence$sigOnly) 
+    dens1<-fullRSamplingDist(rx,world,design1,sigOnly=evidence$sigOnly,HQ=HQ) 
     dens1<-dens1/sum(dens1)
   } else dens1<-NA
   gain<-max(max(rdens),max(dens1),na.rm=TRUE)

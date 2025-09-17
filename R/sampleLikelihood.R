@@ -1,5 +1,5 @@
 
-SingleSamplingPDF<-function(z,lambda,sigma,shape=0,bias=FALSE,df1=1) {
+SingleSamplingPDF<-function(z,lambda,sigma,shape=0,bias=0,df1=1) {
   # shape is additional normal error distribution
   sigmad<-sigma^2+shape
   sigmad[sigmad<0]<-0
@@ -16,7 +16,7 @@ SingleSamplingPDF<-function(z,lambda,sigma,shape=0,bias=FALSE,df1=1) {
 }
 
 
-UniformSamplingPDF<-function(z,lambda,sigma,shape=0,bias=FALSE,df1=1) {
+UniformSamplingPDF<-function(z,lambda,sigma,shape=0,bias=0,df1=1) {
   # shape is additional normal error distribution
   d1<-z*0+1
   sigmad<-sigma^2+shape
@@ -34,7 +34,7 @@ UniformSamplingPDF<-function(z,lambda,sigma,shape=0,bias=FALSE,df1=1) {
 }
 
 
-GaussSamplingPDF<-function(z,lambda,sigma,offset=0,shape=NA,bias=FALSE,df1=1) {
+GaussSamplingPDF<-function(z,lambda,sigma,offset=0,shape=NA,bias=0,df1=1) {
   sigma2<-sqrt(lambda^2+sigma^2)
   d1<-exp(-0.5*(z-offset)^2/sigma2^2)/sqrt(2*pi*sigma2^2)
   
@@ -53,8 +53,8 @@ GaussSamplingCDF<-function(zcrit,lambda,sigma,offset=0) {
 }
 
 
-ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
-  if (all(lambda==0)) return(GaussSamplingPDF(z,lambda,sigma,offset=0,shape=NA,bias=FALSE,df1=1))
+ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=0,df1=1) {
+  if (all(lambda==0)) return(GaussSamplingPDF(z,lambda,sigma,offset=0,shape=NA,bias=bias,df1=df1))
   # lambda1<-1/lambda
   # d1a<-0.25*(lambda1*exp(-lambda1*(z-sigma^2*lambda1/2))*(1+erf((z-sigma^2*lambda1)/sqrt(2)/sigma)) +
   #             lambda1*exp(-lambda1*(-z-sigma^2*lambda1/2))*(1+erf((-z-sigma^2*lambda1)/sqrt(2)/sigma)))
@@ -81,7 +81,7 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
   # NaN arise where pnorm() collapses to zero (pnorm(-39))
   replace<-is.na(d1) | is.infinite(d1) | lambda==0
   if (any(replace))
-    d1[replace]<-GaussSamplingPDF(z[replace],0,sigma[replace],offset=0,shape=NA,bias=FALSE,df1=1)$pdf
+    d1[replace]<-GaussSamplingPDF(z[replace],0,sigma[replace],offset=0,shape=NA,bias=bias,df1=df1)$pdf
   
   if (bias>0) {
     zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))
@@ -93,20 +93,25 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,bias=FALSE,df1=1) {
   return(list(pdf=d1,sig_pdf=d0))
 }
 ExpSamplingCDF<-function(zcrit,lambda,sigma) {
-  lambda<-1/lambda
   z <- zcrit
   p1<-0.25*(
-    exp((lambda*sigma/sqrt(2))^2)*exp(z*lambda) * erfc(lambda*sigma/sqrt(2) + z/sigma/sqrt(2))
-    - exp((lambda*sigma/sqrt(2))^2)/exp(z*lambda) * erfc(lambda*sigma/sqrt(2) - z/sigma/sqrt(2))
+    exp((sigma/lambda/sqrt(2))^2)*exp(z/lambda) * erfc(sigma/lambda/sqrt(2) + z/sigma/sqrt(2))
+    - exp((sigma/lambda/sqrt(2))^2)/exp(z/lambda) * erfc(sigma/lambda/sqrt(2) - z/sigma/sqrt(2))
     + 2*erf(z/sigma/sqrt(2))
   )
   z <- -zcrit
   p2<-0.25*(
-    exp((lambda*sigma/sqrt(2))^2)*exp(z*lambda) * erfc(lambda*sigma/sqrt(2) + z/sigma/sqrt(2))
-    - exp((lambda*sigma/sqrt(2))^2)/exp(z*lambda) * erfc(lambda*sigma/sqrt(2) - z/sigma/sqrt(2))
+    exp((sigma/lambda/sqrt(2))^2)*exp(z/lambda) * erfc(sigma/lambda/sqrt(2) + z/sigma/sqrt(2))
+    - exp((sigma/lambda/sqrt(2))^2)/exp(z/lambda) * erfc(sigma/lambda/sqrt(2) - z/sigma/sqrt(2))
     + 2*erf(z/sigma/sqrt(2))
   )
-  (p1-p2)
+  res<-(p1-p2)
+  replace<-is.na(res)
+  if (any(replace)) {
+    res1<-GaussSamplingCDF(zcrit,lambda,sigma)
+    res[replace]<-res1[replace]
+  }
+  return(res)
 }
 
 
@@ -141,7 +146,7 @@ removeNonSig<-function(zi,zpd,sigma,df1) {
 }
 
 
-GammaSamplingPDF<-function(z,lambda,sigma,shape=1,bias=FALSE,df1=1) {
+GammaSamplingPDF<-function(z,lambda,sigma,shape=1,bias=0,df1=1) {
   if (length(sigma)==1) {sigma<-rep(sigma,length(z))}
   
   if (all(sigma==0)) {
@@ -164,7 +169,7 @@ GammaSamplingPDF<-function(z,lambda,sigma,shape=1,bias=FALSE,df1=1) {
   
 }
 
-GenExpSamplingPDF<-function(z,lambda,sigma,shape=1,bias=FALSE,df1=1) {
+GenExpSamplingPDF<-function(z,lambda,sigma,shape=1,bias=0,df1=1) {
   genExp<-function(z,lambda,shape) {
     if (lambda==0 || shape==0) as.numeric(z==0)+0.1
     else exp(-1/shape*(abs(z)/lambda)^shape)
@@ -203,7 +208,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,shape=1,bias=FALSE,df1=1) {
 }
 
 
-getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape=1,bias=FALSE,returnVals=FALSE) {
+getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape=1,bias=0,returnVals=FALSE) {
   if (is.null(spread)) spread<-0
   sigma<-1/sqrt(n-3)
   # if (length(sigma)==1) sigma<-sigma[1,1]
