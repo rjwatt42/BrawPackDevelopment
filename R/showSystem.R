@@ -488,7 +488,7 @@ showPrediction <- function(hypothesis=braw.def$hypothesis,design=braw.def$design
 #' showWorldSampling(hypothesis=makeHypothesis(),design=makeDesign(),evidence=makeEvidence())
 #' @export
 showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,
-                            showSinglePopulation=NULL,showSingleSample=NULL,HQ=FALSE,totalArea=1,
+                            showSinglePopulation=NULL,showSingleSample=NULL,HQ=TRUE,totalArea=1,
                             plotArea=c(0,0,1,1),fontScale=1,autoShow=braw.env$autoShow,g=NULL) {
 
   totalArea<-totalArea*30-evidence$sigOnly*10
