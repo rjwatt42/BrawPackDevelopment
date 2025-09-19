@@ -15,9 +15,16 @@ showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
   
   switch(showType,
     "mean(R+)"={
-      range<-seq(0,0.6,length.out=201)
-      xlabel<-sub("[+]","[+]",showType)
-      if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
+      if (world$PDF=="Single") {
+        range<-seq(-0.9,0.9,length.out=201)
+        xlabel<-"r[p]"
+        if (braw.env$RZ=="z") xlabel<-sub("r","z",xlabel)
+      }
+      else {
+        range<-seq(0,0.6,length.out=201)
+        xlabel<-sub("[+]","[+]",showType)
+        if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
+      }
       dens<-getLogLikelihood(atanh(rs),n,1,world$PDF,location=range,bias=evidence$sigOnly)
     }
   )
@@ -32,11 +39,11 @@ showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
   ylim[1]<-0
   
   braw.env$plotArea<-plotArea
-  if (plotArea[1]<0.1) ylabel<-"S" else ylabel=""
+  if (plotArea[3]>0.45) ylabel<-"S" else ylabel=""
   if (new)
   g<-startPlot(xlim=xlim,ylim=ylim,top=TRUE,
                xlabel=makeLabel(xlabel),ylabel=makeLabel(ylabel),
-               xticks=makeTicks(seq(0,0.6,0.1)),yticks=makeTicks(),
+               xticks=makeTicks(),yticks=makeTicks(),
                fontScale=fontsize,g=g
                )
   

@@ -539,7 +539,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     switch (world$PDF,
             "Single"={
               for (i in 1:length(n)) {
-                zrow<-SingleSamplingPDF(z,lambda,sigma[i],shape)$pdf*pRplus+
+                zrow<-SingleSamplingPDF(z,lambda,sigma[i])$pdf*pRplus+
                   SingleSamplingPDF(z,0,sigma[i])$pdf*(1-pRplus)
                 if (metaResult$metaAnalysis$analyseBias || sigOnly>0) {
                   zcrit<-atanh(p2r(braw.env$alphaSig,n[i]))

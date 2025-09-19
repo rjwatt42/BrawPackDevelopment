@@ -491,8 +491,6 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
                             showSinglePopulation=NULL,showSingleSample=NULL,HQ=TRUE,totalArea=1,
                             plotArea=c(0,0,1,1),fontScale=1,autoShow=braw.env$autoShow,g=NULL) {
 
-  totalArea<-totalArea*30-evidence$sigOnly*10
-  
   world<-hypothesis$effect$world
   if (!world$On) 
     world<-list(On=TRUE,
@@ -500,6 +498,9 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
                 PDFk=hypothesis$effect$rIV,
                 RZ="r",
                 pRplus=1)
+  
+  totalArea<-totalArea*30-evidence$sigOnly*10
+  if (world$PDF=="Single") totalArea<-totalArea*0.5
   
   np<-braw.env$worldNPoints
   if(braw.env$RZ=="r")
@@ -511,12 +512,17 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   design$Replication$On<-FALSE
   
   rdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly,HQ=HQ) 
+  rdens0<-fullRSamplingDist(rx,world,design,sigOnly=0,HQ=HQ) 
   if (braw.env$RZ=="z") {
-           rdens<-rdens2zdens(rdens,rx)
-           rx<-atanh(rx)
+    rdens<-rdens2zdens(rdens,rx)
+    rdens0<-rdens2zdens(rdens0,rx)
+    rx<-atanh(rx)
   }
   rdens<-rdens/sum(rdens)*totalArea
-
+  rdens0<-rdens0/sum(rdens0)*totalArea
+  gn<-median(rdens[rdens>0]/rdens0[rdens>0])
+  rdens0<-rdens0*gn
+  
   if (design1$Replication$On) {
     dens1<-fullRSamplingDist(rx,world,design1,sigOnly=evidence$sigOnly,HQ=HQ) 
     dens1<-dens1/sum(dens1)
@@ -550,7 +556,7 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
     else
       sdens<-fullRSamplingDist(tanh(rx),world,design,sigOnly=evidence$sigOnly) 
     
-    sdens<-sdens/max(sdens)*approx(rx,rdens,showSinglePopulation)$y
+    sdens<-sdens/max(sdens)*approx(rx,rdens0,showSinglePopulation)$y
     pts<-data.frame(x=c(rx[1],rx,rx[length(rx)]),y=c(0,sdens,0))
     g<-addG(g,dataPolygon(data=pts,fill=braw.env$plotColours$descriptionC))
     g<-addG(g,dataLine(data=pts))
