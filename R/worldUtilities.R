@@ -56,16 +56,9 @@ rdens2ddens<-function(rdens,dvals) {
   rdens*(4/(dvals^2+4)/sqrt(dvals^2+4))
 }
 
-zSamplingDistr<-function(zvals,Z,n){
+zSamplingDistr<-function(zvals,Z,n,sigOnly=0){
   s=1/sqrt(n-3)
-  1/s/sqrt(2*pi)*exp(-0.5*((zvals-Z)/s)^2)
-}
-
-rSamplingDistr<-function(rvals,R,n,sigOnly=0){
-  # map to Fisher-z
-  zvals<-atanh(rvals)
-  Z<-atanh(R)
-  zdens<-zSamplingDistr(zvals,Z,n)
+  zdens<-1/s/sqrt(2*pi)*exp(-0.5*((zvals-Z)/s)^2)
   if (sigOnly>0) {
     zcrit<-atanh(p2r(braw.env$alphaSig,n,1))
     if (length(rvals)==1) {
@@ -77,6 +70,14 @@ rSamplingDistr<-function(rvals,R,n,sigOnly=0){
     }
     zdens<-zdens/gain
   }
+  return(zdens)
+}
+
+rSamplingDistr<-function(rvals,R,n,sigOnly=0){
+  # map to Fisher-z
+  zvals<-atanh(rvals)
+  Z<-atanh(R)
+  zdens<-zSamplingDistr(zvals,Z,n,sigOnly=sigOnly)
   zdens2rdens(zdens,rvals)
 }
 
@@ -227,7 +228,7 @@ rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
   sh<-world$PDFshape
   rangeMax<-braw.env$r_range
   rangeMax<-0.9999999
-  if (world$RZ=="z") rangeMax<-atanh(rangeMax)
+  if (world$PDFspread>0) rangeMax<-world$PDFspread
   switch (world$PDF,
           "Single"={pops<-rep(k,ns)},
           "Double"={pops<-rep(k,ns)},
@@ -266,19 +267,47 @@ rPopulationDist<-function(rvals,world) {
   k<-world$PDFk
   mu<-world$PDFoffset
   sh<-world$PDFshape
+  sp<-world$PDFspread
+  if (sp==0) sp<-max(rvals)
   if (world$RZ=="z") rvals<-atanh(rvals)
   rdens<-rvals*0
   switch (world$PDF,
           "Single"={rdens[which.min(abs(k-rvals))]<-1 },
           "Double"={ rdens[c(which.min(abs(k-rvals)),which.min(abs(k+rvals)))]<-1/2},
-          "Uniform"={rdens<-rdens+0.5},
+          "Uniform"={rdens[rvals<=sp]<-0.5},
           "Exp"={rdens<-dexp(abs(rvals),rate=1/k)},
           "Gauss"={rdens<-dnorm(rvals,mean=mu,sd=k)},
           "Gamma"={rdens<-dgamma(abs(rvals),shape=sh,rate=sh/k)},
           "GenExp"={rdens<-GenExpSamplingPDF(rvals,k,sigma=0,sh)}
   )
-if (world$RZ=="z") rdens<-zdens2rdens(rdens,tanh(rvals))
-return(rdens*rdens1)
+  if (world$RZ=="z") rdens<-zdens2rdens(rdens,tanh(rvals))
+  return(rdens*rdens1)
+}
+
+zPopulationDist<-function(zvals,world) {
+  if (world$PDFsample) {
+    mn<-world$PDFsamplemn
+    sd<-world$PDFsamplesd
+    zdens1<-zSamplingDistr(mn,zvals,1/sd^2+3,sigOnly=world$PDFsamplebias)
+  } else zdens1<-1
+  k<-world$PDFk
+  mu<-world$PDFoffset
+  sh<-world$PDFshape
+  sp<-world$PDFspread
+  if (sp==0) sp<-max(zvals)
+  if (world$RZ=="r") zvals<-tanh(zvals)
+  zdens<-zvals*0
+  switch (world$PDF,
+          "Single"={zdens[which.min(abs(k-zvals))]<-1 },
+          "Double"={ zdens[c(which.min(abs(k-zvals)),which.min(abs(k+zvals)))]<-1/2},
+          "Uniform"={zdens[zdens<=sp]<-0.5},
+          "Exp"={zdens<-dexp(abs(zvals),rate=1/k)},
+          "Gauss"={zdens<-dnorm(zvals,mean=mu,sd=k)},
+          "Gamma"={zdens<-dgamma(abs(zvals),shape=sh,rate=sh/k)},
+          "GenExp"={zdens<-GenExpSamplingPDF(zvals,k,sigma=0,sh)}
+  )
+  if (world$RZ=="r") zdens<-zdens2rdens(zdens,tanh(zvals))
+  return(zdens*zdens1)
 }
 
 fullPSig<-function(world,design,HQ=FALSE,alpha=braw.env$alphaSig) {

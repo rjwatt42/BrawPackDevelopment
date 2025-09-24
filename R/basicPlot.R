@@ -268,6 +268,10 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   #   braw.env$labelSize<-300/100*1.5
   #   braw.env$dotSize<-braw.env$labelSize*1.25
   # }
+  if (is.character(xlabel)) xlabel<-makeLabel(xlabel)
+  if (is.character(ylabel)) ylabel<-makeLabel(ylabel)
+  if (is.numeric(xticks)) xticks<-makeTicks(xticks)
+  if (is.numeric(yticks)) yticks<-makeTicks(yticks)
   
   fontDimensions<-c(1)
   if (!is.null(xticks) || !is.null(xlabel))

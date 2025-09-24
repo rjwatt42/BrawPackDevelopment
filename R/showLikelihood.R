@@ -1,30 +1,40 @@
 
 
 showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
-                         norm=FALSE,
+                         prior=NULL,norm=FALSE,
                          fontsize=1.2,markRs=NULL,
                          plotArea=c(0,0,1,1),g=NULL,new=TRUE) {
   world<-result$hypothesis$effect$world
   design<-result$design
   evidence<-result$evidence
-  
+
   rs<-result$rIV
   n<-result$nval
   if (is.null(n)) n<-design$sN
   if (length(n)<length(rs)) n<-rep(n,length(rs))
   
   switch(showType,
+         "rp"={
+           if (braw.env$RZ=="z") range<-seq(-1,1,length.out=1001)*1.5
+           else range<-atanh(seq(-0.9,0.9,length.out=201))
+           xlabel<-"r[p]"
+           if (braw.env$RZ=="z") xlabel<-sub("r","z",xlabel)
+           dens<-getLogLikelihood(atanh(rs),n,1,"Single",location=range,bias=0)
+           if (!is.null(prior)) 
+             dens<-dens+log(zPopulationDist(range,prior))
+           if (braw.env$RZ=="r") {
+             range<-tanh(range)
+           }
+         },
     "mean(R+)"={
       if (world$PDF=="Single") {
         range<-seq(-0.9,0.9,length.out=201)
-        xlabel<-"r[p]"
-        if (braw.env$RZ=="z") xlabel<-sub("r","z",xlabel)
       }
       else {
         range<-seq(0,0.6,length.out=201)
-        xlabel<-sub("[+]","[+]",showType)
-        if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
       }
+      xlabel<-sub("[+]","[+]",showType)
+      if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
       dens<-getLogLikelihood(atanh(rs),n,1,world$PDF,location=range,bias=evidence$sigOnly)
     }
   )
@@ -43,7 +53,7 @@ showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
   if (new)
   g<-startPlot(xlim=xlim,ylim=ylim,top=TRUE,
                xlabel=makeLabel(xlabel),ylabel=makeLabel(ylabel),
-               xticks=makeTicks(),yticks=makeTicks(),
+               xticks=makeTicks(),yticks=NULL,
                fontScale=fontsize,g=g
                )
   

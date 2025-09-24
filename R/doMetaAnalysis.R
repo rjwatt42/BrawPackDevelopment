@@ -114,7 +114,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   np4points<-defaultnpoints
   np5points<-defaultnpoints
   
-  niterations<-10
+  niterations<-4
   # reInc1<-(np1points-1)/2/3
   # reInc2<-(np2points-1)/2/3
   reInc1<-2
@@ -221,7 +221,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     ub5<-param5Use[min(length(param5Use),use[1,5]+reInc5)]
     
     # after 2 iterations, can we do a search?
-    if (re==2) {
+    if (re>=2) {
       result<-tryCatch( {
         fmincon(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape),llfun,ub=c(ub1,ub2,ub3,ub4,ub5),lb=c(lb1,lb2,lb3,lb4,lb5))
       }, 
