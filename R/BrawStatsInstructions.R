@@ -57,7 +57,7 @@ BrawInstructions <- function(HelpType="Plan") {
            ' </li>',
            '</ol>')
            
-           extras<-c("Effect size types","Worlds")
+           extras<-c(">Effect size types","Worlds")
            extrasContent<-c(
              paste('Effects are transmitted from a source variable to a destination.',
                    '<ul style=margin:0px;>',
@@ -273,7 +273,7 @@ BrawInstructions <- function(HelpType="Plan") {
       id<-paste0(HelpType,extras[i])
       output<-c(output,
                 '<style> button.here {font-size:12px;margin:0px;border:none;cursor:pointer;background-color:#3498db;color:white;} </style>',
-                '<button class="here" onclick="showExtra(event,\'',id,'\')">',' ahha ',extras[i],':','</button>',
+                '<button class="here" onclick="showExtra(event,\'',id,'\')">',extras[i],':','</button>',
                 '<div ID="',id,'" style=display:none>', extrasContent[i],'</div><br>'
       )
     }
