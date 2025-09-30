@@ -273,7 +273,7 @@ BrawInstructions <- function(HelpType="Plan") {
       id<-paste0(HelpType,extras[i])
       output<-c(output,
                 '<style> button.here {font-size:12px;margin:0px;border:none;cursor:pointer;background-color:#3498db;color:white;} </style>',
-                '<button class="here" onclick="showExtra(event,\'',id,'\')">',extras[i],':','</button>',
+                '<button class="here" onclick="showExtra(event,\'',id,'\')">','> ',extras[i],':','</button>',
                 '<div ID="',id,'" style=display:none>', extrasContent[i],'</div><br>'
       )
     }
