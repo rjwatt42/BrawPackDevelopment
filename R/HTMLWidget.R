@@ -328,7 +328,7 @@ moreHTML<-function(content,title="more",ID="p") {
     control,
     '<button class="more" ID="',ID,'" onclick="showMore(event,\'',IDContent,'\',\'',ID,'\')">',
     '+','</button>',
-    ' ',title,
+    ' >',title,
     '<div ID="',IDContent,'" style="display:none;">', 
     content,
     '</div>'
