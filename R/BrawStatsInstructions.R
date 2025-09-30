@@ -273,7 +273,7 @@ BrawInstructions <- function(HelpType="Plan") {
       id<-paste0(HelpType,extras[i])
       output<-c(output,
                 '<style> button.here {font-size:12px;margin:0px;border:none;cursor:pointer;background-color:#3498db;color:white;} </style>',
-                '<button class="here" onclick="showExtra(event,\'',id,'\')">',extras[i],':','</button>',
+                '<button class="here" onclick="showExtra(event,\'',id,'\')">','+',extras[i],':','</button>',
                 '<div ID="',id,'" style=display:none>', extrasContent[i],'</div><br>'
       )
     }
@@ -283,10 +283,14 @@ BrawInstructions <- function(HelpType="Plan") {
     'function showExtra(evt, extraID) {',
     '  var tabState;',
     '    tabState = document.getElementById(extraID).style.display;',
+    '    var label;',
+    '    label=evt.currentTarget.innerHTML;',
     '    if (tabState!="block") {',
+    '      evt.currentTarget.innerHTML=label.replace("+","-");',
     '      document.getElementById(extraID).style.display = "block";',
     '    }',
     '    else {',
+    '      evt.currentTarget.innerHTML=label.replace("-","+");',
     '      document.getElementById(extraID).style.display = "none";',
     '    }',
     '}',
