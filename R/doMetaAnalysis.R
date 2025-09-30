@@ -18,7 +18,7 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
 ) {
   if (is.null(metaAnalysis)) metaAnalysis<-makeMetaAnalysis()
   # if (is.null(design)) design<-getDesign("Psych")
-  evidence$sigOnly<-metaAnalysis$sourceBias
+  evidence$sigOnly<-(evidence$sigOnly || metaAnalysis$sourceBias)
   evidence$shortHand<-shortHand
   
   localHypothesis<-hypothesis
@@ -53,7 +53,7 @@ doMetaMultiple<-function(nsims=100,metaMultiple=braw.res$metaMultiple,metaAnalys
                          hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence
 ) {
   if (is.null(metaAnalysis)) metaAnalysis<-makeMetaAnalysis()
-  evidence$sigOnly<-metaAnalysis$sourceBias
+  evidence$sigOnly<-(evidence$sigOnly || metaAnalysis$sourceBias)
   evidence$shortHand<-shortHand
   
   for (i in 1:nsims) {
