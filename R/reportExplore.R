@@ -28,7 +28,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
              if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
            },
            "random"={showType<-"metaRiv;metaRsd"},
-           {showType<-"Lambda;pRplus"})
+           {showType<-"mean(R+);p(R+)"})
   
   showType<-strsplit(showType,";")[[1]]
   if (length(showType)==1) {
@@ -450,7 +450,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
                 "metaRsd"={
                   showVals<-exploreResult$result$pRplus
                 },
-                "Lambda"={
+                "mean(R+)"={
                   showVals<-exploreResult$result$PDFk
                 },
                 "p(R+)"={

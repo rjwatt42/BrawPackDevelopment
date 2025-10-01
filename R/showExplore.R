@@ -113,7 +113,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
              showType<-c("metaRiv","metaRsd")
              if (exploreResult$metaAnalysis$analysisVar=="var") showType[2]<-"LambdaRn"
                },
-           {showType<-c("Lambda")}
+           {showType<-c("mean(R+)")}
            )
   }
   
@@ -624,7 +624,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
               "LambdaRn"={
                 showVals<-result$pRplus
               },
-              "Lambda"={
+              "mean(R+)"={
                 showVals<-result$PDFk
               },
               "p(R+)"={

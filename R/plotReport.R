@@ -294,7 +294,7 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
     switch(label,
            "Alpha"={label<-braw.env$alphaChar},
            "p(R+)"={label<-deparse(braw.env$Plabel)},
-           "Lambda"={label<-deparse(braw.env$Llabel)},
+           "mean(R+)"={label<-deparse(braw.env$Llabel)},
            "p(sig)"={label<-deparse(braw.env$pSigLabel)}
            )
     fontface<-"plain"
