@@ -60,7 +60,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' @export
 showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                          showData=TRUE,showTheory=TRUE,limitNumber=0,
-                         xRange="full",autoYlim=FALSE,
+                         xRange="full",autoYlim=TRUE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
@@ -191,7 +191,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (nrow(ptsNull)>0)
     g<-addG(g,dataPoint(data=ptsNull,shape=braw.env$plotShapes$study, colour = col2, fill = fill2, alpha=alphaUse, size = dotSize))
   } else {
-    rBins<-seq(0,1,length.out=101)
+    rBins<-seq(-1,1,length.out=101)
     nBins<-seq(log10(5),log10(500),length.out=101)
     z<-matrix(0,length(nBins)-1,length(rBins)-1)
     for (ir in 1:(length(rBins)-1)) {
