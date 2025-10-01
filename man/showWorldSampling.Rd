@@ -8,7 +8,12 @@ showWorldSampling(
   hypothesis = braw.def$hypothesis,
   design = braw.def$design,
   evidence = braw.def$evidence,
+  showSinglePopulation = NULL,
+  showSingleSample = NULL,
+  HQ = TRUE,
+  totalArea = 1,
   plotArea = c(0, 0, 1, 1),
+  fontScale = 1,
   autoShow = braw.env$autoShow,
   g = NULL
 )

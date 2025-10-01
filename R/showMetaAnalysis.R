@@ -60,7 +60,7 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' @export
 showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                          showData=TRUE,showTheory=TRUE,limitNumber=0,
-                         xRange="full",autoYlim=braw.env$autoYlim,
+                         xRange="full",fixedYlim=braw.env$fixedYlim,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
@@ -98,7 +98,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
     d2<-metaResult$result$nval
     y<-plotAxis("n",hypothesis)
     disp2<-y$label
-    if (autoYlim) {
+    if (!fixedYlim) {
       ylim<-c(min(d2),max(d2))
       if (y$logScale) ylim<-ylim*c(0.75,1.25)
       else ylim<-ylim+c(-1,1)*(max(d2)-min(d2))*0.25

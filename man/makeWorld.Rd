@@ -11,6 +11,7 @@ makeWorld(
   RZ = "r",
   PDFk = 0,
   PDFshape = 2,
+  PDFspread = 0,
   PDFoffset = 0,
   pRplus = 1,
   PDFsample = FALSE,

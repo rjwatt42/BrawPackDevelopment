@@ -7,9 +7,11 @@
 showMetaSingle(
   metaResult = braw.res$metaSingle,
   showType = "n",
+  showData = TRUE,
   showTheory = TRUE,
+  limitNumber = 0,
   xRange = "full",
-  autoYlim = TRUE,
+  fixedYlim = braw.env$fixedYlim,
   fill = NULL,
   alpha = NULL
 )

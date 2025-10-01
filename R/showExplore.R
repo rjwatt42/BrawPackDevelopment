@@ -64,10 +64,10 @@ trimExploreResult<-function(result,nullresult) {
 #' showExplore(exploreResult=doExplore(),
 #'                        showType="Basic",dimension="1D",
 #'                        effectType="unique",whichEffect="All",
-#'                        quantileShow=0.5,autoYlim=TRUE,showHist=TRUE)
+#'                        quantileShow=0.5,fixedYlim=TRUE,showHist=TRUE)
 #' @export
 showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension="1D",showTheory=FALSE,
-                      effectType="unique",whichEffect="All",quantileShow=0.5,autoYlim=braw.env$autoYlim,showHist=TRUE,fixNulls=TRUE){
+                      effectType="unique",whichEffect="All",quantileShow=0.5,fixedYlim=braw.env$fixedYlim,showHist=TRUE,fixNulls=TRUE){
 
 # do we need more simulations  
   if (is.null(exploreResult)) exploreResult=doExplore()
@@ -261,7 +261,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
   if (showType[si]=="p" && braw.env$pPlotScale=="log10" && any(exploreResult$result$pval>0)) {
     ylim<-c(-4,0)  
     while (mean(log10(exploreResult$result$pval)>ylim[1])<0.75) ylim[1]<-ylim[1]-1
-    autoYlim<-FALSE
+    fixedYlim<-FALSE
   }
   
   col2<-desat(braw.env$plotColours$infer_nsigNonNull,0.5)
@@ -846,7 +846,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
       }
       
       if (!is.element(showType[si],c("NHST","p(sig)")))
-      if (autoYlim) {
+      if (!fixedYlim) {
         if (showHist) {
           use_y<-c(showVals,theoryVals,theoryLower,theoryVals1,theoryVals0,theoryVals2)
         } else {
