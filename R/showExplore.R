@@ -307,6 +307,8 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
     }
   } else {
     if (explore$exploreType=="minRp") exploreTypeShow<-"min(r[p])"
+    if (explore$exploreType=="p(R+)") exploreTypeShow<-braw.env$Plabel
+    if (explore$exploreType=="mean(R+)") exploreTypeShow<-braw.env$Llabel
   }
     
   for (whichEffect in whichEffects) {

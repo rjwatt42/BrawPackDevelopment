@@ -627,18 +627,22 @@ drawText<-function(data,label, hjust=0, vjust=0, colour="#000000",fill="white",s
              )
              filter<-paste0(' filter="url(#bg-',fill,')"')
            }
+           if (angle!=0) sub_super_offset<-format(8*size)
+           else sub_super_offset<-format(6*size)
            
            for (i in 1:length(x)) {
              thisLabel<-label[i]
              thisLabel<-gsub("'","",thisLabel)
-             thisLabel<-gsub('\\[([^ ]*?)\\]',
-                             paste0('</tspan><tspan baseline-shift="sub" font-size="',
-                                    reSizeFont(size)*0.8,'">\\1</tspan><tspan text-anchor="start" dominant-baseline="middle" dx=0px dy=0px>'),
-                             thisLabel)
-             thisLabel<-gsub('\\^([^ ]*?) ',
-                             paste0('</tspan><tspan baseline-shift="super" font-size="',
-                                    reSizeFont(size)*0.8,'">\\1</tspan><tspan>'),
-                             thisLabel)
+               thisLabel<-gsub('\\[([^ ]*?)\\]',
+                               paste0('</tspan><tspan ',valign,' font-size="',reSizeFont(size)*0.8,
+                                      '" dx="0" dy="',sub_super_offset,'">',
+                                      '\\1</tspan><tspan',valign,' dx="0" dy="-',sub_super_offset,'">'),
+                               thisLabel)
+               thisLabel<-gsub('\\^([^ ]*?) ',
+                               paste0('</tspan><tspan ',valign,' font-size="',reSizeFont(size)*0.8,
+                                      '" dx="0" dy="-',sub_super_offset,'">',
+                                      '\\1</tspan><tspan',valign,' dx="0" dy="',sub_super_offset,'">'),
+                               thisLabel)
              thisLabel<-paste0(
                '<tspan',halign,valign,
                ' dx=',dx,'px',
