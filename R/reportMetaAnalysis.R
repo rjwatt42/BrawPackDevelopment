@@ -45,7 +45,7 @@ reportMetaSingle<-function(metaResult=braw.res$metaSingle,reportStats="Medians")
   } else {
     outputText<-c(outputText,"!H!C","\bDistr","","\b\u03bb","\bp(0)","\bllk")
     outputText<-c(outputText,"Actual",metaResult$hypothesis$effect$world$PDF,"",brawFormat(metaResult$hypothesis$effect$world$PDFk,digits=3),brawFormat(metaResult$hypothesis$effect$world$pRplus,digits=3),"")
-    outputText<-c(outputText,"Best",metaResult$best$PDF," ",brawFormat(funcCT(metaResult$best$PDFk),digits=3),brawFormat(funcCT(metaResult$best$pRplus),digits=3),brawFormat(funcCT(metaResult$best$S),digits=3))
+    outputText<-c(outputText,"Best",metaResult$best$PDF," ",brawFormat(funcCT(metaResult$best$PDFk),digits=3),brawFormat(funcCT(metaResult$best$pRplus),digits=3),brawFormat(funcCT(metaResult$best$Smax),digits=3))
     outputText<-c(outputText,rep(" ",nc))
     if (metaResult$metaAnalysis$modelPDF=="Single" || (metaResult$metaAnalysis$modelPDF=="All" && braw.env$includeSingle)) {
       outputText<-c(outputText,"Estimated","Single"," ",
