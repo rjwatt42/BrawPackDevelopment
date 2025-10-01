@@ -178,6 +178,8 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           #########################
           # display choices
           
+          braw.env$autoYlim<-TRUE
+          
           braw.env$reportHTML<-reportHTML
           braw.env$graphicsType<-graphicsType
           braw.env$newSampleDisplay<-TRUE

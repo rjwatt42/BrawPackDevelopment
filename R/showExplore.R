@@ -67,7 +67,7 @@ trimExploreResult<-function(result,nullresult) {
 #'                        quantileShow=0.5,autoYlim=TRUE,showHist=TRUE)
 #' @export
 showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension="1D",showTheory=FALSE,
-                      effectType="unique",whichEffect="All",quantileShow=0.5,autoYlim=TRUE,showHist=TRUE,fixNulls=TRUE){
+                      effectType="unique",whichEffect="All",quantileShow=0.5,autoYlim=braw.env$autoYlim,showHist=TRUE,fixNulls=TRUE){
 
 # do we need more simulations  
   if (is.null(exploreResult)) exploreResult=doExplore()
