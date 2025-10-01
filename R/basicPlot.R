@@ -627,9 +627,9 @@ drawText<-function(data,label, hjust=0, vjust=0, colour="#000000",fill="white",s
              )
              filter<-paste0(' filter="url(#bg-',fill,')"')
            }
-           if (angle!=0) sub_super_offset<-format(8*size)
-           else sub_super_offset<-format(6*size)
-           
+           sub_super_offset<-format(6*size)
+           if (angle!=0) sub_super_offset<-format(6*size*braw.env$plotSize[1]/braw.env$plotSize[2])
+
            for (i in 1:length(x)) {
              thisLabel<-label[i]
              thisLabel<-gsub("'","",thisLabel)
