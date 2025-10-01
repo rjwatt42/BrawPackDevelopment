@@ -114,7 +114,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
              if (exploreResult$metaAnalysis$analysisVar=="var") showType[2]<-"LambdaRn"
                },
            {
-             if (exploreResult$metaAnalysis$analyzeBias) showType<-c("mean(R+)","p(R+)")
+             if (exploreResult$metaAnalysis$analyseBias) showType<-c("mean(R+)","p(R+)")
                else showType<-c("mean(R+)")
                }
            )
