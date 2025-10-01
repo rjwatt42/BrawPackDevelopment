@@ -581,7 +581,8 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
             yticks<-seq(0,1,0.2)
             ymins<-seq(0,1,0.1)
             ylabel<-braw.env$Llabel
-            ylabel<-sub("[+]","[+]",ylabel)
+            if (braw.env$graphicsType=="ggplot")
+              ylabel<-sub("[+]","[+]",ylabel)
             if (braw.env$RZ=="z") ylabel<-sub("R","Z",ylabel)
             use_cols<-braw.env$plotColours$metaMultiple
           },
