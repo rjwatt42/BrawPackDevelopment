@@ -4,11 +4,12 @@ brawbasicHelp<-function(open=0,indent,titleWidth) {
     '<br>The help system contains useful information about BrawStats.',
     '<br>Use the grey tabs to open up the topics. ',
     "To close a tab, click the same grey tab. To close all tabs, click the white 'Help:' label.",
-    '<br>',
-    '<b>Plan Tabs</b>',
-    '<br>The basic parameters of a research plan are shown graphically in the Plan Tabs.</b>',
-    '<br>These show the current plan for simulations. The tabs operate in the same way as for the Help Tabs.',
-    '<br>When the plan is changed, the relevant part is shown here.'
+    '<br>'
+    # ,
+    # '<b>Plan Tabs</b>',
+    # '<br>The basic parameters of a research plan are shown graphically in the Plan Tabs.</b>',
+    # '<br>These show the current plan for simulations. The tabs operate in the same way as for the Help Tabs.',
+    # '<br>When the plan is changed, the relevant part is shown here.'
   )
   )
 }
