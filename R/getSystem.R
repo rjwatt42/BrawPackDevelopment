@@ -85,7 +85,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
            world<-makeWorld(On=TRUE,
                        PDF="Exp",
                        RZ="z",
-                       PDFk=atanh(rp)
+                       PDFk=atanh(rp),
                        pRplus=0.26
                        )
          },
@@ -93,7 +93,7 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
            world<-makeWorld(On=TRUE,
                        PDF="Exp",
                        RZ="z",
-                       PDFk=atanh(rp)
+                       PDFk=atanh(rp),
                        pRplus=0.5
                        )
          },
