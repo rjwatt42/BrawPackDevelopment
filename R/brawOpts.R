@@ -405,10 +405,8 @@ setColours<-function(type,graphC=braw.env$plotColours$graphC) {
   if (graphC=="normal") graphC<-"#BFECFF"
   
   sigCol<-"#44EE11"
-  switch(type,
-         "normal"={ nsCol<-"#FF4400" },
-         "meta"={ nsCol<-"#BBB" }
-         )
+  nsCol<-"#FF4400"
+  if (type=="meta") nsCol<-"#BBB" 
 
   sigNullCol<-darken(sigCol,gain=0.7)
   nsNonNullCol<-darken(nsCol,gain=0.7)
@@ -429,7 +427,7 @@ setColours<-function(type,graphC=braw.env$plotColours$graphC) {
                     fdr="#227700",fmr="#BB5555",
                     powerPopulation="#0049FF",powerSample="#88BDFF")
   
-  if (BW) {
+  if (type=="BW") {
     plotColours<-list(graphC="#FFFFFF",graphBack="#999999",
                       maineffectES="#FFFFFF",covariationES="#FFFFFF",interactionES="#FFFFFF",
                       populationC="#FFFFFF",sampleC="#FFFFFF",descriptionC="#FFFFFF",
