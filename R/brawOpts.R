@@ -399,7 +399,7 @@ setHTML<-function() {
 setggplot<-function() setBrawEnv("graphicsType","ggplot")
 
 #' @export
-setColours<-function(type,graphC) {
+setColours<-function(type,graphC=braw.env$plotColours$graphC) {
   
   if (graphC=="white") graphC<-"#FFFFFF"
   if (graphC=="normal") graphC<-"#BFECFF"
