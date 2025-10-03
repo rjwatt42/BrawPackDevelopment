@@ -404,18 +404,10 @@ setColours<-function(type,graphC=braw.env$plotColours$graphC) {
   if (graphC=="white") graphC<-"#FFFFFF"
   if (graphC=="normal") graphC<-"#BFECFF"
   
+  sigCol<-"#44EE11"
   switch(type,
-         "normal"={
-           sigCol<-"#44EE11"
-           nsCol<-"#FF4400"
-           
-         },
-         "meta"={
-           nsCol<-"#F82"
-           nsCol<-"#FC0"
-           nsCol<-"#BBB"
-           
-         }
+         "normal"={ nsCol<-"#FF4400" },
+         "meta"={ nsCol<-"#BBB" }
          )
 
   sigNullCol<-darken(sigCol,gain=0.7)
