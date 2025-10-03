@@ -186,7 +186,7 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
 ) {
   
   pC<-braw.env$plotColours
-  setColour("meta")
+  setColours("meta")
   if (is.character(metaScience)) 
     metaScience<-prepareMetaScience(metaScience,alt4B=alt4B,
                                     world=world,rp=rp,pRplus=pRplus,metaPublicationBias=metaPublicationBias,
