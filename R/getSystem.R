@@ -11,144 +11,98 @@ getWorld<-function(name,rp=0.3,result=braw.res$result) {
            world<-makeWorld(On=TRUE,
                        PDFsample=TRUE,
                        RZ="r",
-                       PDFsd=result$nval,
-                       PDFoffset=result$rIV,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1)
+                       PDFsamplesd=1/sqrt(result$nval-3),
+                       PDFsamplemn=result$rIV
+                       )
          },
          "SampleB"={
            world<-makeWorld(On=TRUE,
                        PDFsample=TRUE,
                        RZ="r",
-                       PDFsd=result$nval,
-                       PDFoffset=result$rIV,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=0)
+                       PDFsamplesd=1/sqrt(result$nval-3),
+                       PDFsamplemn=result$rIV
+           )
          },
          "Null"={
            world<-makeWorld(On=TRUE,
                        PDF="Single",
                        RZ="z",
-                       PDFk=0,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1,
-                       PDFsample=FALSE
+                       PDFk=0
            )
          },
          "NullH"={
            world<-makeWorld(On=TRUE,
                        PDF="Single",
                        RZ="z",
-                       PDFk=0,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1,
-                       PDFsample=FALSE
-           )
+                       PDFk=0
+                       )
          },
          "Uniform"={
            world<-makeWorld(On=TRUE,
                        PDF="Uniform",
-                       RZ="r",
-                       PDFk=rp,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1,
-                       PDFsample=FALSE)
+                       RZ="r"
+                       )
          },
          "Single"={
            world<-makeWorld(On=TRUE,
                        PDF="Single",
                        RZ="r",
                        PDFk=rp,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=0.5,
-                       PDFsample=FALSE)
+                       pRplus=0.5
+                       )
          },
          "Plain"={
            world<-makeWorld(On=TRUE,
                        PDF="Single",
                        RZ="r",
-                       PDFk=rp,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1,
-                       PDFsample=FALSE)
+                       PDFk=rp
+                       )
          },
          "Binary"={
            world<-makeWorld(On=TRUE,
                        PDF="Single",
                        RZ="r",
                        PDFk=rp,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=0.5,
-                       PDFsample=FALSE)
+                       pRplus=0.5
+                       )
          },
          "Double"={
            world<-makeWorld(On=TRUE,
                        PDF="Double",
                        RZ="r",
-                       PDFk=rp,
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1,
-                       PDFsample=FALSE)
+                       PDFk=rp
+                       )
          },
          "Gaussian"={
            world<-makeWorld(On=TRUE,
                        PDF="Gauss",
                        RZ="z",
                        PDFk=atanh(rp),
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=0.5,
-                       PDFsample=FALSE)
+                       pRplus=0.5
+                       )
          },
          "Psych"={
            world<-makeWorld(On=TRUE,
                        PDF="Exp",
                        RZ="z",
-                       PDFk=atanh(rp),
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=0.26,
-                       PDFsample=FALSE)
+                       PDFk=atanh(rp)
+                       pRplus=0.26
+                       )
          },
          "Psych50"={
            world<-makeWorld(On=TRUE,
                        PDF="Exp",
                        RZ="z",
-                       PDFk=atanh(rp),
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=0.5,
-                       PDFsample=FALSE)
+                       PDFk=atanh(rp)
+                       pRplus=0.5
+                       )
          },
          "PsychF"={
            world<-makeWorld(On=TRUE,
                        PDF="Exp",
                        RZ="z",
-                       PDFk=atanh(rp),
-                       PDFoffset=0,
-                       PDFshape=0,
-                       PDFspread=0,
-                       pRplus=1,
-                       PDFsample=FALSE)
+                       PDFk=atanh(rp)
+                       )
          }
   )
   return(world)
