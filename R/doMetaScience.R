@@ -185,6 +185,7 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
                         rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE)
 ) {
   
+  setColour("meta")
   if (is.character(metaScience)) 
     metaScience<-prepareMetaScience(metaScience,alt4B=alt4B,
                                     world=world,rp=rp,pRplus=pRplus,metaPublicationBias=metaPublicationBias,

@@ -45,8 +45,6 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
                    npointsMax=1000,
                    maxBins=251,
                    fullOutput=0) {
-  if (graphC=="white") graphC<-"#FFFFFF"
-  if (graphC=="normal") graphC<-"#BFECFF"
   braw.env <- new.env(parent = emptyenv())
   braw.def <- new.env(parent = emptyenv())
   braw.res <- new.env(parent = emptyenv())
@@ -71,6 +69,9 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
   # left, bottom, x-size, y-size
   ################################
   # graph design
+  
+  if (graphC=="white") graphC<-"#FFFFFF"
+  if (graphC=="normal") graphC<-"#BFECFF"
   
   sigCol<-"#44EE11"
   nsCol<-"#FF4400"
@@ -388,8 +389,68 @@ setBrawDef<-function(which,value) {
   }
 }
 
+#' @export
 setHTML<-function() {
   setBrawEnv("graphicsType","HTML")
   setBrawEnv("reportHTML",TRUE)
 }
+
+#' @export
 setggplot<-function() setBrawEnv("graphicsType","ggplot")
+
+#' @export
+setColours<-function(type,graphC) {
+  
+  if (graphC=="white") graphC<-"#FFFFFF"
+  if (graphC=="normal") graphC<-"#BFECFF"
+  
+  switch(type,
+         "normal"={
+           sigCol<-"#44EE11"
+           nsCol<-"#FF4400"
+           
+         },
+         "meta"={
+           nsCol<-"#F82"
+           nsCol<-"#FC0"
+           nsCol<-"#BBB"
+           
+         }
+         )
+
+  sigNullCol<-darken(sigCol,gain=0.7)
+  nsNonNullCol<-darken(nsCol,gain=0.7)
+  isigNullCol<-darken(sigCol,off=0.5)
+  isigNonNullCol<-darken(nsCol,off=0.5)
+  # graph themes
+  plotColours<-list(graphC=graphC,graphBack="#999999",
+                    variableC="#FFCC00",maineffectES="#DD8844",covariationES="#FF1100",interactionES="#0011FF",
+                    populationC="#FFCC00",sampleC="#FFCC00",descriptionC="#DD8844",
+                    designC="#CC4422",replicationC="#FF7755",
+                    descriptionC1="#FF5533",descriptionC2="#CCBB33",
+                    descriptionTotal=darken(desat("#DD8844",0.1),0.7),descriptionsUnique=darken(desat("#DD8844",0.1),1.3),
+                    metaAnalysis="#FFEE00",metaMultiple="#FF8800",metaAnalysisTheory="#FFFFFF",
+                    infer_sigC=sigCol,infer_nsigC=nsCol,infer_none="#AAAAAA",infer_miss=NULL,
+                    infer_sigNonNull=sigCol,infer_nsigNonNull=nsNonNullCol,infer_isigNonNull=isigNonNullCol,infer_nsdNonNull="#DDCCCC",
+                    infer_sigNull=sigNullCol,infer_nsigNull=nsCol,infer_isigNull=isigNullCol,infer_nsdNull="#CCDDCC",
+                    psig="#FFAA00",alpha="#44FF22",
+                    fdr="#227700",fmr="#BB5555",
+                    powerPopulation="#0049FF",powerSample="#88BDFF")
+  
+  if (BW) {
+    plotColours<-list(graphC="#FFFFFF",graphBack="#999999",
+                      maineffectES="#FFFFFF",covariationES="#FFFFFF",interactionES="#FFFFFF",
+                      populationC="#FFFFFF",sampleC="#FFFFFF",descriptionC="#FFFFFF",
+                      designC="#444444",replicationC="#777777",
+                      descriptionC1="#888888",descriptionC2="#111111",
+                      descriptionTotal=darken(desat("#FFFFFF",0.1),0.7),descriptionsUnique=darken(desat("#DD8844",0.1),1.3),
+                      metaAnalysis="#FFFFFF",metaAnalysisTheory="#FFFFFF",
+                      infer_sigC="#FFFFFF",infer_nsigC="#111111",infer_none="#AAAAAA",
+                      infer_sigNonNull="#FFFFFF",infer_isigNonNull="#555555",infer_nsigNonNull="#555555",infer_nsdNonNull="#333333",
+                      infer_sigNull="#BBBBBB",infer_isigNull="#111111",infer_nsigNull="#FFFFFF",infer_nsdNull="#DDDDDD",
+                      psig="#FFFFFF",alpha="#FFFFFF",
+                      fdr="#BBBBBB",fmr="#555555")
+  }
+  
+  setBrawEnv("plotColours",plotColours)
+}
