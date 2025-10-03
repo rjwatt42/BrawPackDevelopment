@@ -192,6 +192,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   # location refers to lambda for world metaA
   # spread refers to nulls for world metaA
   llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
+
   S<-array(0,c(length(param1Use),length(param2Use),length(param3Use),length(param4Use),length(param5Use)))
   for (re in 1:niterations) {
     # get an approx result
@@ -222,8 +223,29 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     
     # after 2 iterations, can we do a search?
     if (re>=2) {
+      params<-c(PDFk,pRplus,sigOnly,PDFspread,PDFshape)
+      ub<-c(ub1,ub2,ub3,ub4,ub5)
+      lb<-c(lb1,lb2,lb3,lb4,lb5)
+      np<-5
+      if (length(param5Use)==1 ) {
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        np<-4
+      }
+      if (length(param4Use)==1 && length(param5Use)==1 ) {
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        np<-3
+      }
+      if (length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        np<-2
+      }
+      if (length(param2Use)==1 && length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        np<-1
+      }
+      
       result<-tryCatch( {
-        fmincon(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape),llfun,ub=c(ub1,ub2,ub3,ub4,ub5),lb=c(lb1,lb2,lb3,lb4,lb5))
+        fmincon(params[1:np],llfun,ub=ub[1:np],lb=lb[1:np])
       }, 
       error = function(e){NULL}
       )
@@ -234,13 +256,12 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     if (length(param3Use)>1) param3Use<-seq(lb3,ub3,length.out=np3points)
     if (length(param4Use)>1) param4Use<-seq(lb4,ub4,length.out=np4points)
     if (length(param5Use)>1) param5Use<-seq(lb5,ub5,length.out=np5points)
-    result<-list(par=c(PDFk,pRplus,sigOnly,PDFspread,PDFshape),value=-Smax)
   }
   PDFk<-result$par[1]
-  pRplus<-result$par[2]
-  sigOnly<-result$par[3]
-  PDFspread<-result$par[4]
-  PDFshape<-result$par[5]
+  if (length(result$par)>1) pRplus<-result$par[2] else pRplus<-param2Use
+  if (length(result$par)>2) sigOnly<-result$par[3] else sigOnly<-param3Use
+  if (length(result$par)>3) PDFspread<-result$par[4] else PDFspread<-param4Use
+  if (length(result$par)>4) PDFshape<-result$par[5] else PDFshape<-param5Use
   Smax<- -result$value
 
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))

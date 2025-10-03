@@ -279,7 +279,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   if (!is.null(yticks) || !is.null(ylabel))
     fontDimensions<-c(fontDimensions,braw.env$plotArea[3])
   ez<-1
-  fontShrink<-max(0.7,min(fontDimensions))^(1/ez)
+  fontShrink<-max(0.7,max(fontDimensions))^(1/ez)
   fontScale<-fontScale*fontShrink
 
   minGap<-0.1
@@ -289,6 +289,8 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   labelGapx<-labelGapy<-unitGap
   if (containsSubscript(xlabel$label) || containsSuperscript(xlabel$label)) labelGapx<-labelGapx*1.6
   if (containsSubscript(ylabel$label) || containsSuperscript(ylabel$label)) labelGapy<-labelGapy*1.6
+  labelGapx<-labelGapx*braw.env$plotArea[4]
+  labelGapy<-labelGapy*braw.env$plotArea[3]
   
   if (!is.null(xticks)) {
     if (is.null(xticks$breaks))
@@ -317,9 +319,9 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   
   tickSize<-5/max(7,maxtick)
 
-  bottomGap<-labelGapx+3*unitGap
+  bottomGap<-labelGapx+(3+0.25)*unitGap
   if (top>0) topGap<-top*unitGap*3.125 else topGap<-minGap
-  leftGap<-labelGapy+(maxticky+1)*unitGap
+  leftGap<-labelGapy+(maxticky+0.25)*unitGap
   rightGap<-minGap
   
   if (!is.null(xticks)) {

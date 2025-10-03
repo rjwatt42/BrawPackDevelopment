@@ -282,7 +282,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
                xsize<-0.42
                xgap<-0.1
              }
-             braw.env$plotArea<-c(xoff,0,xsize+xgap,1)
+             braw.env$plotArea<-c(xoff,0,xsize+0.08,1)
              if (!all(is.na(metaResult$gauss$Smax)))
                g<-drawMeta(metaResult=metaResult,whichMeta="Gauss",showType="metaK;null",g)
              braw.env$plotArea<-c(xoff+xsize+xgap+0.02,0,xsize,1)
@@ -462,11 +462,12 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       g<-startPlot(xlim,ylim,
                    xticks=makeTicks(xticks),xlabel=makeLabel(xlabel),
                    yticks=makeTicks(yticks),ylabel=makeLabel(ylabel),
-                   top=TRUE,g=g)
+                   top=1.5,g=g)
     else  
       g<-startPlot(xlim,ylim,
                    xticks=makeTicks(xticks),xlabel=makeLabel(xlabel),
-                   top=TRUE,g=g)
+                   # yticks=makeTicks(yticks),ylabel=makeLabel(ylabel),
+                   top=1.5,g=g)
     
     dotSize=16*min(0.25,16/length(x))
     
