@@ -262,9 +262,10 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   if (length(result$par)>2) sigOnly<-result$par[3] else sigOnly<-param3Use
   if (length(result$par)>3) PDFspread<-result$par[4] else PDFspread<-param4Use
   if (length(result$par)>4) PDFshape<-result$par[5] else PDFshape<-param5Use
-  Smax<- -result$value
 
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
+  Smax<- -max(Svals)
+  
   if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
   return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals))
 }
