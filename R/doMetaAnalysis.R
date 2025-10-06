@@ -237,6 +237,10 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
           llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=x[2],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
           np<-c(1,4)
         }
+        if (length(param3Use)==1 && length(param2Use)==1 && length(param4Use)==1) {
+          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+          np<-c(1)
+        }
       }  else {
       if (length(param5Use)==1 ) {
         llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
