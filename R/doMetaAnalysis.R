@@ -21,7 +21,6 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
   evidence$sigOnly<-(evidence$sigOnly || metaAnalysis$sourceBias)
   evidence$shortHand<-shortHand
   
-  
   localHypothesis<-hypothesis
   if (hypothesis$effect$world$On && is.element(metaAnalysis$analysisType,c("fixed","random")))
   {
@@ -282,7 +281,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
   Smax<- -max(Svals)
   
-  if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
+  # if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
   return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals))
 }
 
