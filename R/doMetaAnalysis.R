@@ -226,6 +226,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
       params<-c(PDFk,pRplus,sigOnly,PDFspread,PDFshape)
       ub<-c(ub1,ub2,ub3,ub4,ub5)
       lb<-c(lb1,lb2,lb3,lb4,lb5)
+      llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
       np<-1:5
       if (is.element(dist,c("fixed","random"))) {
         if (length(param3Use)==1 ) {
@@ -269,10 +270,10 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     if (length(param5Use)>1) param5Use<-seq(lb5,ub5,length.out=np5points)
   }
   PDFk<-result$par[1]
-  if (length(result$par)>1) pRplus<-result$par[2] else pRplus<-param2Use
-  if (length(result$par)>2) sigOnly<-result$par[3] else sigOnly<-param3Use
-  if (length(result$par)>3) PDFspread<-result$par[4] else PDFspread<-param4Use
-  if (length(result$par)>4) PDFshape<-result$par[5] else PDFshape<-param5Use
+  if (length(param2Use)>1) pRplus<-result$par[2] else pRplus<-param2Use
+  if (length(param3Use)>2) sigOnly<-result$par[3] else sigOnly<-param3Use
+  if (length(param4Use)>3) PDFspread<-result$par[4] else PDFspread<-param4Use
+  if (length(param5Use)>4) PDFshape<-result$par[5] else PDFshape<-param5Use
 
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
   Smax<- -max(Svals)
