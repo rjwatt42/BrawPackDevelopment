@@ -226,26 +226,37 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
       params<-c(PDFk,pRplus,sigOnly,PDFspread,PDFshape)
       ub<-c(ub1,ub2,ub3,ub4,ub5)
       lb<-c(lb1,lb2,lb3,lb4,lb5)
-      np<-5
+      np<-1:5
+      if (is.element(dist==c("fixed","random"))) {
+        if (length(param3Use)==1 ) {
+          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=x[3],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+          np<-c(1,2,4)
+        }
+        if (length(param3Use)==1 && length(param2Use)==1) {
+          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=x[2],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+          np<-c(1,4)
+        }
+      }  else {
       if (length(param5Use)==1 ) {
         llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
-        np<-4
+        np<-1:4
       }
       if (length(param4Use)==1 && length(param5Use)==1 ) {
         llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
-        np<-3
+        np<-1:3
       }
       if (length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
         llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
-        np<-2
+        np<-1:2
       }
       if (length(param2Use)==1 && length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
         llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
         np<-1
       }
+    }
       
       result<-tryCatch( {
-        fmincon(params[1:np],llfun,ub=ub[1:np],lb=lb[1:np])
+        fmincon(params[np],llfun,ub=ub[np],lb=lb[np])
       }, 
       error = function(e){NULL}
       )
