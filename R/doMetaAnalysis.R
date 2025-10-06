@@ -281,6 +281,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
            PDFspread<-result$par[i], 
            PDFshape<-result$par[i], 
     )
+  setBrawRes("best",result$par)
   
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
   Smax<- -max(Svals)
@@ -355,7 +356,6 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
              genexp<-getMaxLikelihood(zs,ns,df1,"GenExp",metaAnalysis,hypothesis)
            
          })
-  setBrawRes("best",random)
   use<-which.max(c(fixed$Smax,random$Smax,single$Smax,gauss$Smax,exp$Smax,gamma$Smax,genexp$Smax))
   bestDist<-c("fixed","random","Single","Gauss","Exp","Gamma","GenExp")[use]
   if (metaAnalysis$analysisType=="none")
