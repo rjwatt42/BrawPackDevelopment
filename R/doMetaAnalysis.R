@@ -227,7 +227,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
       ub<-c(ub1,ub2,ub3,ub4,ub5)
       lb<-c(lb1,lb2,lb3,lb4,lb5)
       np<-1:5
-      if (is.element(dist==c("fixed","random"))) {
+      if (is.element(dist,c("fixed","random"))) {
         if (length(param3Use)==1 ) {
           llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=x[3],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
           np<-c(1,2,4)
