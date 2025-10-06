@@ -21,6 +21,7 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
   evidence$sigOnly<-(evidence$sigOnly || metaAnalysis$sourceBias)
   evidence$shortHand<-shortHand
   
+  
   localHypothesis<-hypothesis
   if (hypothesis$effect$world$On && is.element(metaAnalysis$analysisType,c("fixed","random")))
   {
