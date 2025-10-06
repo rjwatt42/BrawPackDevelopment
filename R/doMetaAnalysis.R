@@ -273,16 +273,17 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     if (length(param4Use)>1) param4Use<-seq(lb4,ub4,length.out=np4points)
     if (length(param5Use)>1) param5Use<-seq(lb5,ub5,length.out=np5points)
   }
-  for (i in 1:length(np)) 
-    switch(np[i],
-           PDFk<-result$par[i],
-           pRplus<-result$par[i], 
-           sigOnly<-result$par[i], 
-           PDFspread<-result$par[i], 
-           PDFshape<-result$par[i], 
-    )
-  setBrawRes("best",result$par)
-  
+  setBrawRes("best",list(params,np))
+  if (!is.null(result)) {
+    for (i in 1:length(np)) 
+      switch(np[i],
+             PDFk<-result$par[i],
+             pRplus<-result$par[i], 
+             sigOnly<-result$par[i], 
+             PDFspread<-result$par[i], 
+             PDFshape<-result$par[i], 
+      )
+  }
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
   Smax<- -max(Svals)
   
