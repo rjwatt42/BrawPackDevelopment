@@ -263,7 +263,9 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
       result<-tryCatch( {
         fmincon(params[np],llfun,ub=ub[np],lb=lb[np])
       }, 
-      error = function(e){NULL}
+      error = function(error_message){
+        setBrawRes("debug",message(error_message))
+        }
       )
       if (!is.null(result)) break
     }
@@ -273,7 +275,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     if (length(param4Use)>1) param4Use<-seq(lb4,ub4,length.out=np4points)
     if (length(param5Use)>1) param5Use<-seq(lb5,ub5,length.out=np5points)
   }
-  setBrawRes("best",list(params,np))
+
   if (!is.null(result)) {
     for (i in 1:length(np)) 
       switch(np[i],
