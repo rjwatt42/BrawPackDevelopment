@@ -14,39 +14,39 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
   p1<-metaResult[[Dist]]$PDFk
   p2<-metaResult[[Dist]]$pRplus
   p3<-metaResult[[Dist]]$sigOnly
+  p4<-metaResult[[Dist]]$PDFspread
+  p5<-metaResult[[Dist]]$PDFshape
   if (whichMeta!="world")
     switch(braw.env$RZ,
            "r"={},
            "z"={
              p1<-atanh(p1)
-             p2<-atanh(p2)
+             p4<-atanh(p4)
            },
            "d"={
              p1<-2*p1/sqrt(1-p1^2)
-             p2<-2*p2/sqrt(1-p2^2)
+             p4<-2*p4/sqrt(1-p4^2)
            }
     )
   
   if (is.element(Dist,c("random","fixed"))) {
     label1<-paste0(braw.env$RZ,"[m]") 
     lb<-paste0(label1,"=",brawFormat(mean(p1,na.rm=TRUE),digits=3))
-    # if (length(p1)>1)
-    #   lb<-paste0(lb,"\u00B1",brawFormat(std(p1),digits=2))
+    if (is.element(Dist,c("random"))) {
+      label2<-paste0(braw.env$RZ,"[sd]")
+      lb<-paste0(lb,"\n",label2,"=",brawFormat(mean(p4,na.rm=TRUE),digits=3))
+    }
   } else {
     lb<-paste0(Dist,"(","z","/",brawFormat(mean(p1,na.rm=TRUE),digits=3),")")
   }
-  if (!is.null(p2)) {
+  if (metaResult$metaAnalysis$analyseNulls) {
     label2<-braw.env$Plabel
-    if (is.element(Dist,c("random","fixed"))) label2<-paste0(braw.env$RZ,"[sd]")
     lb<-paste0(lb,"\n",braw.env$Plabel,"=",brawFormat(mean(p2,na.rm=TRUE),digits=3))
-    # if (length(p2)>1)
-    #   lb<-paste0(lb,"\u00B1",brawFormat(std(p2),digits=2))
   }
-  if (is.element(Dist,c("random","fixed")))
-    if (!is.null(p3)) {
-      label3<-"bias[m]"
-      lb<-paste0(lb,"\n",label3,"=",brawFormat(mean(p3,na.rm=TRUE),digits=3))
-    }
+  if (metaResult$metaAnalysis$analyseBias) {
+    label3<-"bias[m]"
+    lb<-paste0(lb,"\n",label3,"=",brawFormat(mean(p3,na.rm=TRUE),digits=3))
+  }
   label4<-"S[max]"
   lb<-paste0(lb,"\n",label4,"=",brawFormat(metaResult[[Dist]]$Smax,digits=3))
   return(lb)
@@ -139,7 +139,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                xticks=makeTicks(x$ticks),xlabel=makeLabel(disp1),
                yticks=yticks,
                ylabel=makeLabel(disp2),
-               top=1,g=NULL)
+               top=1.5,g=NULL)
   if (showTheory) 
     g<-addG(g,plotTitle(paste0("Method=",metaResult$metaAnalysis$method),size=0.75))
   
@@ -479,8 +479,9 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
                         size = dotSize))
     if (any(useBest))
     g<-addG(g,dataPoint(data=pts[useBest,],shape=braw.env$plotShapes$meta,
-                        colour="#FFFFFF", fill=braw.env$plotColours$metaMultiple, alpha=min(1,2.5/sqrt(length(x))), 
-                        size = dotSize,strokewidth=3))
+                        colour=darken(braw.env$plotColours$metaMultiple,off=0.2), 
+                        fill=braw.env$plotColours$metaMultiple, alpha=min(1,2.5/sqrt(length(x))), 
+                        size = dotSize,strokewidth=1))
     
     use<-which.max(c(n1,n2,n3))
     bestD<-c("Single","Gauss","Exp")[use]

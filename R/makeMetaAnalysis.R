@@ -6,16 +6,15 @@
 #' makeMetaAnalysis<-function(On=TRUE,nstudies=100,
 #' analysisType="random",analysisVar="sd",
 #' method="MLE",analysisPrior="none",
-#' modelNulls=FALSE,modelPDF="All",
+#' analyseNulls=FALSE,modelPDF="All",
 #' sourceBias=FALSE,
 #' analyseBias=FALSE)
 #' @export
 makeMetaAnalysis<-function(On=FALSE, nstudies=10,
-                           analysisType="random",analysisVar="sd",
+                           analysisType="random",analysisVar="sd",modelPDF="All",
                            method="MLE",analysisPrior="none",
-                           modelNulls=FALSE,modelPDF="All",
-                           sourceBias=FALSE,
-                           analyseBias=FALSE) {
+                           sourceNulls=0,analyseNulls=FALSE,
+                           sourceBias=0,analyseBias=FALSE) {
   metaAnalysis<-list(
     On=On,
     nstudies=nstudies,
@@ -25,7 +24,8 @@ makeMetaAnalysis<-function(On=FALSE, nstudies=10,
     analysisPrior=analysisPrior,
     modelPDF=modelPDF,
     sourceBias=sourceBias,
-    modelNulls=modelNulls,
+    sourceNulls=sourceNulls,
+    analyseNulls=analyseNulls,
     analyseBias=analyseBias
   )
   

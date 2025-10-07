@@ -234,9 +234,9 @@ replicateSample<-function(hypothesis,design,evidence,sample,res) {
                     rpIV=ResultHistory$rpIV[use])
       metaAnalysis<-makeMetaAnalysis(TRUE,analysisType="fixed",
                                      method="MLE",
-                                     modelNulls=FALSE,
-                                     sourceBias=FALSE,
-                                     analyseBias=1/length(studies$rIV))
+                                     analyseNulls=FALSE,
+                                     sourceBias=0,
+                                     analyseBias=FALSE)
       metaResult<-runMetaAnalysis(metaAnalysis,studies,hypothesis,metaResult=NULL)
       res$nval<-sum(studies$nval)
       res$rIV<-sum(studies$rIV*studies$nval)/res$nval
@@ -367,7 +367,7 @@ replicateSample<-function(hypothesis,design,evidence,sample,res) {
       
       # metaAnalysis<-makeMetaAnalysis(TRUE,analysisType="fixed",
       #                                method="MLE",
-      #                                modelNulls=FALSE,
+      #                                analyseNulls=FALSE,
       #                                sourceBias=FALSE,
       #                                analyseBias=1/length(studies$rIV))
       # metaResult<-runMetaAnalysis(metaAnalysis,studies,hypothesis,metaResult=NULL)

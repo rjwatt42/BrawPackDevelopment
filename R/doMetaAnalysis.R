@@ -123,10 +123,10 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   reInc4<-2
   reInc5<-2
 
-  if (metaAnalysis$modelNulls) {
+  if (metaAnalysis$analyseNulls) {
     param2Use<-seq(0,1,length.out=np2points)
   } else {
-    param2Use<-1
+    param2Use<-1-metaAnalysis$sourceNulls
   }
   
   if (metaAnalysis$analyseBias) {
@@ -322,14 +322,14 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
          "none"={},
          "fixed"={
            # a fixed analysis finds a single effect size
-           metaAnalysis$modelNulls<-FALSE
+           metaAnalysis$analyseNulls<-FALSE
            switch(metaAnalysis$method,
                   "MLE"={fixed<-getMaxLikelihood(zs,ns,df1,"fixed",metaAnalysis,hypothesis)},
                   "TF"={fixed<-getTrimFill(zs,ns,df1,"fixed",metaAnalysis,hypothesis)}
                   )
          },
          "random"={
-           metaAnalysis$modelNulls<-FALSE
+           metaAnalysis$analyseNulls<-FALSE
            switch(metaAnalysis$method,
                   "MLE"={random<-getMaxLikelihood(zs,ns,df1,"random",metaAnalysis,hypothesis)},
                   "TF"={random<-getTrimFill(zs,ns,df1,"random",metaAnalysis,hypothesis)}

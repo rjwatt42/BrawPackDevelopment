@@ -804,7 +804,7 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
                 "p(R+)"={
                   effect$world$On<-TRUE
                   effect$world$pRplus<-vals[vi]
-                  # metaAnalysis$modelNulls<-TRUE
+                  # metaAnalysis$analyseNulls<-TRUE
                 },
                 
                 "Heteroscedasticity"={effect$Heteroscedasticity<-vals[vi]},
@@ -899,13 +899,13 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
                 },
                 "MetaType"={
                   switch(vals[vi],
-                         "FF"={metaAnalysis$modelNulls<-FALSE
+                         "FF"={metaAnalysis$analyseNulls<-FALSE
                          metaAnalysis$analyseBias<-FALSE},
-                         "FT"={metaAnalysis$modelNulls<-TRUE
+                         "FT"={metaAnalysis$analyseNulls<-TRUE
                          metaAnalysis$analyseBias<-FALSE},
-                         "TF"={metaAnalysis$modelNulls<-FALSE
+                         "TF"={metaAnalysis$analyseNulls<-FALSE
                          metaAnalysis$analyseBias<-TRUE},
-                         "TT"={metaAnalysis$modelNulls<-TRUE
+                         "TT"={metaAnalysis$analyseNulls<-TRUE
                          metaAnalysis$analyseBias<-TRUE},
                   )
                   doingMetaAnalysis<-TRUE
