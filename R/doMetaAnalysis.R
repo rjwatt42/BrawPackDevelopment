@@ -261,10 +261,12 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     }
       
       result<-tryCatch( {
-        fmincon(params[np],llfun,ub=ub[np],lb=lb[np])
+        fminsearch(llfun,params[np],method='Hooke-Jeeves',lower=lb[np],upper=ub[np])
+        # fmincon(params[np],llfun,ub=ub[np],lb=lb[np])
       }, 
       error = function(error_message){
-        setBrawRes("debug",message(error_message))
+        print(paste("fmincon error:  ",error_message))
+        setBrawRes("debug",error_message)
         }
       )
       if (!is.null(result)) break
@@ -277,13 +279,15 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   }
 
   if (!is.null(result)) {
+    vals<-result$xmin
+    # vals<-result$par
     for (i in 1:length(np)) 
       switch(np[i],
-             PDFk<-result$par[i],
-             pRplus<-result$par[i], 
-             sigOnly<-result$par[i], 
-             PDFspread<-result$par[i], 
-             PDFshape<-result$par[i], 
+             PDFk<-vals[i],
+             pRplus<-vals[i], 
+             sigOnly<-vals[i], 
+             PDFspread<-vals[i], 
+             PDFshape<-vals[i], 
       )
   }
   Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))

@@ -67,7 +67,8 @@ trimExploreResult<-function(result,nullresult) {
 #'                        quantileShow=0.5,fixedYlim=TRUE,showHist=TRUE)
 #' @export
 showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension="1D",showTheory=FALSE,
-                      effectType="unique",whichEffect="All",quantileShow=0.5,fixedYlim=braw.env$fixedYlim,showHist=TRUE,fixNulls=TRUE){
+                      effectType="unique",whichEffect="All",quantileShow=0.5,
+                      fixedYlim=braw.env$fixedYlim,showHist=FALSE,fixNulls=TRUE){
 
 # do we need more simulations  
   if (is.null(exploreResult)) exploreResult=doExplore()
@@ -114,7 +115,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
              if (exploreResult$metaAnalysis$analysisVar=="var") showType[2]<-"LambdaRn"
                },
            {
-             if (exploreResult$metaAnalysis$analyseBias) showType<-c("mean(R+)","p(R+)")
+             if (exploreResult$metaAnalysis$analyseNulls) showType<-c("mean(R+)","p(R+)")
                else showType<-c("mean(R+)")
                }
            )
@@ -128,7 +129,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
     return(g)
   }
   
-  quants<-(1-quantileShow)/2
+  quants<-quantileShow/2
   showPower<-TRUE # show power calculations?
   showPowerR<-FALSE # show power calculations?
   
@@ -969,6 +970,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
                                design=exploreResult$design,
                                ylim=ylim,
                                scale=3/(length(vals)+1),
+                               orientation="horz",
                                width=c(left,right),
                                col=col,useSignificanceCols=FALSE,
                                histStyle="dense",

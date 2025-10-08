@@ -235,10 +235,11 @@ storeExploreResult<-function(result,res,ri,vi) {
       result$p$total[ri,vi,1:n]<-res$p$total
     }
   } else {
-    PDFk<-max(c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk),na.rm=TRUE)
-    pRplus<-max(c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus),na.rm=TRUE)
-    sigOnly<-max(c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly),na.rm=TRUE)
-    S<-max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax),na.rm=TRUE)
+    use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax))
+    PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk)[use]
+    pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus)[use]
+    sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly)[use]
+    S<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax)[use]
     sigs<-isSignificant(braw.env$STMethod,res$result$pIV,res$result$rIV,res$result$nval,res$result$df1,res$result$evidence)
     nSig<-sum(sigs)
     result$PDFk[ri,vi]<-PDFk
