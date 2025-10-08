@@ -472,6 +472,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     dotSize=16*min(0.25,16/length(x))
     
     f1<-darken(braw.env$plotColours$metaMultiple,off=-0.2)
+    f2<-braw.env$plotColours$metaMultiple
     if (any(!useBest))
       g<-addG(g,dataPoint(data=pts[!useBest,],shape=braw.env$plotShapes$meta, 
                         colour=f1, 
@@ -479,13 +480,15 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
                         size = dotSize))
     if (any(useBest))
     g<-addG(g,dataPoint(data=pts[useBest,],shape=braw.env$plotShapes$meta,
-                        colour=darken(braw.env$plotColours$metaMultiple,off=0.2), 
-                        fill=braw.env$plotColours$metaMultiple, alpha=min(1,2.5/sqrt(length(x))), 
+                        colour=darken(f2,off=0.2), 
+                        fill=f2, alpha=min(1,2.5/sqrt(length(x))), 
                         size = dotSize,strokewidth=1))
     
     use<-which.max(c(n1,n2,n3))
     bestD<-c("Single","Gauss","Exp")[use]
-    if (whichMeta==bestD)  colM=braw.env$plotColours$metaMultiple else colM="grey"
+    if (whichMeta==bestD)  
+         colM=f2 
+    else colM=f1
     lb<-worldLabel(metaResult,whichMeta)
     lb<-strsplit(lb,"\n")[[1]]
     g<-addG(g,dataLegend(data.frame(names=lb,colours=c(colM,rep(NA,length(lb)-1))),title="",shape=braw.env$plotShapes$meta))
