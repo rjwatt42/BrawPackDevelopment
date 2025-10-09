@@ -223,6 +223,7 @@ showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NUL
   
   if (braw.env$RZ=="z") rx<-tanh(rx)
   rdens<-rPopulationDist(rx,world)
+  if (max(rdens)>1) rdens<-rdens/max(rdens)
   if (braw.env$RZ=="z") {
     rdens<-rdens2zdens(rdens,rx)
     rx<-atanh(rx)

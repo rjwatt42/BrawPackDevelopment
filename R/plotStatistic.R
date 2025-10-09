@@ -195,8 +195,6 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
   npt<-braw.env$npoints
   switch(showType,
          "rp"={
-           switch(braw.env$RZ,
-                  "r"={
                     theoryVals<-seq(-1,1,length.out=npt)*0.99
                     theoryDens_all<-rPopulationDist(theoryVals,effectTheory$world)
                     theoryDens_sig<-theoryDens_all
@@ -234,13 +232,12 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
                         else 
                           theoryDens_sig[ri1]<-theoryDens_all[ri1]*psig
                       }
-                    }
-                  },
-                  "z"={
-                    theoryVals<-seq(-1,1,length.out=npt)*braw.env$z_range
-                    theoryDens_all<-rPopulationDist(tanh(theoryVals),effectTheory$world)
-                    theoryDens_all<-rdens2zdens(theoryDens_all,tanh(theoryVals))
-                  })
+                  }
+                  if (braw.env$RZ=="z") {
+                    theoryDens_all<-rdens2zdens(theoryDens_all,theoryVals)
+                    theoryDens_sig<-rdens2zdens(theoryDens_sig,theoryVals)
+                    theoryVals<-atanh(theoryVals)
+                  }
          },
          "n"={
            ndist<-getNDist(design,effectTheory$world,logScale=logScale,sigOnly=1)

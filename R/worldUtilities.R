@@ -238,7 +238,7 @@ rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
           "Gamma"={pops<-rgamma(ceil(5*ns),shape=sh,rate=sh/k)},
           "GenExp"={
             zi<-seq(-rangeMax,rangeMax,0.001)
-            zd<-cumsum(GenExpSamplingPDF(zi,k,0,sh))
+            zd<-cumsum(GenExpSamplingPDF(zi,k,0,0,sh))
             zd<-(zd-min(zd))/(max(zd)-min(zd))
             pops<-approx(zd,zi,runif(ns,0,1))$y
             }
@@ -278,7 +278,7 @@ rPopulationDist<-function(rvals,world) {
           "Exp"={rdens<-dexp(abs(rvals),rate=1/k)},
           "Gauss"={rdens<-dnorm(rvals,mean=mu,sd=k)},
           "Gamma"={rdens<-dgamma(abs(rvals),shape=sh,rate=sh/k)},
-          "GenExp"={rdens<-GenExpSamplingPDF(rvals,k,sigma=0,sh)}
+          "GenExp"={rdens<-GenExpSamplingPDF(rvals,k,sigma=0,spread=0,shape=sh)}
   )
   if (world$RZ=="z") rdens<-zdens2rdens(rdens,tanh(rvals))
   return(rdens*rdens1)
@@ -304,7 +304,7 @@ zPopulationDist<-function(zvals,world) {
           "Exp"={zdens<-dexp(abs(zvals),rate=1/k)},
           "Gauss"={zdens<-dnorm(zvals,mean=mu,sd=k)},
           "Gamma"={zdens<-dgamma(abs(zvals),shape=sh,rate=sh/k)},
-          "GenExp"={zdens<-GenExpSamplingPDF(zvals,k,sigma=0,sh)}
+          "GenExp"={zdens<-GenExpSamplingPDF(zvals,k,sigma=0,spread=0,shape=sh)}
   )
   if (world$RZ=="r") zdens<-zdens2rdens(zdens,tanh(zvals))
   return(zdens*zdens1)

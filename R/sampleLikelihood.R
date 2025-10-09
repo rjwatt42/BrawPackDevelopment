@@ -179,7 +179,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
   
   genExp<-function(z,lambda,shape) {
     if (lambda==0 || shape==0) as.numeric(z==0)+0.1
-    else exp(-1/shape*(abs(z)/lambda)^shape)
+    else exp(-1/shape*(abs(z)/lambda)^shape)/(shape^(1/shape-1)*gamma(1/shape))/lambda
     }
   zi<-seq(-braw.env$dist_range,braw.env$dist_range,braw.env$dist_zi)
   

@@ -18,6 +18,9 @@ undoShortHand<-function() {
   setBrawDef("evidence",evidence)
 }
 
+setZ<-function(which=TRUE) {
+  if (which) setBrawEnv("RZ","z") else setBrawEnv("RZ","r")
+}
 
 #' switch Replication on
 #' @export
