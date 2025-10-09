@@ -155,7 +155,7 @@ GammaSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
   
   if (all(sigma2==0)) {
     zd<-dgamma(abs(z),shape=shape,scale=lambda/shape)
-    zd<-zd/(sum(zd)*(z[2]-z[1]))
+    # zd<-zd/(sum(zd)*(z[2]-z[1]))
     return(zd)
   }
   zi<-seq(-braw.env$dist_range,braw.env$dist_range,braw.env$dist_zi)
