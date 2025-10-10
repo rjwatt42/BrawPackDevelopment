@@ -262,34 +262,49 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     g<-showMultiple(metaResult,showType=showType,dimension=dimension,orientation=orientation)
   } else {
     switch(showType,
-           "metaS;metaSmax"={
+           "metaSmax;metaSmax"={
              braw.env$plotArea<-c(0,0,1,1)
              g<-drawMeta(metaResult=metaResult,showType=showType,g=NULL)
            },
-           "metaK;null"={
+           "metaK;metaPRplus"={
              braw.env$plotArea<-c(0,0,1,1)
              g<-drawMeta(metaResult=metaResult,whichMeta=metaResult$metaAnalysis$modelPDF,showType=showType,g=NULL)
            },
            {
              g<-nullPlot()
-             if (braw.env$includeSingle) {
-               braw.env$plotArea<-c(0,0,0.39,1)
-               if (!all(is.na(metaResult$single$Smax)))
-                 g<-drawMeta(metaResult=metaResult,whichMeta="Single",showType="metaK;null",g)
-               xoff<-0.41
-               xsize<-0.27
-               xgap<-0
-             } else {
-               xoff<-0
-               xsize<-0.42
-               xgap<-0.1
+             nplots<-sum(!is.na(c(metaResult$single$Smax[1],metaResult$gauss$Smax[1],metaResult$exp$Smax[1],metaResult$genexp$Smax[1],metaResult$gamma$Smax[1])))
+             xgap<-0.1
+             xsize<-1/nplots-xgap
+             xoff<-0
+             for (i in 1:5) {
+               switch(i,
+                      if (!all(is.na(metaResult$single$Smax))) {
+                        braw.env$plotArea<-c(xoff,0,xsize,1)
+                        g<-drawMeta(metaResult=metaResult,whichMeta="Single",showType=showType,g)
+                        xoff<-xoff+xsize+xgap
+                      },
+                      if (!all(is.na(metaResult$gauss$Smax))) {
+                        braw.env$plotArea<-c(xoff,0,xsize,1)
+                        g<-drawMeta(metaResult=metaResult,whichMeta="Gauss",showType=showType,g)
+                        xoff<-xoff+xsize+xgap
+                      },
+                      if (!all(is.na(metaResult$exp$Smax))) {
+                        braw.env$plotArea<-c(xoff,0,xsize,1)
+                        g<-drawMeta(metaResult=metaResult,whichMeta="Exp",showType=showType,g)
+                        xoff<-xoff+xsize+xgap
+                      },
+                      if (!all(is.na(metaResult$genexp$Smax))) {
+                        braw.env$plotArea<-c(xoff,0,xsize,1)
+                        g<-drawMeta(metaResult=metaResult,whichMeta="GenExp",showType=showType,g)
+                        xoff<-xoff+xsize+xgap
+                      },
+                      if (!all(is.na(metaResult$gamma$Smax))) {
+                        braw.env$plotArea<-c(xoff,0,xsize,1)
+                        g<-drawMeta(metaResult=metaResult,whichMeta="Gamma",showType=showType,g)
+                        xoff<-xoff+xsize+xgap
+                      }
+               )
              }
-             braw.env$plotArea<-c(xoff,0,xsize+0.08,1)
-             if (!all(is.na(metaResult$gauss$Smax)))
-               g<-drawMeta(metaResult=metaResult,whichMeta="Gauss",showType=showType,g)
-             braw.env$plotArea<-c(xoff+xsize+xgap+0.02,0,xsize,1)
-             if (!all(is.na(metaResult$exp$Smax)))
-               g<-drawMeta(metaResult=metaResult,whichMeta="Exp",showType=showType,g)
            }
     )
   }
@@ -437,12 +452,12 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
               ylim<-c(-1,1)
               ylabel<-braw.env$Llabel
             },
-            "metaRspread"={
+            "metaSpread"={
               y<-result$PDFspread
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"r[sd]"
             },
-            "metaRshape"={
+            "metaShape"={
               y<-result$PDFshape
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"r[sh]"
@@ -457,7 +472,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"log(lk)"
             },
-            "metapRplus"={
+            "metaPrplus"={
               y<-result$pRplus
               ylim<-c(-0.02,1.1)
               ylabel<-braw.env$Plabel
