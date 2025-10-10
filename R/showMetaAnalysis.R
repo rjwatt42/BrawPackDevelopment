@@ -235,23 +235,23 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
 #' 
 #' @return ggplot2 object - and printed
 #' @examples
-#' showMetaMultiple<-function(metaResult=doMetaAnalysis(),showType=NULL,dimension="2D")
+#' showMetaMultiple<-function(metaResult=doMetaAnalysis(),showType=NULL,dimension="1D",orientation="vert")
 #' @export
-showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimension="1D") {
+showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimension="1D",orientation="vert") {
   if (is.null(metaResult)) metaResult<-doMetaMultiple()
   
   if (is.null(showType)) {
     switch(metaResult$metaAnalysis$analysisType,
            "fixed"={
-             showType<-"metaRiv;metaS"
+             showType<-"metaRiv"
              if (metaResult$metaAnalysis$analyseBias) showType<-"metaRiv;metaBias"
            },
            "random"={
-             showType<-"metaRiv;metaRsd"
+             showType<-"metaRiv;metaSpread"
            },
            "world"={
-             if (metaResult$metaAnalysis$modelPDF=="All") showType<-"All"
-             else showType="metaK;null"
+             showType<-"metaRiv"
+             if (metaResult$metaAnalysis$analyseBias) showType<-"metaRiv;metaBias"
            })
   }
   
@@ -259,10 +259,10 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     autoPrintOld<-braw.env$autoPrint
     on.exit(setBrawEnv("autoPrint",autoPrintOld))
     setBrawEnv("autoPrint",FALSE)
-    g<-showMultiple(metaResult,showType=showType,dimension=dimension)
+    g<-showMultiple(metaResult,showType=showType,dimension=dimension,orientation=orientation)
   } else {
     switch(showType,
-           "metaS;metaS"={
+           "metaS;metaSmax"={
              braw.env$plotArea<-c(0,0,1,1)
              g<-drawMeta(metaResult=metaResult,showType=showType,g=NULL)
            },
@@ -286,10 +286,10 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
              }
              braw.env$plotArea<-c(xoff,0,xsize+0.08,1)
              if (!all(is.na(metaResult$gauss$Smax)))
-               g<-drawMeta(metaResult=metaResult,whichMeta="Gauss",showType="metaK;null",g)
+               g<-drawMeta(metaResult=metaResult,whichMeta="Gauss",showType=showType,g)
              braw.env$plotArea<-c(xoff+xsize+xgap+0.02,0,xsize,1)
              if (!all(is.na(metaResult$exp$Smax)))
-               g<-drawMeta(metaResult=metaResult,whichMeta="Exp",showType="metaK;null",g)
+               g<-drawMeta(metaResult=metaResult,whichMeta="Exp",showType=showType,g)
            }
     )
   }
@@ -321,7 +321,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       use2<-c("Single","Gauss","Exp","Gamma","GenExp")[use[5]]
       metaX<-metaResult[[tolower(use1)]]
       metaY<-metaResult[[tolower(use2)]]
-      if (showType=="metaS;metaS") {
+      if (showType=="metaS;metaSmax") {
         x<-metaX$Smax
         yS<-metaY$Smax
         y1<-yS
@@ -395,17 +395,22 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
              xlim<-c(0,1)+c(-1,1)*(1-0)*0.1
              xlabel<-braw.env$Llabel
            },
-           "metaRsd"={
-             x<-result$PDFshape
+           "metaSpread"={
+             x<-result$PDFspread
              xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
              xlabel<-"r[sd]"
+           },
+           "metaShape"={
+             x<-result$PDFshape
+             xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
+             xlabel<-"r[sh]"
            },
            "metaBias"={
              x<-result$sigOnly
              xlim<-c(0,1)+c(-1,1)*(1-0)*0.1
              xlabel<-"bias[m]"
            },
-           "metaS"={
+           "metaSmax"={
              x<-result$Smax
              xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
              xlabel<-"log(lk)"
@@ -432,17 +437,22 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
               ylim<-c(-1,1)
               ylabel<-braw.env$Llabel
             },
-            "metaRsd"={
-              y<-result$PDFshape
+            "metaRspread"={
+              y<-result$PDFspread
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"r[sd]"
+            },
+            "metaRshape"={
+              y<-result$PDFshape
+              ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
+              ylabel<-"r[sh]"
             },
             "metaBias"={
               y<-result$sigOnly
               ylim<-c(0,1)
               ylabel<-"bias[m]"
             },
-            "metaS"={
+            "metaSmax"={
               y<-result$Smax
               ylim<-c(min(y),max(y))+c(-1,1)*(max(y)-min(y))*0.2
               ylabel<-"log(lk)"

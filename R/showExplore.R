@@ -636,7 +636,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
               "p(R+)"={
                 showVals<-result$pRplus
               },
-              "metaS"={
+              "metaSmax"={
                 showVals<-result$S
               },
               "p(w80)"={

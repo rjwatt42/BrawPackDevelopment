@@ -915,11 +915,12 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
            )
     dotSize<-min(4,braw.env$dotSize*sqrt(min(1,100/length(pts$y1))))
     # if (max(abs(xr))>0) xr<-xr*hgain/max(abs(xr))
-    if (!is.na(histGain))
-        xr<-xr*histGain
-    else xr<-xr/max(xr)*0.8
-    if (max(xr)>0.9) xr<-xr/max(xr)*0.9
-    if (!sequence && max(xr)<0.5 && length(xr)>10) xr<-xr/max(xr)*0.5
+    if (!is.na(histGain)) {
+      xr<-xr*histGain
+      if (max(xr)>0.9) xr<-xr/max(abs(xr))*0.9
+      if (!sequence && max(xr)<0.5 && length(xr)>10) xr<-xr/max(abs(xr))*0.5
+    }
+    else xr<-xr/max(abs(xr))*0.25
     xr<-xr+hoff
     
     pts$x<-pts$x+xr*sum(width)*0.3/0.35
@@ -945,7 +946,7 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
     co1<-darken(c1,off=-colgain)
     co2<-darken(c2,off=-colgain)
     shape<-braw.env$plotShapes$study
-    if (is.element(showType,c("metaRiv","metaRsd","metaBias","metaS"))) { # metaAnalysis
+    if (is.element(showType,c("metaRiv","metaRsd","metaK","metaSpread","metaShape","metaBias","metaSmax"))) { # metaAnalysis
       shape<-braw.env$plotShapes$meta
       c1<-c2<-c3<-c4<-braw.env$plotColours$metaMultiple
     }
@@ -1196,14 +1197,14 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
     # top<-TRUE
   }
   
-  if (is.element(showType,c("metaRiv","metaRsd","metaBias","metaS"))){
+  if (is.element(showType,c("metaRiv","metaK","metaSpread","metaShape","metaBias","metaSmax"))){
     # showType<-"rs"
     labelSig<-FALSE
     labelNSig<-FALSE
     showSig<-FALSE
     doingMetaAnalysis<-TRUE
     showTheory<-FALSE
-    ydata<-analysis$best$S
+    ydata<-analysis$best$Smax
     # top<-TRUE
   } else {
     doingMetaAnalysis<-FALSE
@@ -1218,6 +1219,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
     evidence$sigOnly<-analysis$ResultHistory$original$evidence$sigOnly
   
   sequence<-analysis$sequence
+  if (is.null(sequence)) sequence<-FALSE
   
   r<-effect$rIV
   if (!is.null(hypothesis$IV2)){
@@ -1348,10 +1350,13 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
             "po"={sampleVals<-data$po},
             "metaRiv"={sampleVals<-cbind(analysis$best$PDFk)},
             "metaRsd"={sampleVals<-cbind(analysis$best$PDFspread)},
+            "metaK"={sampleVals<-cbind(analysis$best$PDFk)},
+            "metaSpread"={sampleVals<-cbind(analysis$best$PDFspread)},
+            "metaShape"={sampleVals<-cbind(analysis$best$PDFshape)},
             "metaPDFk"={sampleVals<-cbind(analysis$best$PDFk)},
             "metaPRplus"={sampleVals<-cbind(analysis$best$pRplus)},
             "metaBias"={sampleVals<-cbind(analysis$best$sigOnly)},
-            "metaS"={sampleVals<-cbind(analysis$best$S)},
+            "metaSmax"={sampleVals<-cbind(analysis$best$Smax)},
             "llknull"={sampleVals<-exp(cbind(-0.5*(analysis$AIC-analysis$AICnull)))},
             "sLLR"={sampleVals<-cbind(res2llr(analysis,"sLLR"))},
             "log(lrs)"={sampleVals<-cbind(res2llr(analysis,"sLLR"))},

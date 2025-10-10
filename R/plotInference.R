@@ -50,8 +50,12 @@ plotInference<-function(analysis,otheranalysis=NULL,disp="rs",orientation="vert"
           
           "metaRiv"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
           "metaRsd"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
+          "metaK"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
+          "metaShape"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
+          "metaSpread"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
+          "metaPRplus"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
           "metaBias"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
-          "metaS"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
+          "metaSmax"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
           
           "llknull"={g<-r_plot(analysis,disp,orientation=orientation,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
           "AIC"={g<-aic_plot(analysis,disp,showTheory=showTheory,showData=showData,showLegend=showLegend,g=g)},
@@ -163,13 +167,25 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
             d1<-analysis$best$PDFk
           },
           "metaRsd"={
+            d1<-analysis$best$PDFspread
+          },
+          "metaK"={
+            d1<-analysis$best$PDFk
+          },
+          "metaShape"={
+            d1<-analysis$best$PDFshape
+          },
+          "metaSpread"={
+            d1<-analysis$best$PDFspread
+          },
+          "metaPRplus"={
             d1<-analysis$best$pRplus
           },
           "metaBias"={
             d1<-analysis$best$sigOnly
           },
-          "metaS"={
-            d1<-analysis$best$S
+          "metaSmax"={
+            d1<-analysis$best$Smax
           },
           "llknull"=d1<-(-0.5*(analysis$AIC-analysis$AICnull)),
           "sLLR"=d1<-res2llr(analysis,"sLLR"),
@@ -227,13 +243,25 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
             d2<-analysis$best$PDFk
           },
           "metaRsd"={
+            d2<-analysis$best$PDFspread
+          },
+          "metaK"={
+            d2<-analysis$best$PDFk
+          },
+          "metaShape"={
+            d2<-analysis$best$PDFshape
+          },
+          "metaSpread"={
+            d2<-analysis$best$PDFspread
+          },
+          "metaPRplus"={
             d2<-analysis$best$pRplus
           },
           "metaBias"={
             d2<-analysis$best$sigOnly
           },
-          "metaS"={
-            d2<-analysis$best$S
+          "metaSmax"={
+            d2<-analysis$best$Smax
           },
           "llknull"=d2<-(-0.5*(analysis$AIC-analysis$AICnull)),
           "sLLR"=d2<-res2llr(analysis,"sLLR"),
