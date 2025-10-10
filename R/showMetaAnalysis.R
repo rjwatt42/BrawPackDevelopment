@@ -37,7 +37,9 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
       lb<-paste0(lb,"\n",label2,"=",brawFormat(mean(p4,na.rm=TRUE),digits=3))
     }
   } else {
-    lb<-paste0(Dist,"(","z","/",brawFormat(mean(p1,na.rm=TRUE),digits=3),")")
+    lb<-paste0(Dist,"(","z","/",brawFormat(mean(p1,na.rm=TRUE),digits=3))
+    if (is.element(Dist,c("genexp","gamma"))) lb<-paste0(lb,",",brawFormat(mean(p5,na.rm=TRUE),digits=3))
+    lb<-paste0(lb,")")
   }
   if (metaResult$metaAnalysis$analyseNulls) {
     label2<-braw.env$Plabel
@@ -169,9 +171,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   
   # show individual studies
   if (showData) {
-  if (length(d1)<=1000) {
+  if (length(d1)<=10000) {
   colgain<-1-min(1,sqrt(max(0,(length(d1)-50))/200))
-  alphaUse<-1/(max(1,sqrt(length(d1)/100)))
+  alphaUse<-max(0.5,1/(max(1,sqrt(length(d1)/100))))
   dotSize<-braw.env$dotSize*min(1,alphaUse)
   fill1<-rep(braw.env$plotColours$metaAnalysis,length(ptsAll$x))
   fill2<-braw.env$plotColours$infer_nsigC

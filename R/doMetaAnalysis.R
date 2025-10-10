@@ -157,7 +157,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
          },
          "Gamma"={
            param1Use<-seq(0,2,length.out=np1points)
-           param5Use<-seq(0.1,2.5,length.out=np5points)
+           param5Use<-seq(1,4,length.out=np5points)
          },
          "GenExp"={
            param1Use<-seq(0,2,length.out=np1points)
