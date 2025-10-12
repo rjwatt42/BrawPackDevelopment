@@ -1408,7 +1408,16 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
     )
     
     if (showTheory) {
-      theory<-makeTheoryMultiple(hypothesis,design,evidence,showType,whichEffect,logScale,ydlim,labelNSig,labelSig,distGain)
+      # because the theory can be slow...
+      if (!is.null(braw.res$theoryMultiple) 
+          && identical(hypothesis,braw.res$theoryMultiple$hypothesis)
+          && identical(design,braw.res$theoryMultiple$design)
+          && identical(evidence,braw.res$theoryMultiple$evidence)
+      ) theory<-braw.res$theoryMultiple$theory
+      else {
+        theory<-makeTheoryMultiple(hypothesis,design,evidence,showType,whichEffect,logScale,ydlim,labelNSig,labelSig,distGain)
+        setBrawRes('theoryMultiple',list(theory=theory,hypothesis=hypothesis,design=design,evidence=evidence))
+      }
       theoryVals<-theory$theoryVals
       theoryDens_all<-theory$theoryDens_all
       theoryDens_sig<-theory$theoryDens_sig
