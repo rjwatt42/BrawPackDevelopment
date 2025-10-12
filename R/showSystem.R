@@ -157,17 +157,19 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
 #' showFullWorld(world=makeWorld())
 #' @export
 showFullWorld<-function(hypothesis=braw.def$hypothesis,plotArea=c(0,0,1,1),fontScale=1,autoShow=FALSE,g=NULL) {
-  g<-showWorld(hypothesis=hypothesis,joinNulls=FALSE,plotArea=c(0.05,0.35,0.45,0.55),fontScale=1,g=g)
   s<-hypothesis$effect$world$pRplus
   
+  g<-showWorld(hypothesis=hypothesis,joinNulls=FALSE,plotArea=c(0.05,0.35,0.45,0.55),fontScale=1,g=g)
+  g<-addG(g,plotTitle(paste0(brawFormat((s)*100,digits=2),"%"),"right",size=1))
+
   wd<-0.25
   if ((1-s)<1) {
   braw.env$plotArea<-c(0.1,0.1,0.45,0.3)
   g<-startPlot(xlim=c(-1,1),ylim=c(0,1),back="transparent",box="none",g=g)
-  g<-addG(g,drawArrow(c(0,0.9),1,45,"last",col="#000000",
-                      fill=braw.env$plotColours$populationC,alpha=1, 
-                      width=wd*(s),position="end",finAngle=45),
-            dataText(data.frame(x=0,y=0.5),brawFormat(1-s,digits=3),size=0.75))
+  # g<-addG(g,drawArrow(c(0,0.9),1,45,"last",col="#000000",
+  #                     fill=braw.env$plotColours$populationC,alpha=1, 
+  #                     width=wd*(s),position="end",finAngle=45),
+  #           dataText(data.frame(x=0,y=0.5),brawFormat(1-s,digits=3),size=0.75))
   }
   
   # g<-showEffect(1-hypothesis$effect$world$pRplus,showValue=TRUE,
@@ -176,15 +178,16 @@ showFullWorld<-function(hypothesis=braw.def$hypothesis,plotArea=c(0,0,1,1),fontS
   hypothesis1<-hypothesis
   hypothesis1$effect$world<-makeWorld(TRUE,"Single","r",0)
   g<-showWorld(hypothesis=hypothesis1,plotArea=c(0.55,0.35,0.45,0.55),fontScale=1,g=g)
+  g<-addG(g,plotTitle(paste0(brawFormat((1-s)*100,digits=2),"%"),"left",size=1))
   
   if (s<1) {
   braw.env$plotArea<-c(0.45,0.1,0.45,0.3)
   g<-startPlot(xlim=c(-1,1),ylim=c(0,1),back="transparent",box="none",g=g)
-  g<-addG(g,drawArrow(c(0,0.9),1,-45,"last",col="#000000",
-                      fill=braw.env$plotColours$populationC,alpha=1, 
-                      width=wd*s,position="end",finAngle=45),
-          dataText(data.frame(x=0,y=0.5),brawFormat(1-s,digits=3),hjust=1,size=0.75)
-  )
+  # g<-addG(g,drawArrow(c(0,0.9),1,-45,"last",col="#000000",
+  #                     fill=braw.env$plotColours$populationC,alpha=1, 
+  #                     width=wd*s,position="end",finAngle=45),
+  #         dataText(data.frame(x=0,y=0.5),brawFormat(1-s,digits=3),hjust=1,size=0.75)
+  # )
   }
   
   # g<-showEffect(hypothesis$effect$world$pRplus,showValue=TRUE,

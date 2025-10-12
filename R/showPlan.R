@@ -1,3 +1,6 @@
+
+
+#' @export
 showPlan<-function(helpOutput="") {
   oldHTML<-braw.env$graphicsType
   setBrawEnv("graphicsType","HTML")
