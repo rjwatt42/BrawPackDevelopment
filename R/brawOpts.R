@@ -196,7 +196,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$w_range<-c(0.05,1)
           braw.env$npoints<-101
           braw.env$fullRange<-3
-          braw.env$nNpoints<-201
+          braw.env$nNpoints<-101
           braw.env$worldNPoints<-201
           braw.env$varNPoints<-201
           braw.env$nscaleLog<-FALSE

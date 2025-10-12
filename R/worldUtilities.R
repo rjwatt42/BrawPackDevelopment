@@ -181,7 +181,7 @@ getRList<-function(world,addNulls=FALSE,HQ=FALSE) {
 }
 
 getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=0,HQ=FALSE) {
-  if (HQ) npt<-1001 else npt=21
+  if (HQ) npt<-braw.env$nNpoints else npt=21
   nmax<-5
   if (logScale) {
     nvals<-10^seq(log10(braw.env$minN),log10(nmax*design$sN),length.out=npt)
@@ -442,8 +442,17 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
         d1<-d1+addition
         if (sigOnly>0) {
           critR<-tanh(qnorm(1-braw.env$alphaSig/2,0,1/sqrt(nvals[ni]-3)))
-          addition[abs(rp)<critR]<-addition[abs(rp)<critR]*(1-sigOnly)
-          if (sigOnlyCompensate) addition<-addition/sum(addition)
+          if (any(abs(rp)<critR)) {
+            addition[abs(rp)<critR]<-addition[abs(rp)<critR]*(1-sigOnly)
+            use<-which(rp>critR)[1]
+            addition[use]<-addition[use]*(sigOnly)*(rp[use]-critR)/diff(rp[1:2])
+            if (any(rp<0)) {
+              use<-which(rp<(-critR))
+              use<-max(use)
+              addition[use]<-addition[use]*(sigOnly)*(-rp[use]-critR)/diff(rp[1:2])
+            }
+            if (sigOnlyCompensate) addition<-addition/sum(addition)
+          }
         }
         d<-d+addition
       }
