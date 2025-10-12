@@ -497,10 +497,13 @@ makeFiddle<-function(y,yd,orientation="horz"){
   rX<-function(x) x*xG
   
   dotSize<-min(4,braw.env$dotSize*(200/length(y))^2)
-  rr<-ceiling(dotSize/4*yG/25/diff(y_vals[c(1,2)]))
+  dotSize<-0.5
+  # dotSize<-braw.env$dS
+  rr<-8*ceiling(dotSize/4*yG/25/diff(y_vals[c(1,2)]))
   rr<-min(rr,floor(length(y_vals)/2))
-  rj<-0.2
-  
+  rj<-0.075
+  # rj<-braw.env$rJ
+
   dy<-diff(y_vals[c(1,1+rr*2)])
   y_filledp<-y_vals*0
   y_filledn<-y_vals*0
@@ -509,7 +512,8 @@ makeFiddle<-function(y,yd,orientation="horz"){
     for (i in 1:length(y)) {
       use<-which.min(abs(y[i]-y_vals))
       dx<-sqrt(rX(dy)^2-rX(y[i]-y_vals[use])^2)
-      dxr<-dy*runif(1,-1,1)*rj
+      if (dx==0) dxr<-0
+      else       dxr<-runif(1,-1,1)*rj*dy
       fill<-use+(-rr:rr)
       fill<-fill[fill>=1 & fill<=length(y_vals)]
       x_pos[i]<-y_filledp[use]+dxr
@@ -519,7 +523,7 @@ makeFiddle<-function(y,yd,orientation="horz"){
     for (i in 1:length(y)) {
       use<-which.min(abs(y[i]-y_vals))
       dx<-sqrt(rX(dy)^2-rX(y[i]-y_vals[use])^2)
-      dxr<-dy*runif(1,-1,1)*rj
+      dxr<-runif(1,-1,1)*rj*dy
       fill<-use+(-rr:rr)
       fill<-fill[fill>=1 & fill<=length(y_vals)]
       if (y_filledp[use]<y_filledn[use] || (y_filledp[use]==0 && y_filledn[use]==0 && runif(1)>0.5)) {
@@ -917,10 +921,11 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
     # if (max(abs(xr))>0) xr<-xr*hgain/max(abs(xr))
     if (!is.na(histGain)) {
       xr<-xr*histGain
-      if (max(xr)>0.9) xr<-xr/max(abs(xr))*0.9
       if (!sequence && max(xr)<0.5 && length(xr)>10) xr<-xr/max(abs(xr))*0.5
     }
     else xr<-xr/max(abs(xr))*0.25
+    if (max(xr)>0.5) xr<-xr/max(abs(xr))*0.5
+    xr<-xr*min(1,length(xr)/100)
     xr<-xr+hoff
     
     pts$x<-pts$x+xr*sum(width)*0.3/0.35
@@ -1409,14 +1414,26 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
     
     if (showTheory) {
       # because the theory can be slow...
-      if (!is.null(braw.res$theoryMultiple) 
-          && identical(hypothesis,braw.res$theoryMultiple$hypothesis)
-          && identical(design,braw.res$theoryMultiple$design)
-          && identical(evidence,braw.res$theoryMultiple$evidence)
-      ) theory<-braw.res$theoryMultiple$theory
+      possibleTheory<-braw.res[[paste0("theoryMultiple",showType)]]
+      if (!is.null(possibleTheory) 
+          && identical(hypothesis,possibleTheory$hypothesis)
+          && identical(design,possibleTheory$design)
+          && identical(evidence,possibleTheory$evidence)
+          && showType==possibleTheory$showType
+          && whichEffect==possibleTheory$whichEffect
+          && logScale==possibleTheory$logScale
+          && identical(ydlim,possibleTheory$ydlim)
+          && labelNSig==possibleTheory$labelNSig
+          && labelSig==possibleTheory$labelSig
+          && distGain==possibleTheory$distGain
+      ) theory<-possibleTheory$theory
       else {
         theory<-makeTheoryMultiple(hypothesis,design,evidence,showType,whichEffect,logScale,ydlim,labelNSig,labelSig,distGain)
-        setBrawRes('theoryMultiple',list(theory=theory,hypothesis=hypothesis,design=design,evidence=evidence))
+        setBrawRes(paste0("theoryMultiple",showType),
+                   list(theory=theory,hypothesis=hypothesis,design=design,evidence=evidence,
+                        showType=showType,whichEffect=whichEffect,logScale=logScale,ydlim=ydlim,
+                        labelNSig=labelNSig,labelSig=labelSig,distGain=distGain)
+                   )
       }
       theoryVals<-theory$theoryVals
       theoryDens_all<-theory$theoryDens_all
