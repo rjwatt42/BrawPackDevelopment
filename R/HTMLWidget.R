@@ -92,7 +92,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     
     # Style the buttons inside the tab 
     '.tab button {',
-    'background-color: #ccc;',
+    'background-color: #222;',
     'float: left;',
     'border: none;',
     'outline: none;',
