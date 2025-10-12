@@ -284,7 +284,8 @@ showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NUL
     showHTML(g)
     return(invisible(g))
   }
-  else return(g)  
+  else 
+    return(g)  
 }
 
 #' show a design object
