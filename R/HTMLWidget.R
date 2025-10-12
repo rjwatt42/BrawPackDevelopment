@@ -132,7 +132,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     'display: none;',
     'padding: 0px 0px;',
     'margin: 0px;',
-    'background-color: ','#fa0',';',
+    'background-color: ','#ffffff',';',
     'border: 1px solid ',colours[3],';','border-top: none;',
     'width: ',width,'px;',
     ht,
