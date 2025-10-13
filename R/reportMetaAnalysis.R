@@ -7,7 +7,7 @@
 reportMetaSingle<-function(metaResult=braw.res$metaSingle,reportStats="Medians"){
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
-  nc<-6
+  nc<-7
   switch(reportStats,
          "Medians"={
            funcCT<-median
