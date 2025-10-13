@@ -682,7 +682,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       )
       za<-za/max(za,na.rm=TRUE)
     }
-    setBrawRes("debug",metaResult$best)
+    setBrawRes("debug",metaResult$metaAnalysis)
     
       zb<-makeWorldDist(metaResult,design,metaResult$best,z,n,sigOnly=sigOnly)
       zb[is.na(zb)]<-0
