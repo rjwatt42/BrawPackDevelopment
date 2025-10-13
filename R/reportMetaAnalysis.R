@@ -44,7 +44,7 @@ reportMetaSingle<-function(metaResult=braw.res$metaSingle,reportStats="Medians")
     )
   } else {
     if (is.element(metaResult$hypothesis$effect$world$PDF,c("GenExp","Gamma"))) {
-      outputText<-c(outputText,"!H!C","\bDistr","","\b\u03bb","\b\u03B1","\bp(H[0])","\bS[max]")
+      outputText<-c(outputText,"!H!C","\bDistr","","\b\u03bb","\b\u03B1","\bp(H[\u00d8])","\bS[max]")
       outputText<-c(outputText,"Actual",metaResult$hypothesis$effect$world$PDF,"",brawFormat(metaResult$hypothesis$effect$world$PDFk,digits=3),
                     brawFormat(metaResult$hypothesis$effect$world$PDFshape,digits=3),brawFormat(metaResult$hypothesis$effect$world$pRplus,digits=3),"")
       outputText<-c(outputText,"Best",metaResult$best$PDF," ",brawFormat(funcCT(metaResult$best$PDFk),digits=3),
