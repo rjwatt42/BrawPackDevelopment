@@ -76,18 +76,18 @@ reportMetaSingle<-function(metaResult=braw.res$metaSingle,reportStats="Medians")
       }
       if (metaResult$metaAnalysis$modelPDF=="GenExp" || metaResult$metaAnalysis$modelPDF=="All") {
         outputText<-c(outputText," ","GenExp"," ",
-                      paste0(brawFormat(funcCT(metaResult$exp$PDFk),digits=3)),
-                      paste0(brawFormat(funcCT(metaResult$exp$PDFshape),digits=3)),
-                      paste0(brawFormat(funcCT(metaResult$exp$pRplus),digits=3)),
-                      paste0(brawFormat(funcCT(metaResult$exp$Smax),digits=3))
+                      paste0(brawFormat(funcCT(metaResult$genexp$PDFk),digits=3)),
+                      paste0(brawFormat(funcCT(metaResult$genexp$PDFshape),digits=3)),
+                      paste0(brawFormat(funcCT(metaResult$genexp$pRplus),digits=3)),
+                      paste0(brawFormat(funcCT(metaResult$genexp$Smax),digits=3))
         )
       }
       if (metaResult$metaAnalysis$modelPDF=="Gamma" || metaResult$metaAnalysis$modelPDF=="All") {
         outputText<-c(outputText," ","Gamma"," ",
-                      paste0(brawFormat(funcCT(metaResult$exp$PDFk),digits=3)),
-                      paste0(brawFormat(funcCT(metaResult$exp$PDFshape),digits=3)),
-                      paste0(brawFormat(funcCT(metaResult$exp$pRplus),digits=3)),
-                      paste0(brawFormat(funcCT(metaResult$exp$Smax),digits=3))
+                      paste0(brawFormat(funcCT(metaResult$gamma$PDFk),digits=3)),
+                      paste0(brawFormat(funcCT(metaResult$gamma$PDFshape),digits=3)),
+                      paste0(brawFormat(funcCT(metaResult$gamma$pRplus),digits=3)),
+                      paste0(brawFormat(funcCT(metaResult$gamma$Smax),digits=3))
         )
       }
     }
