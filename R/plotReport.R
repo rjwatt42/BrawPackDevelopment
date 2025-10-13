@@ -174,8 +174,8 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
               outputText[index]<-sub("!v","",outputText[index])
             }
 
-            outputText[index]<-gsub("\\[([\\a-zA-Z0-9_+-]*)\\]","<sub>\\1</sub>",outputText[index])
-            outputText[index]<-gsub("\\^([\\a-zA-Z0-9_+-]*)([a-zA-Z0-9_]*)","<sup>\\1</sup>",outputText[index])
+            outputText[index]<-gsub("\\[([^]]*)\\]","<sub>\\1</sub>",outputText[index])
+            outputText[index]<-gsub("\\^([^]]*)([a-zA-Z0-9_]*)","<sup>\\1</sup>",outputText[index])
 
             extra<-""
             # if (i==nc && headerCol) extra<-paste0("border-right:solid;border-right-color:",lineColour,";")
