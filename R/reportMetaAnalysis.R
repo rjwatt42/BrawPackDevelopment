@@ -44,29 +44,26 @@ reportMetaSingle<-function(metaResult=braw.res$metaSingle,reportStats="Medians")
     )
   } else {
     if (is.element(metaResult$hypothesis$effect$world$PDF,c("GenExp","Gamma"))) {
-      outputText<-c(outputText,"!H!C","\bDistr","","\b\u03bb","\bα","\bp(0)","\bllk")
+      outputText<-c(outputText,"!H!C","\bDistr","","\b\u03bb","\b\u03B1","\bp(0)","\bllk")
       outputText<-c(outputText,"Actual",metaResult$hypothesis$effect$world$PDF,"",brawFormat(metaResult$hypothesis$effect$world$PDFk,digits=3),
                     brawFormat(metaResult$hypothesis$effect$world$PDFshape,digits=3),brawFormat(metaResult$hypothesis$effect$world$pRplus,digits=3),"")
       outputText<-c(outputText,"Best",metaResult$best$PDF," ",brawFormat(funcCT(metaResult$best$PDFk),digits=3),
                     brawFormat(funcCT(metaResult$best$PDFshape),digits=3),brawFormat(funcCT(metaResult$best$pRplus),digits=3),brawFormat(funcCT(metaResult$best$Smax),digits=3))
       outputText<-c(outputText,rep(" ",nc))
-      if (metaResult$metaAnalysis$modelPDF=="Single" || (metaResult$metaAnalysis$modelPDF=="All" && braw.env$includeSingle)) {
+      if (is.element(metaResult$metaAnalysis$modelPDF,c("All","Simple"))) {
+        if (~is.null(metaResult$single$PDFk))
         outputText<-c(outputText,"Estimated","Single"," ",
                       paste0(brawFormat(funcCT(metaResult$single$PDFk),digits=3)),
                       " ",
                       paste0(brawFormat(funcCT(metaResult$single$pRplus),digits=3)),
                       paste0(brawFormat(funcCT(metaResult$single$Smax),digits=3))
         )
-      }
-      if (metaResult$metaAnalysis$modelPDF=="Gauss" || metaResult$metaAnalysis$modelPDF=="All") {
         outputText<-c(outputText," ","Gauss"," ",
                       paste0(brawFormat(funcCT(metaResult$gauss$PDFk),digits=3)),
                       " ",
                       paste0(brawFormat(funcCT(metaResult$gauss$pRplus),digits=3)),
                       paste0(brawFormat(funcCT(metaResult$gauss$Smax),digits=3))
         )
-      }
-      if (metaResult$metaAnalysis$modelPDF=="Exp" || metaResult$metaAnalysis$modelPDF=="All") {
         outputText<-c(outputText," ","Exp"," ",
                       paste0(brawFormat(funcCT(metaResult$exp$PDFk),digits=3)),
                       " ",
@@ -74,15 +71,13 @@ reportMetaSingle<-function(metaResult=braw.res$metaSingle,reportStats="Medians")
                       paste0(brawFormat(funcCT(metaResult$exp$Smax),digits=3))
         )
       }
-      if (metaResult$metaAnalysis$modelPDF=="GenExp" || metaResult$metaAnalysis$modelPDF=="All") {
+      if (is.element(metaResult$metaAnalysis$modelPDF,c("All"))) {
         outputText<-c(outputText," ","GenExp"," ",
                       paste0(brawFormat(funcCT(metaResult$genexp$PDFk),digits=3)),
                       paste0(brawFormat(funcCT(metaResult$genexp$PDFshape),digits=3)),
                       paste0(brawFormat(funcCT(metaResult$genexp$pRplus),digits=3)),
                       paste0(brawFormat(funcCT(metaResult$genexp$Smax),digits=3))
         )
-      }
-      if (metaResult$metaAnalysis$modelPDF=="Gamma" || metaResult$metaAnalysis$modelPDF=="All") {
         outputText<-c(outputText," ","Gamma"," ",
                       paste0(brawFormat(funcCT(metaResult$gamma$PDFk),digits=3)),
                       paste0(brawFormat(funcCT(metaResult$gamma$PDFshape),digits=3)),
