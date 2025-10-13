@@ -682,8 +682,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
       )
       za<-za/max(za,na.rm=TRUE)
     }
-    setBrawRes("debug",metaResult$metaAnalysis)
-    
+
       zb<-makeWorldDist(metaResult,design,metaResult$best,z,n,sigOnly=sigOnly)
       zb[is.na(zb)]<-0
       switch(braw.env$RZ,
@@ -749,7 +748,7 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
     }
       
     ptsb<-list(x=z,y=n,z=zb)
-    # g<-addG(g,dataContour(data=ptsb,breaks=seq(0,1,0.2)^svalExponent,colour="black",fill=colour,linewidth=0.1))
+    g<-addG(g,dataContour(data=ptsb,breaks=seq(0,1,0.2)^svalExponent,colour="black",fill=colour,linewidth=0.1))
     return(g)
   }
   
