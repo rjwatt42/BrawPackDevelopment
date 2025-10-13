@@ -745,10 +745,9 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
         }
       }
     }
-    
-    # g<-addG(g,dataContour(data=ptsb,colour=colour,fill=NA,linewidth=0.5))
+      setBrawRes("debug",c(length(n),length(z),size(zb)))
     ptsb<-list(x=z,y=n,z=zb)
-    g<-addG(g,dataContour(data=ptsb,breaks=seq(0,1,0.2)^svalExponent,colour="black",fill=colour,linewidth=0.1))
+    # g<-addG(g,dataContour(data=ptsb,breaks=seq(0,1,0.2)^svalExponent,colour="black",fill=colour,linewidth=0.1))
     return(g)
   }
   
