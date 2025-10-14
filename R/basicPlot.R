@@ -312,7 +312,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
     maxtickx<-max(strNChar(xticks$labels))
   else maxtickx<-0
   if (!is.null(yticks) && !is.null(yticks$labels))
-    maxticky<-max(strNChar(yticks$labels))
+    maxticky<-max(c(3,strNChar(yticks$labels)))
   else 
     maxticky<-0
   maxtick<-max(maxtickx,maxticky)
