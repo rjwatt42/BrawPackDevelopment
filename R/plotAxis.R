@@ -630,9 +630,11 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
             ylabel<-"p(PDF)"
           },
           "metaSmax"={
-            ylim<-c(min(result$best$Smax),max(result$best$Smax))
+            ylabel<-"S[max]"
+            if (!is.null(result$best$Smax)) 
+              ylim<-c(min(result$best$Smax),max(result$best$Smax))
+            else ylim<-c(0,1)
             if (diff(ylim)==0) ylim<-ylim+c(-1,1)
-            ylabel<-"llk"
             yticks<-seq(ceil(ylim[1]),ceil(ylim[2]),1)
             use_cols<-braw.env$plotColours$metaMultiple
           },
