@@ -133,14 +133,16 @@ summariseResult<-function(result) {
       result$p$total<-result$p$total
     }
   } else {
-    PDFk<-max(c(result$fixed$PDFk,result$random$PDFk,result$single$PDFk,result$gauss$PDFk,result$exp$PDFk),na.rm=TRUE)
-    pRplus<-max(c(result$fixed$pRplus,result$random$pRplus,result$single$pRplus,result$gauss$pRplus,result$exp$pRplus),na.rm=TRUE)
-    sigOnly<-max(c(result$fixed$sigOnly,result$random$sigOnly,result$single$sigOnly,result$gauss$sigOnly,result$exp$sigOnly),na.rm=TRUE)
-    S<-max(c(result$fixed$Smax,result$random$Smax,result$single$Smax,result$gauss$Smax,result$exp$Smax),na.rm=TRUE)
+    use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax))
+    PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk,res$genexp$PDFk,res$gamma$PDFk)[use]
+    pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus,res$genexp$pRplus,res$gamma$pRplus)[use]
+    sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly,res$genexp$sigOnly,res$gamma$sigOnly)[use]
+    Smax<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax)[use]
     result$PDFk<-PDFk
+    result$PDFshape<-PDFshape
     result$pRplus<-pRplus
     result$sigOnly<-sigOnly
-    result$S<-S
+    result$Smax<-Smax
     sigs<-isSignificant(braw.env$STMethod,result$result$pIV,result$result$rIV,result$result$nval,result$result$df1,result$result$evidence)
     nSig<-sum(sigs)
     result$nSig<-nSig
@@ -156,7 +158,7 @@ summariseResult<-function(result) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               PDFk=b,pRplus=b,sigOnly=b,S=b
+               PDFk=b,PDFshape=b,pRplus=b,sigOnly=b,Smax=b
   )
   return(result)
 }
@@ -180,7 +182,7 @@ resetExploreResult<-function(nsims,n_vals,oldResult=NULL) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               PDFk=b,pRplus=b,sigOnly=b,S=b
+               PDFk=b,PDFshape=b,pRplus=b,sigOnly=b,Smax=b
   )
   if (!is.null(oldResult)) {
     result<-mergeExploreResult(oldResult,result)
@@ -237,17 +239,18 @@ storeExploreResult<-function(result,res,ri,vi) {
       result$p$total[ri,vi,1:n]<-res$p$total
     }
   } else {
-    use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax))
-    PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk)[use]
-    pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus)[use]
-    sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly)[use]
-    S<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax)[use]
+    use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax))
+    PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk,res$genexp$PDFk,res$gamma$PDFk)[use]
+    pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus,res$genexp$pRplus,res$gamma$pRplus)[use]
+    sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly,res$genexp$sigOnly,res$gamma$sigOnly)[use]
+    Smax<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax)[use]
     sigs<-isSignificant(braw.env$STMethod,res$result$pIV,res$result$rIV,res$result$nval,res$result$df1,res$result$evidence)
     nSig<-sum(sigs)
     result$PDFk[ri,vi]<-PDFk
+    result$PDFshape[ri,vi]<-PDFshape
     result$pRplus[ri,vi]<-pRplus
     result$sigOnly[ri,vi]<-sigOnly
-    result$S[ri,vi]<-S
+    result$Smax[ri,vi]<-Smax
     result$nSig[ri,vi]<-nSig
   }
   return(result)
@@ -301,9 +304,10 @@ mergeExploreResult<-function(res1,res2) {
   }
   
   result$PDFk<-rbind(res1$PDFk,res2$PDFk)
+  result$PDFshape<-rbind(res1$PDFshape,res2$PDFshape)
   result$pRplus<-rbind(res1$pRplus,res2$pRplus)
   result$sigOnly<-rbind(res1$sigOnly,res2$sigOnly)
-  result$S<-rbind(res1$S,res2$S)
+  result$Smax<-rbind(res1$Smax,res2$Smax)
   result$nSig<-rbind(res1$nSig,res2$nSig)
   result$nFP<-rbind(res1$nFP,res2$nFP)
   
