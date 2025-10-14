@@ -592,10 +592,10 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
             use_cols<-braw.env$plotColours$metaMultiple
           },
           "PDFshape"={
-            ylim<-c(-0.01,5)
+            ylim<-c(-0.01,6)
             yticks<-seq(0,5,1)
             ymins<-seq(0,0.5,0.05)
-            ylabel<-"PDF[sh]"
+            ylabel<-"PDF[shape]"
             use_cols<-braw.env$plotColours$metaMultiple
           },
           "Lambda"={
