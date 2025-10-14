@@ -584,6 +584,20 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
             if (braw.env$RZ=="z") ylabel<-sub("R","Z",ylabel)
             use_cols<-braw.env$plotColours$metaMultiple
           },
+          "PDFk"={
+            ylim<-c(-0.01,1.01)
+            yticks<-seq(0,1,0.2)
+            ymins<-seq(0,1,0.1)
+            ylabel<-braw.env$Llabel
+            use_cols<-braw.env$plotColours$metaMultiple
+          },
+          "PDFshape"={
+            ylim<-c(-0.01,5)
+            yticks<-seq(0,5,1)
+            ymins<-seq(0,0.5,0.05)
+            ylabel<-"PDF[sh]"
+            use_cols<-braw.env$plotColours$metaMultiple
+          },
           "Lambda"={
             ylim<-c(-0.01,1.01)
             yticks<-seq(0,1,0.2)
