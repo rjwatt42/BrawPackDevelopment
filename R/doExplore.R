@@ -135,6 +135,7 @@ summariseResult<-function(result) {
   } else {
     use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax))
     PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk,res$genexp$PDFk,res$gamma$PDFk)[use]
+    PDFshape<-c(res$fixed$PDFshape,res$random$PDFshape,res$single$PDFshape,res$gauss$PDFshape,res$exp$PDFshape,res$genexp$PDFshape,res$gamma$PDFshape)[use]
     pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus,res$genexp$pRplus,res$gamma$pRplus)[use]
     sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly,res$genexp$sigOnly,res$gamma$sigOnly)[use]
     Smax<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax)[use]
@@ -241,6 +242,7 @@ storeExploreResult<-function(result,res,ri,vi) {
   } else {
     use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax))
     PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk,res$genexp$PDFk,res$gamma$PDFk)[use]
+    PDFshape<-c(res$fixed$PDFshape,res$random$PDFshape,res$single$PDFshape,res$gauss$PDFshape,res$exp$PDFshape,res$genexp$PDFshape,res$gamma$PDFshape)[use]
     pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus,res$genexp$pRplus,res$gamma$pRplus)[use]
     sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly,res$genexp$sigOnly,res$gamma$sigOnly)[use]
     Smax<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax)[use]
