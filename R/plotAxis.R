@@ -631,8 +631,9 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
           },
           "metaSmax"={
             ylim<-c(min(result$best$Smax),max(result$best$Smax))
+            if (diff(ylim)==0) ylim<-ylim+c(-1,1)
             ylabel<-"llk"
-            yticks<-seq(ceil(min(result$best$Smax)),ceil(max(result$best$Smax)),1)
+            yticks<-seq(ceil(ylim[1]),ceil(ylim[2]),1)
             use_cols<-braw.env$plotColours$metaMultiple
           },
           "iv.mn"={
