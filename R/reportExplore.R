@@ -36,7 +36,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
              if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
            }
            )
-    # showType<-paste0(showType,";metaSmax")
+    showType<-paste0(showType,";metaSmax")
   }
   
   showType<-strsplit(showType,";")[[1]]
