@@ -115,8 +115,12 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
              if (exploreResult$metaAnalysis$analysisVar=="var") showType[2]<-"LambdaRn"
                },
            {
-             if (exploreResult$metaAnalysis$analyseNulls) showType<-c("mean(R+)","p(R+)")
-               else showType<-c("mean(R+)")
+             if (exploreResult$metaAnalysis$analyseNulls) 
+               showType<-c("mean(R+)","p(R+)")
+            else showType<-c("mean(R+)")
+            if (exploreResult$hypothesis$effect$world$On)
+              if (is.element(exploreResult$hypothesis$effect$world$PDF,c("GenExp","Gamma")))
+                showType<-c("PDFk","PDFshape")
                }
            )
   }
@@ -629,6 +633,12 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
               },
               "LambdaRn"={
                 showVals<-result$pRplus
+              },
+              "PDFk"={
+                showVals<-result$PDFk
+              },
+              "PDFshape"={
+                showVals<-result$PDFshape
               },
               "mean(R+)"={
                 showVals<-result$PDFk
