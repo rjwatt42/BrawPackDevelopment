@@ -21,7 +21,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
   reportMeans<-(reportStats=="Means")
   reportQuants<-FALSE
   
-  if (exploreResult$doingMetaAnalysis) 
+  if (exploreResult$doingMetaAnalysis) {
     switch(exploreResult$metaAnalysis$analysisType,
            "fixed"={
              showType<-"metaRiv"
@@ -31,9 +31,13 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
            {
              if (is.element(exploreResult$hypothesis$effect$world$PDF,c("GenExp","Gamma")))
              showType<-"PDFk;PDFshape"
-             else showType<-"PDFk;p(R+)"
-             }
+             else showType<-"PDFk"
+             if (exploreResult$metaAnalysis$analyseNulls) showType<-paste0(showType,";metaNulls")
+             if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
+           }
            )
+    showType<-paste0(showType,";metaSmax")
+  }
   
   showType<-strsplit(showType,";")[[1]]
   if (length(showType)==1) {
