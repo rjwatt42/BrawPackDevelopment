@@ -120,7 +120,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
             else showType<-c("mean(R+)")
             if (exploreResult$hypothesis$effect$world$On)
               if (is.element(exploreResult$hypothesis$effect$world$PDF,c("GenExp","Gamma")))
-                showType<-c("PDFk","PDFshape")
+                showType<-c("PDFshape","PDFk")
                }
            )
   }
