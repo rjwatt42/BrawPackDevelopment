@@ -32,8 +32,8 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
              if (is.element(exploreResult$hypothesis$effect$world$PDF,c("GenExp","Gamma")))
              showType<-"PDFk;PDFshape"
              else showType<-"PDFk"
-             if (exploreResult$metaAnalysis$analyseNulls) showType<-paste0(showType,";metaNulls")
-             if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
+             # if (exploreResult$metaAnalysis$analyseNulls) showType<-paste0(showType,";metaNulls")
+             # if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
            }
            )
     showType<-paste0(showType,";metaSmax")
