@@ -28,7 +28,12 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
              if (exploreResult$metaAnalysis$analyseBias) showType<-paste0(showType,";metaBias")
            },
            "random"={showType<-"metaRiv;metaRsd"},
-           {showType<-"mean(R+);p(R+)"})
+           {
+             if (is.element(exploreResult$hypothesis$effect$world$PDF,c("GenExp","Gamma")))
+             showType<-"PDFk;PDFshape"
+             else showType<-"PDFk;p(R+)"
+             }
+           )
   
   showType<-strsplit(showType,";")[[1]]
   if (length(showType)==1) {
@@ -452,6 +457,12 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
                 },
                 "mean(R+)"={
                   showVals<-exploreResult$result$PDFk
+                },
+                "PDFk"={
+                  showVals<-exploreResult$result$PDFk
+                },
+                "PDFshape"={
+                  showVals<-exploreResult$result$PDFshape
                 },
                 "p(R+)"={
                   showVals<-exploreResult$result$pRplus
