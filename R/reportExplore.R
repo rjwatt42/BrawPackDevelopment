@@ -520,6 +520,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
         )
         if (is.element(showType,c("rs","p","ws","n","AIC","log(lrs)","log(lrd)",
                                   "metaBias","metaRiv","metaRsd","Lambda","p(R+)","metaSmax",
+                                  "metaK","metaShape","PDFk","PDFshape",
                                   "iv.mn","iv.sd","iv.sk","iv.kt","dv.mn","dv.sd","dv.sk","dv.kt",
                                   "er.mn","er.sd","er.sk","er.kt"))) {
           quants=(1-quantileShow)/2
