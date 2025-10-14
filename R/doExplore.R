@@ -70,6 +70,8 @@ getExploreRange<-function(explore) {
          "Repeats"=range<-list(minVal=0,maxVal=8,logScale=FALSE,np=9),
          "p(R+)"=range<-list(minVal=0,maxVal=1,logScale=FALSE,np=13),
          "mean(R+)"=range<-list(minVal=0.1,maxVal=1,logScale=FALSE,np=13),
+         "PDFk"=range<-list(minVal=0.1,maxVal=1,logScale=FALSE,np=13),
+         "PDFshape"=range<-list(minVal=NA,maxVal=NA,logScale=FALSE,np=13),
          "PoorSamplingAmount"=range<-list(minVal=0, maxVal=0.2,logScale=FALSE,np=13),
          "CheatingAmount"=range<-list(minVal=0, maxVal=0.8,logScale=FALSE,np=13),
          "ClusterRad"=range<-list(minVal=0, maxVal=1,logScale=FALSE,np=13),
@@ -472,6 +474,13 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
           "sourceBias"={vals<-seq(0,1,length.out=npoints)},
           
           "PDF"={vals<-c("Single","Double","Uniform","Gauss","Exp","Gamma","GenExp")},
+          "PDFshape"={
+            if (hypothesis$effect$world$PDF=="GenExp")
+            vals<-seq(0,4,length.out=npoints)
+            else
+              vals<-seq(1,5,length.out=npoints)
+            },
+          "PDFk"={vals<-seq(minVal,maxVal,length.out=npoints)},
           "mean(R+)"={vals<-seq(minVal,maxVal,length.out=npoints)},
           "no"={vals<-seq(10,250,length.out=npoints)},
           "p(R+)"={vals<-seq(minVal,maxVal,length.out=npoints)},
@@ -793,6 +802,14 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
                 "PDF"={
                   effect$world$On<-TRUE
                   effect$world$PDF<-vals[vi]
+                },
+                "PDFk"={
+                  effect$world$On<-TRUE
+                  effect$world$PDFk<-vals[vi]
+                },
+                "PDFshape"={
+                  effect$world$On<-TRUE
+                  effect$world$PDFshape<-vals[vi]
                 },
                 "mean(R+)"={
                   effect$world$On<-TRUE
