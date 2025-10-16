@@ -314,6 +314,8 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
     if (explore$exploreType=="minRp") exploreTypeShow<-"min(r[p])"
     if (explore$exploreType=="p(R+)") exploreTypeShow<-braw.env$Plabel
     if (explore$exploreType=="mean(R+)") exploreTypeShow<-braw.env$Llabel
+    if (explore$exploreType=="PDFk") exploreTypeShow<-"PDF[k]"
+    if (explore$exploreType=="PDFshape") exploreTypeShow<-"PDF[shape]"
   }
     
   for (whichEffect in whichEffects) {
