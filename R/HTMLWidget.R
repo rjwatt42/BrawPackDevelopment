@@ -22,6 +22,35 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     tabBorders<-''
   else tabBorders<-paste0('border: none;')
   
+  openTab<-function(tabName) {
+    paste0(
+    '  var tabState;',
+    '  var i, tabID, panelID, buttonID, tabcontent, tablinks;',
+    '  if (',tabName,'!="tabtitle") {',
+    '    tabState = document.getElementById(',tabName,').style.display;',
+    # '    closeTabs(evt, tabName);',
+    '    tabID = ',tabName,'.split("||",1);',
+    '    tablinks = document.getElementsByClassName("tablinks");',
+    '    tabcontent = document.getElementsByClassName("tabcontent");',
+    '    for (i = 0; i < tabcontent.length; i++) {',
+    '      panelID=tabcontent[i].id.split("||",1);',
+    '      if (panelID[0]==tabID[0]) {',
+    '        tabcontent[i].style.display = "none";',
+    '      }',
+    '    }',
+    '    for (i = 0; i < tabcontent.length; i++) {',
+    '      buttonID=tablinks[i].id.split("||",1);',
+    '      if (buttonID[0]==tabID[0]) {',
+    '        tablinks[i].className = tablinks[i].className.replace(" active", "");',
+    '      }',
+    '    }'
+    '    if (tabState!="block") {',
+    '      document.getElementById(',tabName,').style.display = "block";',
+    '      evt.currentTarget.className += " active";',
+    '    }',
+    '  }'
+  )
+  }
   script<-paste0(
     '<script>',
     'function openTab(evt, tabName) {',
@@ -170,8 +199,10 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     panelID<-paste0(titleID,'||',tabs[itab])
     if (itab==open) {
       buttons <- paste0(buttons,
-                        '  <button class="tablinks active" onclick="openTab(event,\'',panelID,'\')" id="',paste0(panelID,"button"),
-                        'maargin:0px;padding:0px;">',
+                        # '  <button class="tablinks active" onclick="openTab(event,\'',panelID,'\')"',
+                        '  <button class="tablinks active" onclick="',openTab(paste0('\'',panelID,'\'')),'"',
+                        ' id="',paste0(panelID,"button"),
+                        'margin:0px;padding:0px;">',
                         tabs[itab],
                         '</button>')
       panels <- paste0(panels,
@@ -181,7 +212,9 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
                        '</div>')
     } else {
       buttons <- paste0(buttons,
-                        '  <button class="tablinks" onclick="openTab(event,\'',panelID,'\')" id="',paste0(panelID,"button"),'">',
+                        # '  <button class="tablinks" onclick="openTab(event,\'',panelID,'\')" id="',paste0(panelID,"button"),'">',
+                        '  <button class="tablinks" onclick="',openTab(paste0('\'',panelID,'\'')),'"',
+                        ' id="',paste0(panelID,"button"),'">',
                         tabs[itab],
                         '</button>')
       panels <- paste0(panels,
