@@ -43,7 +43,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     '      if (buttonID[0]==tabID[0]) {',
     '        tablinks[i].className = tablinks[i].className.replace(" active", "");',
     '      }',
-    '    }'
+    '    }',
     '    if (tabState!="block") {',
     '      document.getElementById(',tabName,').style.display = "block";',
     '      evt.currentTarget.className += " active";',
