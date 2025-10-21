@@ -115,6 +115,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   np5points<-defaultnpoints
   
   niterations<-4
+  minIterations<-3
   # reInc1<-(np1points-1)/2/3
   # reInc2<-(np2points-1)/2/3
   reInc1<-2
@@ -222,7 +223,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     ub5<-param5Use[min(length(param5Use),use[1,5]+reInc5)]
     
     # after 2 iterations, can we do a search?
-    if (re>=2) {
+    if (re>=minIterations) {
       params<-c(PDFk,pRplus,sigOnly,PDFspread,PDFshape)
       ub<-c(ub1,ub2,ub3,ub4,ub5)
       lb<-c(lb1,lb2,lb3,lb4,lb5)
@@ -260,8 +261,11 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
       }
     }
       
+    if (length(np)==1) {
+      result<-optimize(llfun,interval=c(lb[np],ub[np]))$minimum
+    } else{
       result<-tryCatch( {
-        fminsearch(llfun,params[np],method='Hooke-Jeeves',lower=lb[np],upper=ub[np])
+        fminsearch(llfun,params[np],method='Hooke-Jeeves',lower=lb[np],upper=ub[np])$xmin
         # fmincon(params[np],llfun,ub=ub[np],lb=lb[np])
       }, 
       error = function(error_message){
@@ -269,6 +273,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
         setBrawRes("debug",error_message)
         }
       )
+    }
       if (!is.null(result)) break
     }
     param1Use<-seq(lb1,ub1,length.out=np1points)
@@ -279,7 +284,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   }
 
   if (!is.null(result)) {
-    vals<-result$xmin
+    vals<-result
     # vals<-result$par
     for (i in 1:length(np)) 
       switch(np[i],
@@ -290,11 +295,20 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
              PDFshape<-vals[i], 
       )
   }
-  Svals<-llfun(c(PDFk,pRplus,sigOnly,PDFspread,PDFshape))
-  Smax<- -max(Svals)
+  Smax<-getLogLikelihood(zs,ns,df1,dist,
+                   location=PDFk,
+                   prplus=pRplus,bias=param3Use,
+                   spread=PDFspread,shape=PDFshape)+approx(prior_z,priorDens,PDFk)$y
+  Svals<- -S
+  Spts<-list(PDFk=param1Use,
+             pRplus=param2Use,
+             bias=param3Use,
+             PDFspread=param4Use,
+             PDFshape=param5Use
+  )
   
   # if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
-  return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals))
+  return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals,Spts=Spts))
 }
 
 mergeMAResult<-function(multiple,single) {
