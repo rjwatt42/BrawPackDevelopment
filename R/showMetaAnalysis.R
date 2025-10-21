@@ -240,6 +240,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
 showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimension="1D",orientation="vert") {
   if (is.null(metaResult)) metaResult<-doMetaMultiple()
   
+  if (is.element(showType,c("Riv","Spread","Smax","K","PRplus","Bias")))
+    showType<-paste0("meta",showType)
+  
   if (is.null(showType)) {
     switch(metaResult$metaAnalysis$analysisType,
            "fixed"={
