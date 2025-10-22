@@ -14,7 +14,8 @@ makeMetaAnalysis<-function(On=FALSE, nstudies=10,
                            analysisType="random",analysisVar="sd",modelPDF="All",
                            method="MLE",analysisPrior="none",
                            sourceNulls=0,analyseNulls=FALSE,
-                           sourceBias=0,analyseBias=FALSE) {
+                           sourceBias=0,analyseBias=FALSE,
+                           sourceAbs=FALSE) {
   metaAnalysis<-list(
     On=On,
     nstudies=nstudies,
@@ -26,7 +27,8 @@ makeMetaAnalysis<-function(On=FALSE, nstudies=10,
     sourceBias=sourceBias,
     sourceNulls=sourceNulls,
     analyseNulls=analyseNulls,
-    analyseBias=analyseBias
+    analyseBias=analyseBias,
+    sourceAbs=sourceAbs
   )
   
 }

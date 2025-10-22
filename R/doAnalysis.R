@@ -1200,5 +1200,6 @@ getSample<-function(hypothesis,design,evidence) {
   res$ResultHistory<-list(nval=res$nval,df1=res$df1,rIV=res$rIV,rpIV=res$rpIV,pIV=res$pIV,sequence=FALSE)
   # Cheating ?
   res<-cheatSample(hypothesis,design,evidence,sample,res)
+  if (evidence$absOnly) res$rIV<-abs(res$rIV)
   res
 }

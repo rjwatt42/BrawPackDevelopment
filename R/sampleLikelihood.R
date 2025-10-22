@@ -1,9 +1,14 @@
 
-SingleSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1) {
+SingleSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1,doAbs=FALSE) {
   # shape is additional normal error distribution
   sigma2<-sigma^2+spread
   sigma2[sigma2<0]<-0
-  d1<-exp(-0.5*((z-lambda)^2/sigma2))/sqrt(2*pi*sigma2)
+  
+  if (doAbs) {
+    d1<-exp(-0.5*((abs(z)-lambda)^2/sigma2))/sqrt(2*pi*sigma2) +
+        exp(-0.5*((-abs(z)-lambda)^2/sigma2))/sqrt(2*pi*sigma2)
+  } else d1<-exp(-0.5*((z-lambda)^2/sigma2))/sqrt(2*pi*sigma2)
+  
   if (bias>0) {
     zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))
     d1[abs(z)<zcrit]<-d1[abs(z)<zcrit]*(1-bias)
@@ -15,7 +20,7 @@ SingleSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1) {
 }
 
 
-UniformSamplingPDF<-function(z,lambda,sigma,spread=0,shape=0,bias=0,df1=1) {
+UniformSamplingPDF<-function(z,lambda,sigma,spread=0,shape=0,bias=0,df1=1,doAbs=FALSE) {
   # shape is additional normal error distribution
   d1<-z*0+1
   sigma2<-sigma^2+spread
@@ -32,7 +37,7 @@ UniformSamplingPDF<-function(z,lambda,sigma,spread=0,shape=0,bias=0,df1=1) {
 }
 
 
-GaussSamplingPDF<-function(z,lambda,sigma,offset=0,spread=0,shape=NA,bias=0,df1=1) {
+GaussSamplingPDF<-function(z,lambda,sigma,offset=0,spread=0,shape=NA,bias=0,df1=1,doAbs=FALSE) {
   sigma2<-lambda^2+sigma^2+spread
   d1<-exp(-0.5*(z-offset)^2/sigma2)/sqrt(2*pi*sigma2)
   
@@ -51,7 +56,7 @@ GaussSamplingCDF<-function(zcrit,lambda,sigma,offset=0) {
 }
 
 
-ExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1) {
+ExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1,doAbs=FALSE) {
   if (all(lambda==0)) 
     return(GaussSamplingPDF(z,lambda,sigma,offset=0,spread=spread,shape=NA,bias=bias,df1=df1))
   # lambda1<-1/lambda
@@ -148,7 +153,7 @@ removeNonSig<-function(zi,zpd,sigma,df1) {
 }
 
 
-GammaSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
+GammaSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1,doAbs=FALSE) {
   sigma2<-sigma^2+spread
   sigma2[sigma2<0]<-0
   if (length(sigma2)==1) {sigma2<-rep(sigma2,length(z))}
@@ -176,7 +181,7 @@ GammaSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
   
 }
 
-GenExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
+GenExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1,doAbs=FALSE) {
   sigma2<-sigma^2+spread
   sigma2[sigma2<0]<-0
   
@@ -218,7 +223,9 @@ GenExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
 }
 
 
-getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape=1,bias=0,returnVals=FALSE) {
+getLogLikelihood<-function(z,n,df1,distribution,location,
+                           prplus=1,spread=0,shape=1,bias=0,doAbs=FALSE,
+                           returnVals=FALSE) {
   if (is.null(spread)) spread<-0
   sigma<-1/sqrt(n-3)
   # if (length(sigma)==1) sigma<-sigma[1,1]
@@ -233,7 +240,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape
     lambda<-location
     for (i in 1:length(lambda)) {
       j<-1
-        mainPDF<-SingleSamplingPDF(z,lambda[i],sigma,spread=0,bias=bias,df1=df1)
+        mainPDF<-SingleSamplingPDF(z,lambda[i],sigma,spread=0,bias=bias,df1=df1,doAbs=doAbs)
         # now normalize for the non-sig
         likelihoods<-mainPDF$pdf/mainPDF$sig_pdf
         # likelihoods[(likelihoods<1e-300)]<- 1e-300
@@ -249,7 +256,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape
     lambda<-location
     for (i in 1:length(lambda)) {
       for (j in 1:length(spread)) {
-        mainPDF<-SingleSamplingPDF(z,lambda[i],sigma,spread=spread[j],bias=bias,df1=df1)
+        mainPDF<-SingleSamplingPDF(z,lambda[i],sigma,spread=spread[j],bias=bias,df1=df1,doAbs=doAbs)
         # now normalize for the non-sig
         likelihoods<-mainPDF$pdf/mainPDF$sig_pdf
         likelihoods[(likelihoods<1e-300)]<- 1e-300
@@ -264,7 +271,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape
   # get nulls ready first
   pRpluss<-prplus
   if (any(pRpluss<1)) {
-    nullPDF<-SingleSamplingPDF(z,0,sigma=sigma,spread=0,bias=bias,df1=df1)
+    nullPDF<-SingleSamplingPDF(z,0,sigma=sigma,spread=0,bias=bias,df1=df1,doAbs=doAbs)
   } else {
     nullPDF<-list(pdf=0,sig_pdf=1)
     zcrit<-0
@@ -292,7 +299,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,prplus=1,spread=0,shape
   )
   for (i in 1:length(location)) {
     lambda<-location[i]
-    mainPDF<-PDF(z,lambda,sigma,spread=spread,shape=shape,bias=bias,df1=df1)
+    mainPDF<-PDF(z,lambda,sigma,spread=spread,shape=shape,bias=bias,df1=df1,doAbs=doAbs)
     for (j in 1:length(pRpluss)) {
       pRplus<-pRpluss[j]
       # make the whole source first

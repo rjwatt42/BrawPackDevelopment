@@ -32,7 +32,13 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
     studies<-multipleAnalysis(metaAnalysis$nstudies,localHypothesis,design,evidence)
   else
     studies<-metaSingle$result
+  if (metaAnalysis$sourceAbs) {
+    studies$rIV<-studies$rIV*sign(runif(length(studies$rIV),-1,1))
+  }
   metaSingle<-runMetaAnalysis(metaAnalysis,studies,hypothesis,NULL)
+  if (metaAnalysis$sourceAbs) {
+    metaSingle$result$rIV<-abs(metaSingle$result$rIV)
+  }
   
   metaSingle$hypothesis<-hypothesis
   metaSingle$design<-design
@@ -74,6 +80,7 @@ doMetaMultiple<-function(nsims=100,metaMultiple=braw.res$metaMultiple,metaAnalys
 }
 
 getTrimFill<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
+  sourceAbs<-metaAnalysis$sourceAbs
   sigs<-isSignificant(method="NHST",p=r2p(tanh(zs),ns),r=tanh(zs),n=ns)
   res<-tryCatch({
     switch(dist,
@@ -81,14 +88,14 @@ getTrimFill<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
              q<-trimfill(zs,1/sqrt(ns-3),ma.common=TRUE,common=TRUE,random=FALSE)
              nFill<-q$k-length(zs)
              bias<-nFill/(nFill+sum(!sigs))
-             Smax<-getLogLikelihood(zs,ns,df1,dist,q$TE.common,spread=0,bias=bias)
+             Smax<-getLogLikelihood(zs,ns,df1,dist,q$TE.common,spread=0,bias=bias,doAbs=sourceAbs)
              list(PDF="fixed",PDFk=q$TE.common,PDFshape=0,pRplus=0,sigOnly=bias,Smax=Smax,Svals=q$seTE)
            },
            "random"={
              q<-trimfill(zs,1/sqrt(ns-3),ma.common=FALSE,common=FALSE,random=TRUE)
              nFill<-q$k-length(zs)
              bias<-nFill/(nFill+sum(!sigs))
-             Smax<-getLogLikelihood(zs,ns,df1,dist,q$TE.random,spread=q$tau,bias=bias)
+             Smax<-getLogLikelihood(zs,ns,df1,dist,q$TE.random,spread=q$tau,bias=bias,doAbs=sourceAbs)
              list(PDF="random",PDFk=q$TE.random,PDFshape=q$tau,pRplus=0,sigOnly=bias,Smax=Smax,Svals=q$seTE)
            }
            )
@@ -124,6 +131,8 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   reInc4<-2
   reInc5<-2
 
+  sourceAbs<-metaAnalysis$sourceAbs
+  
   if (metaAnalysis$analyseNulls) {
     param2Use<-seq(0,1,length.out=np2points)
   } else {
@@ -192,7 +201,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   
   # location refers to lambda for world metaA
   # spread refers to nulls for world metaA
-  llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
+  llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5],doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
 
   S<-array(0,c(length(param1Use),length(param2Use),length(param3Use),length(param4Use),length(param5Use)))
   for (re in 1:niterations) {
@@ -227,36 +236,36 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
       params<-c(PDFk,pRplus,sigOnly,PDFspread,PDFshape)
       ub<-c(ub1,ub2,ub3,ub4,ub5)
       lb<-c(lb1,lb2,lb3,lb4,lb5)
-      llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5])+approx(prior_z,priorDens,x[1])$y)}
+      llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5],doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
       np<-1:5
       if (is.element(dist,c("fixed","random"))) {
         if (length(param3Use)==1 ) {
-          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=x[3],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=x[3],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
           np<-c(1,2,4)
         }
         if (length(param3Use)==1 && length(param2Use)==1) {
-          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=x[2],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=x[2],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
           np<-c(1,4)
         }
         if (length(param3Use)==1 && length(param2Use)==1 && length(param4Use)==1) {
-          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
           np<-c(1)
         }
       }  else {
       if (length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
         np<-1:4
       }
       if (length(param4Use)==1 && length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=x[3],spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
         np<-1:3
       }
       if (length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=x[2],bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
         np<-1:2
       }
       if (length(param2Use)==1 && length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use)+approx(prior_z,priorDens,x[1])$y)}
+        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,location=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
         np<-1
       }
     }
@@ -298,7 +307,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   Smax<-getLogLikelihood(zs,ns,df1,dist,
                    location=PDFk,
                    prplus=pRplus,bias=param3Use,
-                   spread=PDFspread,shape=PDFshape)+approx(prior_z,priorDens,PDFk)$y
+                   spread=PDFspread,shape=PDFshape,doAbs=sourceAbs)+approx(prior_z,priorDens,PDFk)$y
   Svals<- -S
   Spts<-list(PDFk=param1Use,
              pRplus=param2Use,

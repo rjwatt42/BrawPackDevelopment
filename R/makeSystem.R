@@ -301,7 +301,7 @@ makeDesign<-function(sN=42, sMethod=makeSampling("Random"),sMethodSeverity=0.1,
 #'              metaAnalysis=makeMetaAnalysis()
 #'              )
 #' @export
-makeEvidence<-function(shortHand=FALSE,sigOnly=0,
+makeEvidence<-function(shortHand=FALSE,sigOnly=0,absOnly=FALSE,
                        AnalysisTerms=c(TRUE,TRUE,FALSE),rInteractionOnly=TRUE,ssqType="Type3",
                        caseOrder="AsStated",
                        llr=list(e1=c(),e2=0),
@@ -315,7 +315,7 @@ makeEvidence<-function(shortHand=FALSE,sigOnly=0,
                        ){
   
   evidence<-list(AnalysisTerms=AnalysisTerms,rInteractionOnly=rInteractionOnly,ssqType=ssqType,
-                 caseOrder=caseOrder,shortHand=shortHand,sigOnly=sigOnly,
+                 caseOrder=caseOrder,shortHand=shortHand,sigOnly=sigOnly,absOnly=absOnly,
                  llr=llr,useAIC=useAIC,doSEM=doSEM,
                  Welch=Welch,Transform=Transform,McFaddens=McFaddens,
                  minRp=minRp,
@@ -417,7 +417,7 @@ setDesign<-function(sN=braw.def$design$sN, sMethod=braw.def$design$sMethod, sMet
 
 #' set default evidence
 #' @export
-setEvidence<-function(shortHand=braw.def$evidence$shortHand,sigOnly=braw.def$evidence$sigOnly,
+setEvidence<-function(shortHand=braw.def$evidence$shortHand,sigOnly=braw.def$evidence$sigOnly,absOnly=braw.def$evidence$absOnly,
                       AnalysisTerms=braw.def$evidence$AnalysisTerms,rInteractionOnly=braw.def$evidence$rInteractionOnly,ssqType=braw.def$evidence$ssqType,
                       caseOrder=braw.def$evidence$caseOrder,
                       llr=braw.def$evidence$llr,useAIC=braw.def$evidence$useAIC,doSEM=braw.def$evidence$doSEM,
@@ -425,7 +425,7 @@ setEvidence<-function(shortHand=braw.def$evidence$shortHand,sigOnly=braw.def$evi
                       minRp=braw.def$evidence$minRp,
                       prior=braw.def$evidence$prior,
                       metaAnalysis=braw.def$evidence$metaAnalysis) {
-  e<-makeEvidence(shortHand=shortHand,sigOnly=sigOnly,
+  e<-makeEvidence(shortHand=shortHand,sigOnly=sigOnly,absOnly=absOnly,
                   AnalysisTerms=AnalysisTerms,rInteractionOnly=rInteractionOnly,ssqType=ssqType,
                   caseOrder=caseOrder,
                   llr=llr,useAIC=useAIC,doSEM=doSEM,
