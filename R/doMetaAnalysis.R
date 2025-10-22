@@ -148,16 +148,19 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
 
   switch(dist,
          "fixed"={
-           param1Use<-seq(-1,1,length.out=np1points)*4
+           if (sourceAbs) param1Use<-seq(0,1,length.out=np1points)*4
+           else           param1Use<-seq(-1,1,length.out=np1points)*4
          },
          "random"={
-           param1Use<-seq(-1,1,length.out=np1points)*4
+           if (sourceAbs) param1Use<-seq(0,1,length.out=np1points)*4
+           else           param1Use<-seq(-1,1,length.out=np1points)*4
            if (metaAnalysis$analysisVar=="sd") 
                 param4Use<-seq(0,0.5,length.out=np4points)^2
            else param4Use<-seq(-0.1,1,length.out=np4points)*(0.5^2)
          },
          "Single"={
-           param1Use<-seq(-1,1,length.out=np1points)
+           if (sourceAbs) param1Use<-seq(0,1,length.out=np1points)*4
+           else           param1Use<-seq(-1,1,length.out=np1points)*4
          },
          "Gauss"={
            param1Use<-seq(0,2,length.out=np1points)
