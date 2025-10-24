@@ -131,9 +131,10 @@ plot2Inference<-function(analysis,disp1,disp2,metaPlot=FALSE){
     nvals<-analysis$nval
     df1vals<-analysis$df1
   # }
-  
-  xaxis<-plotAxis(disp1,analysis$hypothesis,analysis$design,result=analysis)
-  yaxis<-plotAxis(disp2,analysis$hypothesis,analysis$design,result=analysis)
+  if (metaPlot) result<-result$best$Smax
+    else result<-NULL
+  xaxis<-plotAxis(disp1,analysis$hypothesis,analysis$design,result=result)
+  yaxis<-plotAxis(disp2,analysis$hypothesis,analysis$design,result=result)
   switch (disp1,
           "rs"={
             d1<-rvals

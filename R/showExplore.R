@@ -107,17 +107,21 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
              showHist<-FALSE
            },
            "fixed"={
-             showType<-c("metaRiv")
+             if (is.null(showType))
+               showType<-c("metaRiv")
              if (exploreResult$metaAnalysis$analyseBias) showType<-c(showType,"metaBias")
              },
            "random"={
-             showType<-c("metaRiv","metaRsd")
+             if (is.null(showType))
+               showType<-c("metaRiv","metaRsd")
              if (exploreResult$metaAnalysis$analysisVar=="var") showType[2]<-"LambdaRn"
                },
            {
-             if (exploreResult$metaAnalysis$analyseNulls) 
-               showType<-c("mean(R+)","p(R+)")
-            else showType<-c("mean(R+)")
+             if (is.null(showType)) {
+               if (exploreResult$metaAnalysis$analyseNulls) 
+                 showType<-c("mean(R+)","p(R+)")
+               else showType<-c("mean(R+)")
+             }
             if (exploreResult$hypothesis$effect$world$On)
               if (is.element(exploreResult$hypothesis$effect$world$PDF,c("GenExp","Gamma")))
                 showType<-c("PDFk","PDFshape")
@@ -253,7 +257,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
   
   for (si in 1:length(showType)) {
     
-  yaxis<-plotAxis(showType[si],hypothesis,design)
+  yaxis<-plotAxis(showType[si],hypothesis,design,result=exploreResult$result$Smax)
   ylim<-yaxis$lim
   ylabel<-yaxis$label
   ycols<-yaxis$cols

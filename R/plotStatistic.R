@@ -1241,7 +1241,10 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
          })
 
   xlabel<-NULL
-  yaxis<-plotAxis(showType,hypothesis,design,result=analysis)
+  if (doingMetaAnalysis) result<-analysis$best$Smax
+  else result<-NULL
+  
+  yaxis<-plotAxis(showType,hypothesis,design,result=result)
   ylim<-yaxis$lim
   ylabel<-yaxis$label
   ylines<-yaxis$lines

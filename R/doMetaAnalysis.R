@@ -32,14 +32,8 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
     studies<-multipleAnalysis(metaAnalysis$nstudies,localHypothesis,design,evidence)
   else
     studies<-metaSingle$result
-  if (metaAnalysis$sourceAbs) {
-    studies$rIV<-studies$rIV*sign(runif(length(studies$rIV),-1,1))
-  }
   metaSingle<-runMetaAnalysis(metaAnalysis,studies,hypothesis,NULL)
-  if (metaAnalysis$sourceAbs) {
-    metaSingle$result$rIV<-abs(metaSingle$result$rIV)
-  }
-  
+
   metaSingle$hypothesis<-hypothesis
   metaSingle$design<-design
   metaSingle$evidence<-evidence

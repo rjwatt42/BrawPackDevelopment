@@ -138,7 +138,7 @@ reportExplore<-function(exploreResult=braw.res$explore,showType="rs",
       else y_label2<-effectType
       
       for (showType in showTypes) {
-        y_label<-plotAxis(showType,hypothesis,design,result=exploreResult$result)$label
+        y_label<-plotAxis(showType,hypothesis,design,result=exploreResult$result$Smax)$label
         extra_y_label<-NULL
         if (is.null(hypothesis$IV2)){
           rVals<-exploreResult$result$rval
