@@ -93,7 +93,7 @@ reportInference<-function(analysis=braw.res$result,analysisType="Anova",showPowe
     }
     if (!is.null(IV2)) {
       nc1<-length(colnames(anova))+1
-      table1<-c(table1,"!H!C ","r",paste0(sub("Pr\\(","p\\(",sub("^","",colnames(anova)))),rep("",nc-1-nc1))
+      table1<-c(table1,"!H!C ","r[s]",paste0(sub("Pr\\(","p\\(",sub("^","",colnames(anova)))),rep("",nc-1-nc1))
       total_done<-FALSE
       
       for (i in 1:nrow(anova)){
@@ -138,7 +138,7 @@ reportInference<-function(analysis=braw.res$result,analysisType="Anova",showPowe
         table1<-c(table1,"Total "," ",ssq,df,rep(" ",nc-4))
       }
       table1<-c(table1,rep("",nc))
-      table1<-c(table1,paste0("Full model:"),paste0("r=",brawFormat(analysis$rFull)),paste0("p=",brawFormat(analysis$pFull)),rep("",nc-3))
+      table1<-c(table1,paste0("Full model:"),paste0("r[s]=",brawFormat(analysis$rFull)),paste0("p=",brawFormat(analysis$pFull)),rep("",nc-3))
       table1<-c(table1,rep("",nc))
     }
     
