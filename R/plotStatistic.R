@@ -1122,7 +1122,8 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
 
 r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                  orientation="vert",whichEffect="Main 1",effectType="all",
-                 showTheory=TRUE,showData=TRUE,showLegend=FALSE,
+                 showTheory=TRUE,showData=TRUE,showLegend=FALSE,showNsims=FALSE,
+                 showYaxis=TRUE,
                  g=NULL){
 
   baseColour<-braw.env$plotColours$infer_nsigC
@@ -1250,12 +1251,13 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
   ylines<-yaxis$lines
   logScale<-yaxis$logScale
   if (is.element(showType,c("rs","rse","sig","ns","nonnulls","nulls","rss")) && (!is.null(hypothesis$IV2))) 
-    switch(whichEffect,"Model"={ylabel<-"Model";ylines<-c(0)},
-                       "Main 1"={ylabel<-hypothesis$IV$name;ylines<-c(0,hypothesis$effect$rIV)},
-                       "Main 2"={ylabel<-hypothesis$IV2$name;ylines<-c(0,hypothesis$effect$rIV2)},
-                       "Interaction"={ylabel<-paste0(hypothesis$IV$name,"x",hypothesis$IV2$name);ylines<-c(0,hypothesis$effect$rIVIV2DV)}
+    switch(whichEffect,"Model"={mTitle<-"Model";ylines<-c(0)},
+                       "Main 1"={mTitle<-hypothesis$IV$name;ylines<-c(0,hypothesis$effect$rIV)},
+                       "Main 2"={mTitle<-hypothesis$IV2$name;ylines<-c(0,hypothesis$effect$rIV2)},
+                       "Interaction"={mTitle<-paste0(hypothesis$IV$name,"x",hypothesis$IV2$name);ylines<-c(0,hypothesis$effect$rIVIV2DV)}
            )
-  
+  else mTitle<-""
+  if (!showYaxis) ylabel<-NULL
   
   if (showType=="p" && braw.env$pPlotScale=="log10" && any(is.numeric(analysis$pIV)) && any(analysis$pIV>0)) 
     while (mean(log10(analysis$pIV)>ylim[1])<0.75) ylim[1]<-ylim[1]-1
@@ -1279,9 +1281,14 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
            ylim<-c(0,1)
            orient<-"horz"
            box<-"X" 
-           xlabel<-makeLabel(ylabel)
+           if (is.null(ylabel)) {
+             xlabel<-NULL
+             xticks<-NULL
+           } else {
+             xlabel<-makeLabel(ylabel)
+             xticks<-makeTicks(logScale=yaxis$logScale)
+           }
            ylabel<-NULL
-           xticks<-makeTicks(logScale=yaxis$logScale)
            yticks<-NULL
            xmax<-FALSE
            ymax<-TRUE
@@ -1291,9 +1298,14 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
            ylim<-ylim+c(-1,1)*diff(ylim)/25
            orient<-"horz"
            box<-"Y" 
-           ylabel<-makeLabel(ylabel)
-           yticks<-makeTicks(logScale=yaxis$logScale)
-           xlabel<-NULL
+           if (is.null(ylabel)) {
+             ylabel<-NULL
+             yticks<-NULL
+           } else{
+             ylabel<-makeLabel(ylabel)
+             yticks<-makeTicks(logScale=yaxis$logScale)
+           }
+           xlabel<-whichEffect
            xticks<-NULL
            xmax<-TRUE
            ymax<-FALSE
@@ -1306,9 +1318,10 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
   g<-startPlot(xlim,ylim,
                xticks=xticks,xlabel=xlabel,xmax=xmax,
                yticks=yticks,ylabel=ylabel,ymax=ymax,
-               box=box,top=top,orientation=orient,g=g)
+               box="both",top=top,orientation=orient,g=g)
   
   nr<-sum(!is.na(analysis$rIV))
+  if (showNsims) {
   if (is.element(showType[1],c("NHST","Hits","Misses","Inference","SEM")) && sum(!is.na(analysis$nullresult$rIV))>0) {
     n1<-brawFormat(sum(analysis$rpIV!=0))
     n2<-brawFormat(sum(!is.na(analysis$rpIV==0)))
@@ -1317,8 +1330,9 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
     n1<-brawFormat(nr)
     title<-paste("nsims = ",n1,sep="")
   }
+    if (nr>1 && !sequence)   g<-addG(g,plotTitle(title,size=0.65,fontface="normal"))
+  }
   
-  if (nr>1 && !sequence)   g<-addG(g,plotTitle(title,size=0.65,fontface="normal"))
   
   lineCol<-"#000000"
   if (is.element(showType,c("p","e1p","e2p","e1d","e2d"))) lineCol<-"green"
@@ -1588,6 +1602,8 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
       lb2<-") = "
       lb1<-"("
       lb2<-")="
+      lb1<-""
+      lb2<-"="
       labels<-c()
       colours<-c()
       title<-""
@@ -1727,57 +1743,57 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                   }
                 },
               "p"={
-                labels<-c(paste0(lb1,"sig",lb2,reportNumber(s,n,braw.env$reportCounts)," "),
-                          paste0(lb1,"ns",lb2,reportNumber(ns,n,braw.env$reportCounts)," "))
+                labels<-c(paste0(lb1,"sig",lb2,reportNumber(s,n,braw.env$reportCounts),""),
+                          paste0(lb1,"ns",lb2,reportNumber(ns,n,braw.env$reportCounts),""))
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               },
               "e1r"={
-                labels<-c(paste0(lb1,"sig error",lb2,reportNumber(s,n,braw.env$reportCounts)," "),
-                          paste0(lb1,"ns correct",lb2,reportNumber(ns,n,braw.env$reportCounts)," "))
+                labels<-c(paste0(lb1,"sig error",lb2,reportNumber(s,n,braw.env$reportCounts),""),
+                          paste0(lb1,"ns correct",lb2,reportNumber(ns,n,braw.env$reportCounts),""))
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               },
               "e2r"={
-                labels<-c(paste0(lb1,"sig correct",lb2,reportNumber(s,n,braw.env$reportCounts)," "),
-                          paste0(lb1,"ns error",lb2,reportNumber(ns,n,braw.env$reportCounts)," "))
+                labels<-c(paste0(lb1,"sig correct",lb2,reportNumber(s,n,braw.env$reportCounts),""),
+                          paste0(lb1,"ns error",lb2,reportNumber(ns,n,braw.env$reportCounts),""))
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               },
               "e1+"={
-                labels<-paste0(lb1,"sig error",lb2,reportNumber(s1,n,braw.env$reportCounts)," ")
+                labels<-paste0(lb1,"sig error",lb2,reportNumber(s1,n,braw.env$reportCounts),"")
                 colours<-braw.env$plotColours$infer_sigC
               },
               "e2+"={
-                labels<-paste0(lb1,"sig correct",lb2,reportNumber(s2,n,braw.env$reportCounts)," ")
+                labels<-paste0(lb1,"sig correct",lb2,reportNumber(s2,n,braw.env$reportCounts),"")
                 colours<-braw.env$plotColours$infer_sigC
               },
               "e1-"={
-                labels<-paste0(lb1,"ns correct",lb2,reportNumber(s1,n,braw.env$reportCounts)," ")
+                labels<-paste0(lb1,"ns correct",lb2,reportNumber(s1,n,braw.env$reportCounts),"")
                 colours<-braw.env$plotColours$infer_nsigC
               },
               "e2-"={
-                labels<-paste0(lb1,"ns error",lb2,reportNumber(s2,n,braw.env$reportCounts)," ")
+                labels<-paste0(lb1,"ns error",lb2,reportNumber(s2,n,braw.env$reportCounts),"")
                 colours<-braw.env$plotColours$infer_nsigC
               },
               "e1p"={
-                labels<-c(paste0(lb1,"sig error",lb2,reportNumber(s,n,braw.env$reportCounts)," "),
-                          paste0(lb1,"ns correct",lb2,reportNumber(ns,n,braw.env$reportCounts)," "))
+                labels<-c(paste0(lb1,"sig error",lb2,reportNumber(s,n,braw.env$reportCounts),""),
+                          paste0(lb1,"ns correct",lb2,reportNumber(ns,n,braw.env$reportCounts),""))
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               },
               "e2p"={
-                labels<-c(paste0(lb1,"sig correct",lb2,reportNumber(s,n,braw.env$reportCounts)," "),
-                          paste0(lb1,"ns error",lb2,reportNumber(ns,n,braw.env$reportCounts)," "))
+                labels<-c(paste0(lb1,"sig correct",lb2,reportNumber(s,n,braw.env$reportCounts),""),
+                          paste0(lb1,"ns error",lb2,reportNumber(ns,n,braw.env$reportCounts),""))
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               },
               "e1d"={
-                labels<-c(paste0(lb1,"sig error",lb2,reportNumber(s1,n,braw.env$reportCounts)," "),
+                labels<-c(paste0(lb1,"sig error",lb2,reportNumber(s1,n,braw.env$reportCounts),""),
                           paste0(lb1,"sig correct",lb2,reportNumber(s2,n,braw.env$reportCounts),""),
-                          paste0(lb1,"ns",lb2,reportNumber(ns,n,braw.env$reportCounts)," ")
+                          paste0(lb1,"ns",lb2,reportNumber(ns,n,braw.env$reportCounts),"")
                           )
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               },
               "e2d"={
-                labels<-c(paste0(lb1,"sig correct",lb2,reportNumber(s1,n,braw.env$reportCounts)," "),
+                labels<-c(paste0(lb1,"sig correct",lb2,reportNumber(s1,n,braw.env$reportCounts),""),
                           paste0(lb1,"sig error",lb2,reportNumber(s2,n,braw.env$reportCounts),""),
-                          paste0(lb1,"ns",lb2,reportNumber(ns,n,braw.env$reportCounts)," ")
+                          paste0(lb1,"ns",lb2,reportNumber(ns,n,braw.env$reportCounts),"")
                 )
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               }
@@ -1800,28 +1816,28 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
   g
 }
 
-l_plot<-function(analysis,ptype=NULL,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
-  g<-r_plot(analysis,ptype,orientation=orientation,showTheory=showTheory,showData=showData)
+l_plot<-function(analysis,ptype=NULL,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
+  g<-r_plot(analysis,ptype,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
   g
 }
 
 p_plot<-function(analysis,ptype="p",otheranalysis=NULL,PlotScale=braw.env$pPlotScale,orientation="vert",
-                 whichEffect="Main 1",effectType="all",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
+                 whichEffect="Main 1",effectType="all",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
   g<-r_plot(analysis,ptype,PlotScale=="log10",otheranalysis,orientation=orientation,
-            whichEffect=whichEffect,effectType=effectType,showTheory=showTheory,showData=showData,g=g)
+            whichEffect=whichEffect,effectType=effectType,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
   g
 }
 
-w_plot<-function(analysis,wtype,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
-  g<-r_plot(analysis,wtype,braw.env$wPlotScale=="log10",orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+w_plot<-function(analysis,wtype,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
+  g<-r_plot(analysis,wtype,braw.env$wPlotScale=="log10",orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
   g
 }
 
-n_plot<-function(analysis,ntype,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
-  r_plot(analysis,ntype,braw.env$nPlotScale=="log10",orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+n_plot<-function(analysis,ntype,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
+  r_plot(analysis,ntype,braw.env$nPlotScale=="log10",orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
 }
 
-e2_plot<-function(analysis,disp,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
+e2_plot<-function(analysis,disp,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
   if (!analysis$hypothesis$effect$world$On) {
     lambda<-brawFormat(analysis$hypothesis$effect$rIV,digits=3)
     switch (braw.env$RZ,
@@ -1853,33 +1869,33 @@ e2_plot<-function(analysis,disp,otheranalysis=NULL,orientation="vert",showTheory
             analysis$hypothesis$effect$world$pRplus<-1
             switch(disp,
                    "e2r"={
-                     g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    },
                    "e2+"={
-                     g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    },
                    "e2-"={
-                     g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-r_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    },
                    "e2p"={
-                     g<-p_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-p_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    }
             )
             g<-addG(g,plotTitle(lab))
           },
           "sLLR"={
-            g<-p_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+            g<-p_plot(analysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
             g<-addG(g,plotTitle(lab))
           },
           "dLLR"={
-            g<-p_plot(analysis,"e2d",otheranalysis=otheranalysis,PlotScale="linear",orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+            g<-p_plot(analysis,"e2d",otheranalysis=otheranalysis,PlotScale="linear",orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
             g<-addG(g,plotTitle(lab))
           }
   )
   return(g)
 }
 
-e1_plot<-function(nullanalysis,disp,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
+e1_plot<-function(nullanalysis,disp,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
   switch (braw.env$RZ,
           "r"={
             lab<-"Null: r[p]= 0"
@@ -1895,33 +1911,33 @@ e1_plot<-function(nullanalysis,disp,otheranalysis=NULL,orientation="vert",showTh
             # g<-r_plot(nullanalysis,"rs_e1",otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,g=g)
             switch(disp,
                    "e1r"={
-                     g<-r_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-r_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    },
                    "e1+"={
-                     g<-r_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-r_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    },
                    "e1-"={
-                     g<-r_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-r_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    },
                    "e1a"={
-                     g<-p_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+                     g<-p_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
                    }
             )
             g<-addG(g,plotTitle(lab))
           },
           "sLLR"={
-            g<-p_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,g=g)+
+            g<-p_plot(nullanalysis,disp,otheranalysis=otheranalysis,orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
               g<-addG(g,plotTitle(lab))
           },
           "dLLR"={
-            g<-p_plot(nullanalysis,"e1d",otheranalysis=otheranalysis,PlotScale="linear",orientation=orientation,showTheory=showTheory,showData=showData,g=g)
+            g<-p_plot(nullanalysis,"e1d",otheranalysis=otheranalysis,PlotScale="linear",orientation=orientation,showTheory=showTheory,showData=showData,showYaxis=showYaxis,g=g)
             g<-addG(g,plotTitle(lab))
           }
   )
   return(g)
 }
 
-ps_plot<-function(analysis,disp,showTheory=TRUE,showLegend=FALSE,showData=TRUE,g=NULL){
+ps_plot<-function(analysis,disp,showTheory=TRUE,showLegend=FALSE,showData=TRUE,showYaxis=TRUE,g=NULL){
   
   if (is.null(analysis$hypothesis$IV2)) {
     sigs<-isSignificant(braw.env$STMethod,analysis$pIV,analysis$rIV,analysis$nval,analysis$df1,analysis$evidence)
@@ -2013,7 +2029,7 @@ ps_plot<-function(analysis,disp,showTheory=TRUE,showLegend=FALSE,showData=TRUE,g
   return(g)
 }
 
-aic_plot<-function(analysis,disp,showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL) {
+aic_plot<-function(analysis,disp,showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL) {
   # plotting a single result:
   
   hypothesis<-analysis$hypothesis
@@ -2089,7 +2105,7 @@ aic_plot<-function(analysis,disp,showTheory=TRUE,showData=TRUE,showLegend=FALSE,
   return(g)
 }
 
-sem_plot<-function(analysis,disp,showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
+sem_plot<-function(analysis,disp,showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
   
   hypothesis<-analysis$hypothesis
   effect<-hypothesis$effect
@@ -2143,6 +2159,6 @@ sem_plot<-function(analysis,disp,showTheory=TRUE,showData=TRUE,showLegend=FALSE,
   return(g)
 }
 
-var_plot<-function(analysis,disp,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,g=NULL){
-  g<-r_plot(analysis,showType=disp,showTheory=showTheory,showData=showData,showLegend=FALSE,g=g)
+var_plot<-function(analysis,disp,otheranalysis=NULL,orientation="vert",showTheory=TRUE,showData=TRUE,showLegend=FALSE,showYaxis=TRUE,g=NULL){
+  g<-r_plot(analysis,showType=disp,showTheory=showTheory,showData=showData,showLegend=FALSE,showYaxis=showYaxis,g=g)
 }

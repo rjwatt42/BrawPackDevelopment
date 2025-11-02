@@ -47,7 +47,7 @@ makeFormula<-function(IV,IV2,DV,design,evidence,analysis,an_vars){
 #' @examples
 #' reportDescription(analysis=doAnalysis())
 #' @export
-reportDescription<-function(analysis=braw.res$result){
+reportDescription<-function(analysis=braw.res$result,plain=FALSE){
   if (is.null(analysis)) analysis<-doSingle(autoShow=FALSE)
   
   IV<-analysis$hypothesis$IV
@@ -65,6 +65,8 @@ reportDescription<-function(analysis=braw.res$result){
     nc<-4
   }
   
+  outputText<-c()
+  if (!plain) {
   switch (DV$type,
           "Interval"={
             outputText<-c("!H!CLinear Model", rep(" ",nc-1))
@@ -121,6 +123,7 @@ reportDescription<-function(analysis=braw.res$result){
   if (braw.env$fullOutput>0) {
     outputText<-c(outputText,"R^2",paste(brawFormat(analysis$rFull^2,digits=braw.env$report_precision),sep=""),rep("",nc-2))
     outputText<-c(outputText,"AIC",paste(brawFormat(analysis$AIC,digits=braw.env$report_precision),sep=""),rep("",nc-2))
+  }
   }
   
   outputText<-c(outputText,rep("",nc))

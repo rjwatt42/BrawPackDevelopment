@@ -163,6 +163,8 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$autoPrint<-autoPrint
           braw.env$plotRect<-ggplot2::coord_cartesian(xlim=c(0,1),ylim=c(0,1))
           
+          braw.env$barStacked<-FALSE
+          
           braw.env$addHistory<-TRUE
           braw.env$plotLimits<-c()
           

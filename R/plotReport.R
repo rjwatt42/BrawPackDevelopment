@@ -17,7 +17,7 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
   cellFilledStyle<-'padding-left:5px;padding-right:5px;'
   cellEmptyStyle<-'padding-left:0px;padding-right:0px;'
   blankLineStyle="padding-top:20px;"
-  tableStart<-paste0('<table style="',placing,'margin-top:0px;margin-right:5px;margin-left:5px;float:left;vertical-align:top;">')
+  tableStart<-paste0('<table style="',placing,'margin-top:0px;margin-right:5px;margin-left:5px;margin-bottom:25px;float:left;vertical-align:top;">')
   if (renderAsHTML) {
     fontSize<-fontSize*13
     mainStyle<-paste0("font-size:",format(fontSize) ,"px;font-weight:normal;text-align: left;")

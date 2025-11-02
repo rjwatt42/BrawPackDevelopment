@@ -570,6 +570,7 @@ generalAnalysis<-function(allData,AnalysisTerms,withins=FALSE,ssqType="Type3",ca
   n_data<-n
   use<-colSums(apply(analysisRawData,1,function(x)!is.na(x)))==ncol(analysisRawData)
   residsNull<-analysisRawData$dv[use]
+  residsNull<-as.numeric(residsNull)
   residLLK<-sum(log(dnorm(residsNull,mean(residsNull),sd(residsNull))))
   AICnull<-2*2-2*residLLK
 

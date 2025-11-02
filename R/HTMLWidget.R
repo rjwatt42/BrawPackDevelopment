@@ -48,7 +48,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     '    }',
     '    if (tabState!=\'block\') {',
     '      document.getElementById(tabName).style.display = \'block\';',
-    '      evt.currentTarget.className += \' active\';',
+    '      event.currentTarget.className += \' active\';',
     '    }',
     '  }'
   )

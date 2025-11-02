@@ -5,8 +5,8 @@ discreteVals<-function(ivr,ng,pp,type="continuous",cases=NULL) {
   proportions<-c(0,pp)
   breaks<-qnorm(cumsum(proportions)/sum(proportions))
   # not sure we should do this.
-  while (all(ivr<breaks[2])) breaks[2]<-breaks[2]-0.1
-  while (all(ivr>breaks[ng])) breaks[ng]<-breaks[ng]+0.1
+  # while (all(ivr<breaks[2])) breaks[2]<-breaks[2]-0.1
+  # while (all(ivr>breaks[ng])) breaks[ng]<-breaks[ng]+0.1
   ivDiscrete=ivr*0
   for (i in 1:ng) {ivDiscrete=ivDiscrete+(ivr>breaks[i])}
   if (type=="continuous") ivDiscrete<-(ivDiscrete-mean(1:ng))*ng
@@ -508,30 +508,30 @@ doSample<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,autoSho
         }
       }
       
-      switch(IV$type,
-             "Interval"={
-             },
-             "Ordinal"={
-             },
-             "Categorical"={
-               if (IV$catSource=="discrete") {
-                 ivr<-discreteVals(ivr,IV$ncats,IV$proportions)
-               }
-             }
-      )
-      if (!is.null(IV2)){
-        switch(IV2$type,
-               "Interval"={
-               },
-               "Ordinal"={
-               },
-               "Categorical"={
-                 if (IV2$catSource=="discrete") {
-                   iv2<-discreteVals(iv2r,IV$ncats,IV$proportions)
-                 }
-               }
-        )
-      }
+      # switch(IV$type,
+      #        "Interval"={
+      #        },
+      #        "Ordinal"={
+      #        },
+      #        "Categorical"={
+      #          if (IV$catSource=="discrete") {
+      #            ivr<-discreteVals(ivr,IV$ncats,IV$proportions,"discrete",IV$cases)
+      #          }
+      #        }
+      # )
+      # if (!is.null(IV2)){
+      #   switch(IV2$type,
+      #          "Interval"={
+      #          },
+      #          "Ordinal"={
+      #          },
+      #          "Categorical"={
+      #            if (IV2$catSource=="discrete") {
+      #              iv2<-discreteVals(iv2r,IV$ncats,IV$proportions)
+      #            }
+      #          }
+      #   )
+      # }
       
       # do within design
       if (IV$type=="Categorical" && design$sIV1Use=="Within") {

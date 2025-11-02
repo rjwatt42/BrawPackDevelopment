@@ -273,7 +273,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   if (is.numeric(xticks)) xticks<-makeTicks(xticks)
   if (is.numeric(yticks)) yticks<-makeTicks(yticks)
   
-  fontDimensions<-c(1)
+  fontDimensions<-c(1) # this overrides plotArea in effect
   if (!is.null(xticks) || !is.null(xlabel))
     fontDimensions<-c(fontDimensions,braw.env$plotArea[4])
   if (!is.null(yticks) || !is.null(ylabel))
@@ -328,7 +328,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
     # if (!ymax)
     #   bottomGap<-labelGapx+max(strNChar(xticks$labels))*unitGap
   } else {
-    bottomGap<-minGap
+    bottomGap<-bottomGap-1.5*unitGap
   }
   if (!is.null(yticks)) {
     # if (!xmax)
@@ -397,6 +397,7 @@ plotTitle<-function(label,position="left",size=0.75,fontface="bold") {
 }
 
 xAxisLabel<-function(label,size=0.75) {
+  if (braw.env$plotArea[3]<0.5) size<-size*0.7
   voff<-0+braw.env$plotLimits$gap[2]*0.25
   
   axis<-data.frame(x=reRangeX(mean(braw.env$plotLimits$xlim)),y=rangeY(voff))
@@ -490,8 +491,8 @@ dataLine<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0
   return(dataPath(data,arrow=arrow,colour=colour,linetype=linetype,linewidth=linewidth,alpha=alpha))
 }
 dataBar<-function(data,colour="#000000",fill="white",alpha=1,barwidth=0.85) {
-  bar<-data.frame(x=c(-1,1,1,-1)*barwidth/length(data$x),
-                  y=c(0,0,1,1)
+  bar<-data.frame(x=c(-1,1,1,-1,-1)*barwidth/length(data$x),
+                  y=c(0,0,1,1,0)
   )
   output<-c()
   for (i in 1:length(data$x)) {
@@ -908,35 +909,40 @@ strNChar<-function(str) {
   nother<-nother-(is.mathLabel(str) & grepl("=",str))*1
   return(nother+nsub*0.6)
 }
-dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21) {
+dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location="right") {
   fontsize=0.6*fontsize*braw.env$fontSize
-  dy=0.06*fontsize
-  dx=0.022*fontsize/braw.env$plotArea[3] # because rangeX() below
+  dy=0.06*fontsize/braw.env$plotArea[4]
+  dx=0.03*fontsize/braw.env$plotArea[3] # because rangeX() below
   if (nchar(title)>0) tn<-1.2 else tn<-0
   nrows<-tn+length(data$names)+1
-  ncols<-max(strNChar(c(title,data$names)))+2
+  ncols<-max(c(strNChar(title)*1.5,strNChar(data$names)+1))+2
   # ncols<-max(strwidth(parse(text=mathPrepText(c(title,data$names)))))/strwidth("e")+2
-  g<-list(axisPolygon(data=data.frame(x=rangeX(c(1-ncols*dx,1,1,1-ncols*dx,1-ncols*dx)),
+  switch(location,
+         "right"={xL<-1-ncols*dx},
+         "left"={xL<-0}
+  )
+  
+  g<-list(axisPolygon(data=data.frame(x=rangeX(c(xL,xL+ncols*dx,xL+ncols*dx,xL,xL)),
                                       y=rangeY(c(1-nrows*dy,1-nrows*dy,1,1,1-nrows*dy))),
                       fill="white",colour="white",linewidth=0.5)
   )
-  g<-c(g,list(axisPath(data=data.frame(x=rangeX(c(1-ncols*dx,1,1,1-ncols*dx,1-ncols*dx)),
+  g<-c(g,list(axisPath(data=data.frame(x=rangeX(c(xL,xL+ncols*dx,xL+ncols*dx,xL,xL)),
                                        y=rangeY(c(1-nrows*dy,1-nrows*dy,1,1,1-nrows*dy))),
                        colour="#000000",linewidth=0.5))
   )
   if (tn>0)
-    g<-c(g,list(axisText(data=data.frame(x=rangeX(1-ncols*dx+2*dx),y=rangeY(1-dy*tn)),label=title,colour=titleCol,size=fontsize,fontface="bold"))
+    g<-c(g,list(axisText(data=data.frame(x=rangeX(xL+2*dx),y=rangeY(1-dy*tn)),label=title,colour=titleCol,size=fontsize,fontface="bold"))
     )
   
   if (length(shape)<length(data$names)) shape<-rep(shape,length(data$names))
   for (i in 1:length(data$names)) {
     if (!is.na(data$colours[i]))
       g<-c(g,
-           list(axisPoint(data=data.frame(x=rangeX(1-ncols*dx+dx*1.5),y=rangeY(1-dy*(i+tn-0.05))),
+           list(axisPoint(data=data.frame(x=rangeX(xL+dx*1.5),y=rangeY(1-dy*(i+tn-0.05))),
                           fill=data$colours[i],shape=shape[i]))
       )
     g<-c(g,
-         list(axisText(data=data.frame(x=rangeX(1-ncols*dx+2.5*dx),y=rangeY(1-dy*(i+tn))),
+         list(axisText(data=data.frame(x=rangeX(xL+3.5*dx),y=rangeY(1-dy*(i+tn))),
                        label=data$names[i],vjust=0.5,size=fontsize))
     )
   }

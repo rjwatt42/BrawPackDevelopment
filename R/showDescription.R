@@ -29,6 +29,7 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
     dotSize<-max(dotSize*sqrt(100/length(x)),2)
   }
   # dotSize<-dotSize/2
+  col<-darken(col,off=0.2)
   
   switch (hypothesisType,
           "Interval Interval"={
@@ -100,7 +101,8 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
                 y<-dens1$counts[i]
                 if (y>0){
                   xv<-c(xv,rep(dens1$mids[i],y)+runif(y,min=-0.08,max=0.08))
-                  yv<-c(yv,seq(0,densities[i],length.out=y))
+                  ynew<-seq(0,densities[i],length.out=y+1)
+                  yv<-c(yv,ynew[1:y])
                 }
               }
               if (i2==1) yv<-(1-yv)
@@ -141,7 +143,8 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
                 y<-dens1$counts[i]
                 if (y>0){
                   xv<-c(xv,rep(bins[i],y)+runif(y,min=-0.08,max=0.08))
-                  yv<-c(yv,seq(0,densities[i],length.out=y))
+                  ynew<-seq(0,densities[i],length.out=y+1)
+                  yv<-c(yv,ynew[1:y])
                 }
               }
               if (i2==1) yv<-(1-yv)
@@ -172,20 +175,27 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
             pp<-matrix(NA,DV$ncats,IV$ncats)
             for (i1 in 1:IV$ncats) {
               for (i2 in 1:DV$ncats) {
-                pp[i2,i1]<-sum(yv[xv==i1]==i2)/length(xv)
+                pp[i2,i1]<-sum(yv[xv==i1]==i2)
               }
             }
+            pp<-pp/matrix(colSums(pp),nrow(pp),ncol(pp),byrow=TRUE)
             
+            stacked<-braw.env$barStacked
             if (colindex==1) barwidth<-0.5
             else barwidth<-0.25
             for (i2 in DV$ncats:1) {
-              x<-b[xv[yv==i2]]+((i2-1)/(DV$ncats-1)-0.5)*barwidth/2+runif(length(xv[yv==i2]),min=-0.1,max=0.1)*0
+              xoffset<-((i2-1)/(DV$ncats-1)-0.5)
+              if (stacked) xoffset<-0
+              yoffset<-0
               y<-c()
               x<-c()
               for (i1 in 1:IV$ncats) {
+                yoffset<-0
+                if (stacked && i2>1) yoffset<-sum(pp[1:(i2-1),i1])
                 np1<-sum(yv[xv==i1]==i2)
-                y<-c(y,seq(0,pp[i2,i1],length.out=np1))
-                x<-c(x,rep(i1,np1)+((i2-1)/(DV$ncats-1)-0.5)*barwidth/2+runif(np1,min=-0.1,max=0.1)/5)
+                ynew<-seq(0,pp[i2,i1],length.out=np1+2)
+                y<-c(y,yoffset+ynew[2:(np1+1)])
+                x<-c(x,rep(i1,np1)+xoffset*barwidth/2+runif(np1,min=-0.1,max=0.1)/5)
               }
               # y<-pp[i2,xv[yv==i2]]*runif(length(xv[yv==i2]),min=0.05,max=0.9)
               # y<-y-min(y)
@@ -200,7 +210,7 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
                   g<-addG(g,dataPoint(data=pts,shape=braw.env$plotShapes$data, size =dotSize, alpha=alphaPoints, colour="#000000", fill=col))
                 } else {
                   col<-braw.env$plotColours$descriptionC
-                  if (i2==1) col<-darken(col,0.5,off=0.5)
+                  if (i2==1) col<-darken(col,0.25,off=0.75)
                   g<-addG(g,dataPoint(data=pts,shape=braw.env$plotShapes$data, size =dotSize*shrinkDots, colour="#000000", fill=col, alpha=alphaPoints))
                 }
               }
@@ -278,6 +288,7 @@ plotParInterDescription<-function(analysis,g=NULL){
         analysis1$hypothesis$IV$vals<-Ivals[use1]
         analysis1$hypothesis$DV$vals<-Dvals[use1]
         analysis1$hypothesis$DV$mu<-mean(analysis$dv[use1],na.rm=TRUE)
+        analysis1$hypothesis$IV2<-NULL
         analysis1<-doAnalysis(analysis1)
 
             use2<-analysis$iv2>=median(analysis$iv2)
@@ -292,23 +303,24 @@ plotParInterDescription<-function(analysis,g=NULL){
         # analysis2$rIV<-rho[2]
         
         analysis2$hypothesis$IV$vals<-Ivals[use2]
+        analysis2$hypothesis$IV2<-NULL
         analysis2$hypothesis$DV$vals<-Dvals[use2]
         analysis2$hypothesis$DV$mu<-mean(analysis$dv[use2],na.rm=TRUE)
         analysis2<-doAnalysis(analysis2)
         
         range1<-c(min(analysis1$ivplot),max(analysis1$ivplot))
         range2<-c(min(analysis2$ivplot),max(analysis2$ivplot))
-        if (analysis1$hypothesis$DV$type=="Categorical") {
-          g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,offset=2,g=g)
-          g<-plotPrediction(analysis2$hypothesis$IV,NULL,analysis2$hypothesis$DV,analysis2,analysis$design,offset=3,g=g)
-          g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,2,2)
-          g<-plotPoints(g,analysis2$hypothesis$IV,analysis2$hypothesis$DV,analysis2,3,2)
-        } else {
-          g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,2,2)
-          g<-plotPoints(g,analysis2$hypothesis$IV,analysis2$hypothesis$DV,analysis2,3,2)
-          g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,offset=2,range=range1,g=g)
-          g<-plotPrediction(analysis2$hypothesis$IV,NULL,analysis2$hypothesis$DV,analysis2,analysis$design,offset=3,range=range2,g=g)
-        }
+        g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,2,2)
+        g<-plotPoints(g,analysis2$hypothesis$IV,analysis2$hypothesis$DV,analysis2,3,2)
+        g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,offset=2,range=range1,g=g)
+        g<-plotPrediction(analysis2$hypothesis$IV,NULL,analysis2$hypothesis$DV,analysis2,analysis$design,offset=3,range=range2,g=g)
+        # if (analysis1$hypothesis$DV$type=="Categorical") {
+        # } else {
+        #   g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,2,2)
+        #   g<-plotPoints(g,analysis2$hypothesis$IV,analysis2$hypothesis$DV,analysis2,3,2)
+        #   g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,offset=2,range=range1,g=g)
+        #   g<-plotPrediction(analysis2$hypothesis$IV,NULL,analysis2$hypothesis$DV,analysis2,analysis$design,offset=3,range=range2,g=g)
+        # }
    g<-addG(g,dataLegend(data.frame(names=names,colours=col),title=analysis$hypothesis$IV2$name))     
   g
 }
@@ -318,8 +330,8 @@ plotParDescription<-function(analysis,g) {
   analysis$hypothesis$IV$vals<-analysis$iv
   analysis$hypothesis$DV$vals<-analysis$dv
   
-  g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
+  g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
   g
 }
 
@@ -327,6 +339,13 @@ plotCatDescription<-function(analysis,g) {
 
   analysis$hypothesis$IV$vals<-analysis$iv
   analysis$hypothesis$DV$vals<-analysis$dv
+  
+  if (analysis$hypothesis$IV$type=="Ordinal") {
+    h<-c()
+    for (i in 1:analysis$hypothesis$IV$nlevs)
+      h<-c(h,sum(analysis$iv==i))
+    analysis$hypothesis$IV$ordProportions<-paste(h,sep=",")
+  }
   
   g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
@@ -382,8 +401,8 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),g=NULL) {
         }
       }
     } 
-    g<-addG(g,dataLegend(data.frame(names=names,colours=colours),
-                         title=title,titleCol=titleCol,shape=c(21,22)))
+    # g<-addG(g,dataLegend(data.frame(names=names,colours=colours),
+    #                      title=title,titleCol=titleCol,shape=c(21,22),location="left"))
   } else{
     g<-nullPlot()
     if (analysis$evidence$AnalysisTerms[3]) {
