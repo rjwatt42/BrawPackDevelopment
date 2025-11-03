@@ -19,7 +19,7 @@ makePanel<-function(g,r=NULL) {
 }
 
 #' @export
-doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
+doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doHistory=TRUE,
                           variables=list(IV="Perfectionism",IV2=NULL,DV="ExamGrade"),
                           rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
                           world="Binary",pRplus=0.5,
@@ -30,30 +30,31 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
                           ) {
   
   setHTML()
-  rootInv<-stepDM(doingDemo)
-  partInv<-partDM(doingDemo)
+  stepDM<-stepDM(doingDemo)
+  partDM<-partDM(doingDemo)
   single<-singleDM(doingDemo)
+  rootDM<-paste0("Step",stepDM,partDM)
 
   if (is.null(rIV)) rIV<-0.3
   
   if (is.null(sN)) {
-    if (paste0(rootInv,partInv)=="1C") sN<-500
-    if (paste0(rootInv)=="2") sN<-100
-    if (paste0(rootInv)=="3") sN<-100
-    if (paste0(rootInv)=="4") sN<-100
-    if (paste0(rootInv)=="5") sN<-1500
-    if (paste0(rootInv)=="6") sN<-1500
+    if (paste0(stepDM,partDM)=="1C") sN<-500
+    if (paste0(stepDM)=="2") sN<-100
+    if (paste0(stepDM)=="3") sN<-100
+    if (paste0(stepDM)=="4") sN<-100
+    if (paste0(stepDM)=="5") sN<-150
+    if (paste0(stepDM)=="6") sN<-150
     if (is.null(sN)) sN<-42
   }
   if (is.null(sMethod)) {
-    if (is.element(paste0(rootInv,partInv),c("1B"))) sMethod<-"Convenience"
+    if (is.element(paste0(stepDM,partDM),c("1B"))) sMethod<-"Convenience"
     if (is.null(sMethod)) sMethod<-"Random"
   }
   
   hideReport<-FALSE
-  switch(rootInv,
+  switch(stepDM,
          "1"={ # making samples and analysing them in Jamovi
-           switch(partInv,
+           switch(partDM,
                   "A"={showNow<-"Basic"},
                   "B"={showNow<-"Sample"},
                   "C"={showNow<-"Basic"}
@@ -61,7 +62,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
          },
          "2"={ # 3 basic tests with Interval DV
            variables$DV<-"ExamGrade"
-           switch(partInv,
+           switch(partDM,
                   "A"={variables$IV<-"Perfectionism"},
                   "B"={variables$IV<-"Smoker?"},
                   "C"={variables$IV<-"BirthOrder"},
@@ -71,7 +72,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
          },
          "3"={ # 2 basic tests with Categorical DV
            variables$DV<-"TrialOutcome"
-           switch(partInv,
+           switch(partDM,
                   "A"={variables$IV<-"Treatment?"},
                   "B"={variables$IV<-"Sessions"},
                   {}
@@ -93,7 +94,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
          },
          "5"={ # Main effects in multiple IVs
            variables$DV<-"ExamGrade"
-           switch(partInv,
+           switch(partDM,
                   "A"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
                   "B"={variables$IV<-"Smoker?";variables$IV2<-"Anxiety"},
                   "C"={variables$IV<-"BirthOrder";variables$IV2<-"Musician?"},
@@ -112,7 +113,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
          },
          "6"={ # Interactions
            variables$DV<-"ExamGrade"
-           switch(partInv,
+           switch(partDM,
                   "A"={variables$IV<-"Coffee?";variables$IV2<-"Musician?"},
                   "B"={variables$IV<-"Smoker?";variables$IV2<-"Anxiety"},
                   "C"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
@@ -133,7 +134,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
   hypothesis<-makeHypothesis(IV=variables$IV,IV2=variables$IV2,DV=variables$DV,
                              effect=makeEffect(rIV,rIV2=rIV2,rIVIV2=rIVIV2,rIVIV2DV=rIVIV2DV)
                              )
-  if (rootInv=="5") hypothesis$layout<-"simple"
+  if (stepDM=="5") hypothesis$layout<-"simple"
   design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod))
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
@@ -182,8 +183,12 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
   }
   open<-which(showNow==tabs)
   
-  linkLabel<-paste0(substr(doingDemo,1,6))
-  investgResults<-
+  history<-braw.res$demoHistory
+  if (is.null(history)) history<-list(content='')
+  if (!doHistory) history$content<-NULL
+  
+  linkLabel<-paste0(rootDM)
+  demoResults<-
     generate_tab(
       title="Demo:",
       plainTabs=FALSE,
@@ -191,15 +196,21 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,
       width=550,
       tabs=tabs,
       tabContents=tabContents,
-      tabLink=paste0('https://doingpsychstats.wordpress.com/demonstration-',partInv,'#','A'),
-      tabLinkLabel=paste0('\U24D8',partInv),
+      tabLink=paste0('https://doingpsychstats.wordpress.com/demonstration-',partDM,'#','A'),
+      tabLinkLabel=paste0('&#x24D8 ',linkLabel),
+      history=history$content,
       open=open
     )
   
+  if (doHistory) {
+    history$content<-demoResults
+    history$place<-length(history$content)
+    setBrawRes("demoHistory",history)
+  }
   if (showOutput) {
-    showHTML(investgResults)
+    showHTML(demoResults)
     return(invisible(NULL))
   }
   
-  return(investgResults)
+  return(demoResults)
 }

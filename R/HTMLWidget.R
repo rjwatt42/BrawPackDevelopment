@@ -97,8 +97,8 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     )
   }
   
-  # script<-paste0(
-    # '<script>',
+  script<-paste0(
+  '<script>',
     # 'function openTab(evt, tabName) {',
     # '  var tabState;',
     # '  if (tabName!="tabtitle") {',
@@ -149,8 +149,8 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     # '    open(linkName);',
     # '}',
     # openCode,
-    # '</script>'
-  # )
+  '</script>'
+  )
   
   style<-paste0(
     '<style>',
@@ -294,13 +294,15 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     nextButton<-paste0(
       '<button class="historyButton"',
       buttonFormat,
-      '" onclick="historyGoTo(event,\'','Block',format(block),'\')">',
+      '" onclick="',historyGoTo(paste0('Block',format(block))),'">',
+      # '" onclick="historyGoTo(event,\'','Block',format(block),'\')">',
       '>>','</button>'
     )
     nextButtonDisabled<-paste0(
       '<button class="historyButton" disabled',
       buttonFormat,
-      '" onclick="historyGoTo(event,\'','Block',format(block),'\')">',
+      '" onclick="',historyGoTo(paste0('Block',format(block))),'">',
+      # '" onclick="historyGoTo(event,\'','Block',format(block),'\')">',
       '>>','</button>'
     )
     previousButton<-paste0(
@@ -312,14 +314,16 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
       historyButtons<-paste0(historyButtons,
                              '<button class="historyButton" disabled',
                              buttonFormat,
-                             '" onclick="historyGoTo(event,\'','Block',format(block+1),'\')">',
+                             '" onclick="',historyGoTo(paste0('Block',format(block+1))),'">',
+                             # '" onclick="historyGoTo(event,\'','Block',format(block+1),'\')">',
                              '>>','</button>'
       )
       historyButtons<-paste0(historyButtons,link)
       historyButtons<-paste0(historyButtons,
                              '<button class="historyButton"',
                              buttonFormat,
-                             '" onclick="historyGoTo(event,\'','Block',format(block-1),'\')">',
+                             '" onclick="',historyGoTo(paste0('Block',format(block-1))),'">',
+                             # '" onclick="historyGoTo(event,\'','Block',format(block-1),'\')">',
                              '<<','</button>'
       )
       history<-sub('<button class="historyButton" disabled',
@@ -330,6 +334,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
                              '<button class="historyButton" disabled',
                              buttonFormat,
                              '" onclick="',historyGoTo(paste0('Block',format(1))),'">',
+                             # '" onclick="historyGoTo(event,\'','Block',format(1),'\')">',
                              '>>','</button>'
       )
       historyButtons<-paste0(historyButtons,link)
@@ -337,6 +342,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
                              '<button class="historyButton" disabled',
                              buttonFormat,
                              '" onclick="',historyGoTo(paste0('Block',format(0))),'">',
+                             # '" onclick="historyGoTo(event,\'','Block',format(0),'\')">',
                              '<<','</button>'
       )
     }
@@ -356,8 +362,8 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     html_content <- paste0(
       style,
       buttons,
-      panels
-      # script
+      panels,
+      script
     )
   if (!is.null(outerHeight)) {
     html_content<-paste0(
