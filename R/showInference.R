@@ -159,7 +159,7 @@ showInference<-function(analysis=braw.res$result,showType="Basic",dimension="1D"
     g1<-plot2Inference(analysis,showType[1],showType[2])
   } else {
     area.x<-0
-    area.y<-1
+    area.y<-0
     area.w<-1
     area.h<-1
     if (!is.null(analysis$hypothesis$IV2)) {
