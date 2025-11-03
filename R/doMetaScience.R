@@ -277,8 +277,6 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
                 '<table>',
                 '<tr><td>', braw.res$investgD, '</td></tr>',
                 '<tr><td>', braw.res$investgR, '</td></tr>',
-                '<tr style="height:10px;"></tr>',
-                '<tr><td>', moreHTML(reportWorldDesign(),title="see Plan",ID="p1"), '</td></tr>',
                 '</table>',
                 '</div>'
   )
@@ -286,11 +284,10 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
                 '<table>',
                 '<tr><td>', braw.res$investgS, '</td></tr>',
                 '<tr><td>', braw.res$investgR, '</td></tr>',
-                '<tr style="height:10px;"></tr>',
-                '<tr><td>', moreHTML(reportWorldDesign(),title="see Plan",ID="p2"), '</td></tr>',
                 '</table>',
                 '</div>'
   )
+  showPlan<-reportWorldDesign()
   linkLabel<-paste0(rootMetaSci)
   
   history<-braw.res$investgHistory
@@ -308,13 +305,13 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
       plainTabs=FALSE,
       titleWidth=100,
       width=550,
-      tabs=c("Data","Schematic"),
-      tabContents=c(show1,show2),
+      tabs=c("Plan","Data","Schematic"),
+      tabContents=c(showPlan,show1,show2),
       tabLink=paste0('https://doingpsychstats.wordpress.com/metascience-',stepMetaSci,'#','Part',stepMetaSci,partMetaSci),
       tabLinkLabel=paste0('&#x24D8 ',linkLabel),
       # tabLinkLabel=paste0(linkLabel),
       history=history$content,
-      open=open
+      open=open+1
     )
   
   if (doHistory) {
