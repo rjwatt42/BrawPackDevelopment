@@ -76,6 +76,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
            switch(partDM,
                   "A"={variables$IV<-"Treatment?"},
                   "B"={variables$IV<-"Sessions"},
+                  "C"={variables$IV<-"Diligence"},
                   {}
            )
            showNow<-"Basic"
