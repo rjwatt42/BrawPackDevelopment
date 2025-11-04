@@ -1,8 +1,10 @@
 
 #' @export
 stepDM<-function(doing) gsub('[A-Za-z]*([0-9]*)[A-Da-d]*','\\1',doing)
+
 #' @export
 partDM<-function(doing) toupper(gsub('[A-Za-z]*[0-9]*([A-Da-b]*)','\\1',doing))
+
 #' @export
 singleDM<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
 
@@ -201,7 +203,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
       makePanel(showPlan()),
       makePanel(showMarginals(style="all"),NULL),
       makePanel(showDescription(dataOnly=TRUE),NULL),
-      makePanel(NULL,NULL)
+      makePanel(nullPlot(),NULL)
     )
   } else {
     tabs<-c("Plan","Sample","Basic","Schematic")
@@ -218,7 +220,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
     tabContents<-c(tabContents,JamoviInstructions())
   } else {
     tabs<-c(tabs,"Jamovi")
-    tabContents<-c(tabContents," ")
+    tabContents<-c(tabContents,nullPlot())
   }
   open<-which(showNow==tabs)
   
