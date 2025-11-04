@@ -8,6 +8,7 @@ partDM<-function(doing) toupper(gsub('[A-Za-z]*[0-9]*([A-Da-b]*)','\\1',doing))
 #' @export
 singleDM<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
 
+#' @export
 makePanel<-function(g,r=NULL) {
   paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:10px;">',
                 '<table>',
