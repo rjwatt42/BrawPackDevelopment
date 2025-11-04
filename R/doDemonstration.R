@@ -101,9 +101,9 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
          "5"={ # Main effects in multiple IVs
            variables$DV<-"ExamGrade"
            switch(partDM,
-                  "A"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
+                  "A"={variables$IV<-"BirthOrder";variables$IV2<-"Musician?"},
                   "B"={variables$IV<-"Smoker?";variables$IV2<-"Anxiety"},
-                  "C"={variables$IV<-"BirthOrder";variables$IV2<-"Musician?"},
+                  "C"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
                   "D"={
                     IVs<-c("IQ","Musician?","Anxiety","RiskTaker?","SelfConfidence","Diligence","Coffee?")
                     variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
@@ -141,6 +141,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
                              effect=makeEffect(rIV,rIV2=rIV2,rIVIV2=rIVIV2,rIVIV2DV=rIVIV2DV)
                              )
   if (stepDM=="5") hypothesis$layout<-"simple"
+  if (stepDM=="6") hypothesis$layout<-"noCovariation"
   design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod))
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
@@ -172,7 +173,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
       makePanel(showPlan()),
       makePanel(showMarginals(style="all"),NULL),
       makePanel(showDescription(dataOnly=TRUE),NULL),
-      " "
+      makePanel(NULL,NULL)
     )
   } else {
     tabs<-c("Plan","Sample","Basic","Schematic")
