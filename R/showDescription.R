@@ -82,10 +82,12 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
           },
           
           "Interval Categorical"={
-            np<-7
-            bin_breaks<-c(-Inf,seq(-1,1,length.out=np)*braw.env$fullRange*sd(analysis$iv)+mean(analysis$iv),Inf)
+            np<-max(7,length(analysis$iv)/6)
+            bin_breaks<-seq(min(analysis$iv)-0.00001,max(analysis$iv)+0.00001,length.out=np)
+            # bin_breaks<-c(-Inf,seq(-1,1,length.out=np)*braw.env$fullRange*sd(analysis$iv)+mean(analysis$iv),Inf)
             dens2<-hist(analysis$iv,breaks=bin_breaks,freq=TRUE,plot=FALSE,warn.unused = FALSE)
             bins=dens2$mids
+            dx<-diff(bins[1:2])/2
             full_x<-c()
             full_y<-c()
             full_f<-c()
@@ -100,7 +102,7 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
               for (i in 1:(length(dens1$counts)-1)){
                 y<-dens1$counts[i]
                 if (y>0){
-                  xv<-c(xv,rep(dens1$mids[i],y)+runif(y,min=-0.08,max=0.08))
+                  xv<-c(xv,rep(dens1$mids[i],y)+runif(y,min=-dx,max=dx))
                   ynew<-seq(0,densities[i],length.out=y+1)
                   yv<-c(yv,ynew[1:y])
                 }
@@ -325,17 +327,18 @@ plotParInterDescription<-function(analysis,g=NULL){
   g
 }
 
-plotParDescription<-function(analysis,g) {
+plotParDescription<-function(analysis,dataOnly=FALSE,g) {
   
   analysis$hypothesis$IV$vals<-analysis$iv
   analysis$hypothesis$DV$vals<-analysis$dv
   
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
+  if (!dataOnly)
   g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
   g
 }
 
-plotCatDescription<-function(analysis,g) {
+plotCatDescription<-function(analysis,dataOnly=FALSE,g) {
 
   analysis$hypothesis$IV$vals<-analysis$iv
   analysis$hypothesis$DV$vals<-analysis$dv
@@ -347,7 +350,8 @@ plotCatDescription<-function(analysis,g) {
     analysis$hypothesis$IV$ordProportions<-paste(h,sep=",")
   }
   
-  g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
+  if (!dataOnly) 
+    g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
   
   g
@@ -359,7 +363,7 @@ plotCatDescription<-function(analysis,g) {
 #' @examples
 #' showDescription(analysis=doAnalysis())
 #' @export
-showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),g=NULL) {
+showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),dataOnly=FALSE,g=NULL) {
   if(is.null(analysis)) analysis<-doAnalysis(autoShow=FALSE)
   
   braw.env$plotArea<-plotArea
@@ -380,9 +384,9 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),g=NULL) {
   }
   if (is.null(analysis$hypothesis$IV2)){
     switch (analysis$hypothesis$DV$type,
-            "Interval"=g<-plotParDescription(analysis,g),
-            "Ordinal"=g<-plotParDescription(analysis,g),
-            "Categorical"=g<-plotCatDescription(analysis,g)
+            "Interval"=g<-plotParDescription(analysis,dataOnly=dataOnly,g),
+            "Ordinal"=g<-plotParDescription(analysis,dataOnly=dataOnly,g),
+            "Categorical"=g<-plotCatDescription(analysis,dataOnly=dataOnly,g)
     )
     names<-c(paste0("n=",analysis$nval), paste0("r[s]=",round(analysis$rIV,3)))
     colours<-c(braw.env$plotColours$sampleC,
@@ -434,16 +438,16 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),g=NULL) {
       braw.env$plotArea<-c(0,yoff,0.45,0.5)*plotArea[c(3,4,3,4)]+c(plotArea[c(1,2)],0,0)
       g<-getAxisPrediction(analysis1$hypothesis,g=g)
       switch (analysis$hypothesis$DV$type,
-              "Interval"=g<-plotParDescription(analysis1,g=g),
-              "Ordinal"=g<-plotParDescription(analysis1,g=g),
-              "Categorical"=g<-plotCatDescription(analysis1,g=g)
+              "Interval"=g<-plotParDescription(analysis1,dataOnly=dataOnly,g=g),
+              "Ordinal"=g<-plotParDescription(analysis1,dataOnly=dataOnly,g=g),
+              "Categorical"=g<-plotCatDescription(analysis1,dataOnly=dataOnly,g=g)
       )
       braw.env$plotArea<-c(0.55,yoff,0.45,0.5)*plotArea[c(3,4,3,4)] +c(plotArea[c(1,2)],0,0)
       g<-getAxisPrediction(analysis2$hypothesis,g=g) 
       switch (analysis$hypothesis$DV$type,
-              "Interval"=g<-plotParDescription(analysis2,g=g),
-              "Ordinal"=g<-plotParDescription(analysis2,g=g),
-              "Categorical"=g<-plotCatDescription(analysis2,g=g)
+              "Interval"=g<-plotParDescription(analysis2,dataOnly=dataOnly,g=g),
+              "Ordinal"=g<-plotParDescription(analysis2,dataOnly=dataOnly,g=g),
+              "Categorical"=g<-plotCatDescription(analysis2,dataOnly=dataOnly,g=g)
       )
     }
   }

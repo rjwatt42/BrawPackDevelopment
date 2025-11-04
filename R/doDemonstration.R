@@ -91,10 +91,11 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
            variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
 
            switch(partDM,
-                  "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
-                  "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Basic"},
+                  "A"={hideReport<-TRUE;showJamovi<-FALSE},
+                  "B"={hideReport<-FALSE;makeData<-FALSE},
                   {}
            )
+           showNow<-"Basic"
            single<-TRUE
          },
          "5"={ # Main effects in multiple IVs
@@ -170,7 +171,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(showMarginals(style="all"),NULL),
-      makePanel(showSample(),NULL),
+      makePanel(showDescription(dataOnly=TRUE),NULL),
       " "
     )
   } else {

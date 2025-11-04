@@ -297,7 +297,11 @@ plotParCatPrediction<-function(g,IV,DV,rho,n,offset= 1){
   b<-(1:ncats)-1
   
   x<-seq(-braw.env$fullRange,braw.env$fullRange,length.out=braw.env$varNPoints)
-  logoffset<-0
+  if (IV$type=="Ordinal") {
+    w<-as.numeric(unlist(strsplit(IV$ordProportions,',')))
+    v<-1:IV$nlevs
+    logoffset<-mean(v)-sum(w*v)/sum(w)
+  } else logoffset<-0
   yv<-get_logistic_r(rho,ncats,x+logoffset)
   x1<-x*IV$sd+IV$mu
   xv<-c(x1,rev(x1))
