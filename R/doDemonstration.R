@@ -135,6 +135,25 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
            rIVIV2<- 0
            setEvidence(AnalysisTerms=c(TRUE,TRUE,TRUE))
            showNow<-"Basic"
+         },
+         "7"={ # Interactions
+           variables$DV<-"ExamGrade"
+           switch(partDM,
+                  "A"={variables$IV<-"Coffee?";variables$IV2<-"Musician?"},
+                  "B"={variables$IV<-"Anxiety";variables$IV2<-"Smoker?"},
+                  "C"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
+                  "D"={
+                    IVs<-c("IQ","Musician?","Anxiety","RiskTaker?","SelfConfidence","Diligence","Coffee?")
+                    variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
+                    IVs<-IVs[IVs!=variables$IV]
+                    variables$IV2<-IVs[ceiling(runif(1)*length(IVs))]
+                  }
+           )
+           if (is.null(rIV2)) rIV2<- -0.3
+           if (is.null(rIVIV2)) rIVIV2<-0.3
+           rIVIV2DV<- 0
+           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE))
+           showNow<-"Basic"
          }
   )
   hypothesis<-makeHypothesis(IV=variables$IV,IV2=variables$IV2,DV=variables$DV,
@@ -142,6 +161,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
                              )
   if (stepDM=="5") hypothesis$layout<-"simple"
   if (stepDM=="6") hypothesis$layout<-"noCovariation"
+  if (stepDM=="7") hypothesis$layout<-"noInteraction"
   design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod))
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
