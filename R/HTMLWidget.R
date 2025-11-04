@@ -13,7 +13,8 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
                         colours=c("#3498db","#888","#888"),fontSize="12px",
                         plain=FALSE,width=550,height=NULL,outerHeight=NULL,open=0) {
   if (is.null(height)) ht<-'' else ht<-paste0('height: ',height,'px;')
-  if (is.null(open) || open==0) openCode<-''
+  if (is.null(open)) open<-0
+  if (open==0) openCode<-''
   else openCode<-paste0(
     'document.getElementById("',title,'||',tabs[open],'").style.display = "block";'
   )
