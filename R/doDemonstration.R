@@ -44,6 +44,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
     if (paste0(stepDM)=="4") sN<-100
     if (paste0(stepDM)=="5") sN<-150
     if (paste0(stepDM)=="6") sN<-150
+    if (paste0(stepDM)=="7") sN<-150
     if (is.null(sN)) sN<-42
   }
   if (is.null(sMethod)) {
