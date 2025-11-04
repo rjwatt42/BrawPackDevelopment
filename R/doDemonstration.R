@@ -19,7 +19,7 @@ makePanel<-function(g,r=NULL) {
 }
 
 #' @export
-doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doHistory=TRUE,
+doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlanOnly=FALSE,doHistory=TRUE,
                           variables=list(IV="Perfectionism",IV2=NULL,DV="ExamGrade"),
                           rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
                           world="Binary",pRplus=0.5,
@@ -52,6 +52,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
   }
   
   hideReport<-FALSE
+  makeData<-TRUE
   switch(stepDM,
          "1"={ # making samples and analysing them in Jamovi
            switch(partDM,
@@ -88,8 +89,11 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
            else  IVs<-c("Sessions","Treatment?","Smoker?","Diligence")
            variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
 
-           showNow<-"Sample"
-           hideReport<-TRUE
+           switch(partDM,
+                  "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
+                  "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Basic"},
+                  {}
+           )
            single<-TRUE
          },
          "5"={ # Main effects in multiple IVs
@@ -139,12 +143,14 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
   
-  if (single) {
-    setBrawRes("result",NULL)
-    doSingle()
-  } else  {
-    doMultiple(100)
-  }      
+  if (makeData) {
+    if (single) {
+      setBrawRes("result",NULL)
+      doSingle()
+    } else  {
+      doMultiple(100)
+    }      
+  }
   
   # display the results
   svgBox(height=350,aspect=1.5)
@@ -162,10 +168,9 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
     tabs<-c("Plan","Sample","Basic","Schematic")
     tabContents<-c(
       makePanel(showPlan()),
+      makePanel(showMarginals(style="all"),NULL),
       makePanel(showSample(),NULL),
-      makePanel(showDescription(),
-                paste0(reportInference(),reportDescription(plain=TRUE))),
-      schematic
+      " "
     )
   } else {
     tabs<-c("Plan","Sample","Basic","Schematic")
@@ -180,6 +185,9 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
   if (showJamovi) {
     tabs<-c(tabs,"Jamovi")
     tabContents<-c(tabContents,JamoviInstructions())
+  } else {
+    tabs<-c(tabs,"Jamovi")
+    tabContents<-c(tabContents," ")
   }
   open<-which(showNow==tabs)
   
