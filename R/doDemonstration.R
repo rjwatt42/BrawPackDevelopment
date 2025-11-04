@@ -149,8 +149,8 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
                     variables$IV2<-IVs[ceiling(runif(1)*length(IVs))]
                   }
            )
-           if (is.null(rIV2)) rIV2<- -0.3
-           if (is.null(rIVIV2)) rIVIV2<-0.3
+           if (is.null(rIV2)) rIV2<- -0.5
+           if (is.null(rIVIV2)) rIVIV2<-0.7
            rIVIV2DV<- 0
            setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE))
            showNow<-"Basic"
