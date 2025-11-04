@@ -85,9 +85,9 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
            
            if (is.element(variables$DV,c("ExamGrade","ExamPass?")))
                  IVs<-c("Perfectionism","Musician?","RiskTaking","RiskTaker?")
-           else  IVs<-c("Session","Treatment?","Smoker?","Diligence?")
+           else  IVs<-c("Sessions","Treatment?","Smoker?","Diligence")
            variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
-           
+
            showNow<-"Sample"
            hideReport<-TRUE
            single<-TRUE
@@ -190,13 +190,13 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,doH
   linkLabel<-paste0(rootDM)
   demoResults<-
     generate_tab(
-      title="Demo:",
+      title="Basics:",
       plainTabs=FALSE,
       titleWidth=100,
       width=550,
       tabs=tabs,
       tabContents=tabContents,
-      tabLink=paste0('https://doingpsychstats.wordpress.com/demonstration-',partDM,'#','A'),
+      tabLink=paste0('https://doingpsychstats.wordpress.com/basics-',partDM,'#','A'),
       tabLinkLabel=paste0('&#x24D8 ',linkLabel),
       history=history$content,
       open=open
