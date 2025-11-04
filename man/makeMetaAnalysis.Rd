@@ -9,12 +9,14 @@ makeMetaAnalysis(
   nstudies = 10,
   analysisType = "random",
   analysisVar = "sd",
+  modelPDF = "All",
   method = "MLE",
   analysisPrior = "none",
+  sourceNulls = 0,
   analyseNulls = FALSE,
-  modelPDF = "All",
-  sourceBias = FALSE,
-  analyseBias = FALSE
+  sourceBias = 0,
+  analyseBias = FALSE,
+  sourceAbs = FALSE
 )
 }
 \value{

@@ -13,7 +13,7 @@ showExplore(
   whichEffect = "All",
   quantileShow = 0.5,
   fixedYlim = braw.env$fixedYlim,
-  showHist = TRUE,
+  showHist = FALSE,
   fixNulls = TRUE
 )
 }
