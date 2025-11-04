@@ -121,7 +121,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
            variables$DV<-"ExamGrade"
            switch(partDM,
                   "A"={variables$IV<-"Coffee?";variables$IV2<-"Musician?"},
-                  "B"={variables$IV<-"Smoker?";variables$IV2<-"Anxiety"},
+                  "B"={variables$IV<-"Anxiety";variables$IV2<-"Smoker?"},
                   "C"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
                   "D"={
                     IVs<-c("IQ","Musician?","Anxiety","RiskTaker?","SelfConfidence","Diligence","Coffee?")
