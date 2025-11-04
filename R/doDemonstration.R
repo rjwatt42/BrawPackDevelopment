@@ -20,12 +20,11 @@ makePanel<-function(g,r=NULL) {
 
 #' @export
 doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlanOnly=FALSE,doHistory=TRUE,
-                          variables=list(IV="Perfectionism",IV2=NULL,DV="ExamGrade"),
+                          IV="Perfectionism",IV2=NULL,DV="ExamGrade",
                           rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
-                          world="Binary",pRplus=0.5,
-                          sN=NULL,sMethod=NULL,sBudget=320,sSplits=16,sCheating="grow",
-                          sReplicationPower=0.9,sReplicationSigOriginal=TRUE,
-                          group="a",
+                          sN=NULL,sMethod=NULL,
+                          sOutliers=0, sDependence=0,
+                          analyse="Main1",
                           nreps=200
                           ) {
   
@@ -35,6 +34,8 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
   single<-singleDM(doingDemo)
   rootDM<-paste0("Step",stepDM,partDM)
 
+  variables=list(IV=IV,IV2=IV2,DV=DV)
+  
   if (is.null(rIV)) rIV<-0.3
   
   if (is.null(sN)) {
@@ -44,14 +45,20 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
     if (paste0(stepDM)=="4") sN<-100
     if (paste0(stepDM)=="5") sN<-150
     if (paste0(stepDM)=="6") sN<-150
-    if (paste0(stepDM)=="7") sN<-150
+    if (paste0(stepDM)=="7") sN<-500
     if (is.null(sN)) sN<-42
   }
   if (is.null(sMethod)) {
     if (is.element(paste0(stepDM,partDM),c("1B"))) sMethod<-"Convenience"
     if (is.null(sMethod)) sMethod<-"Random"
   }
-  
+  switch(analyse,
+         "Main1"={analyse<-c(TRUE,FALSE,FALSE)},
+         "Main2"={analyse<-c(FALSE,TRUE,FALSE)},
+         "Main12"={analyse<-c(TRUE,TRUE,FALSE)},
+         "Main1x2"={analyse<-c(TRUE,TRUE,TRUE)},
+         "InteractionOnly"={analyse<-c(FALSE,FALSE,TRUE)}
+  )
   hideReport<-FALSE
   makeData<-TRUE
   switch(stepDM,
@@ -163,7 +170,7 @@ doDemonstration<-function(doingDemo="Step1A",showOutput=TRUE,showJamovi=TRUE,sho
   if (stepDM=="5") hypothesis$layout<-"simple"
   if (stepDM=="6") hypothesis$layout<-"noCovariation"
   if (stepDM=="7") hypothesis$layout<-"noInteraction"
-  design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod))
+  design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),sOutliers=sOutliers, sDependence=sDependence)
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
   
