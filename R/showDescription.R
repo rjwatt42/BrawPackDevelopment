@@ -253,11 +253,11 @@ plotCatInterDescription<-function(analysis,g=NULL){
     analysis1$hypothesis$DV$vals<-Dvals[use] 
     
     if (analysis1$hypothesis$DV$type=="Categorical") {
-      g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,2+(i-1)/(hypothesis$IV2$ncats-1),g=g)
+      g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,2+(i-1)/(hypothesis$IV2$ncats-1),evidence=analysis1$evidence,g=g)
       g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,i+1,hypothesis$IV2$ncats)
     } else {
       g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,i+1,hypothesis$IV2$ncats)
-      g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,2+(i-1)/(hypothesis$IV2$ncats-1),g=g)
+      g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,2+(i-1)/(hypothesis$IV2$ncats-1),evidence=analysis1$evidence,g=g)
     }
   }
   g<-addG(g,dataLegend(data.frame(names=names,colours=cols),title=analysis$hypothesis$IV2$name))
@@ -314,8 +314,8 @@ plotParInterDescription<-function(analysis,g=NULL){
         range2<-c(min(analysis2$ivplot),max(analysis2$ivplot))
         g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,2,2)
         g<-plotPoints(g,analysis2$hypothesis$IV,analysis2$hypothesis$DV,analysis2,3,2)
-        g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,offset=2,range=range1,g=g)
-        g<-plotPrediction(analysis2$hypothesis$IV,NULL,analysis2$hypothesis$DV,analysis2,analysis$design,offset=3,range=range2,g=g)
+        g<-plotPrediction(analysis1$hypothesis$IV,NULL,analysis1$hypothesis$DV,analysis1,analysis$design,offset=2,range=range1,evidence=analysis1$evidence,g=g)
+        g<-plotPrediction(analysis2$hypothesis$IV,NULL,analysis2$hypothesis$DV,analysis2,analysis$design,offset=3,range=range2,evidence=analysis2$evidence,g=g)
         # if (analysis1$hypothesis$DV$type=="Categorical") {
         # } else {
         #   g<-plotPoints(g,analysis1$hypothesis$IV,analysis1$hypothesis$DV,analysis1,2,2)
@@ -334,7 +334,7 @@ plotParDescription<-function(analysis,dataOnly=FALSE,g) {
   
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
   if (!dataOnly)
-  g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
+  g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,evidence=analysis$evidence,offset=1,g=g)
   g
 }
 
@@ -351,7 +351,7 @@ plotCatDescription<-function(analysis,dataOnly=FALSE,g) {
   }
   
   if (!dataOnly) 
-    g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,g=g)
+    g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,offset=1,evidence=analysis$evidence,g=g)
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
   
   g
