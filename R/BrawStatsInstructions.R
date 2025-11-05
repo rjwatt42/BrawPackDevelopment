@@ -1,3 +1,23 @@
+BrawHelp<-function(open=0,indent=0,titleWidth=100) {
+  return(
+  generate_tab(
+    title="  ",
+    indent=indent,
+    titleWidth=titleWidth,
+    # titleTab="Click on the tabs for specific help.",
+    tabs=c("Start","Plan","Single Sample","Multiple Samples","Explore"),
+    tabContents = c(
+      BrawInstructions("Overview"),
+      BrawInstructions("Plan"),
+      BrawInstructions("Single"),
+      BrawInstructions("Multiple"),
+      BrawInstructions("Explore")
+    ),
+    open=open
+  )
+  )
+}
+
 BrawInstructions <- function(HelpType="Plan") {
   
 
