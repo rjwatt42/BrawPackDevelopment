@@ -3,6 +3,7 @@
 export(BrawHelp)
 export(BrawOpts)
 export(JamoviInstructions)
+export(brawMainHelp)
 export(combineFirstMS)
 export(combineMS)
 export(doAnalysis)

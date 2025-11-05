@@ -1,3 +1,5 @@
+
+#' @export
 brawMainHelp<-function(open=0,indent=0,titleWidth=100) {
   if (length(open)<3) open<-c(open,0,0,0)
   
