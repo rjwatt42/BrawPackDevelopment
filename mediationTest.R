@@ -1,8 +1,8 @@
 
 
-setHypothesis(IV2=makeVariable("IV2"),effect=makeEffect(0.6,0.6,-0.5))
+setHypothesis(IV2=makeVariable("IV2"),effect=makeEffect(0.2,0.2,-0.25))
 setDesign(sN=50)
-setEvidence(AnalysisTerms = c(TRUE,TRUE,FALSE,TRUE))
+setEvidence(AnalysisTerms = c(TRUE,TRUE,FALSE,TRUE),doSEM=TRUE)
 
 data<-doAnalysis()
 
