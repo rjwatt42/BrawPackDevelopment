@@ -1,3 +1,5 @@
+
+#' @export
 BrawHelp<-function(open=0,indent=0,titleWidth=100) {
   return(
   generate_tab(
