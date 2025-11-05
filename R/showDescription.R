@@ -382,7 +382,7 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),dataOnly=
       g<-getAxisPrediction(analysis$hypothesis) 
     }
   }
-  if (is.null(analysis$hypothesis$IV2)){
+  if (is.null(analysis$hypothesis$IV2)||(!analysis$evidence$AnalysisTerms[2])){
     switch (analysis$hypothesis$DV$type,
             "Interval"=g<-plotParDescription(analysis,dataOnly=dataOnly,g),
             "Ordinal"=g<-plotParDescription(analysis,dataOnly=dataOnly,g),
