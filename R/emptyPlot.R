@@ -1,3 +1,5 @@
+
+#' @export
 emptyPlot<-function(mode) {
 
     switch(mode,
