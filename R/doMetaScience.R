@@ -182,7 +182,7 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
                         sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
                         sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,
                         differenceSource="Interaction",range=NULL,rangeWidth=0,
-                        rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE)
+                        rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE,FALSE)
 ) {
   
   pC<-braw.env$plotColours

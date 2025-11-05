@@ -306,7 +306,7 @@ makeDesign<-function(sN=42, sMethod=makeSampling("Random"),sMethodSeverity=0.1,
 #'              )
 #' @export
 makeEvidence<-function(shortHand=FALSE,sigOnly=0,absOnly=FALSE,
-                       AnalysisTerms=c(TRUE,TRUE,FALSE),rInteractionOnly=TRUE,ssqType="Type3",
+                       AnalysisTerms=c(TRUE,TRUE,FALSE,FALSE),rInteractionOnly=TRUE,ssqType="Type3",
                        caseOrder="AsStated",
                        llr=list(e1=c(),e2=0),
                        useAIC="AIC",

@@ -422,9 +422,12 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),dataOnly=
               "Categorical"=g<-plotCatInterDescription(analysis,g)
       )
       yoff<-0
-    } else yoff<-0.25
+    } else {
+      if (analysis$evidence$AnalysisTerms[4]) yoff<-0.0
+      else                                    yoff<-0.25
+    }
     
-    if (sum(analysis$evidence$AnalysisTerms)==2 || !analysis$evidence$rInteractionOnly) {
+    if (all(analysis$evidence$AnalysisTerms[1:3]==c(TRUE,TRUE,FALSE)) || !analysis$evidence$rInteractionOnly) {
       analysis1<-analysis
       analysis1$hypothesis$IV2<-NULL
       analysis2<-analysis
@@ -437,18 +440,34 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),dataOnly=
       
       braw.env$plotArea<-c(0,yoff,0.45,0.5)*plotArea[c(3,4,3,4)]+c(plotArea[c(1,2)],0,0)
       g<-getAxisPrediction(analysis1$hypothesis,g=g)
-      switch (analysis$hypothesis$DV$type,
+      switch (analysis1$hypothesis$DV$type,
               "Interval"=g<-plotParDescription(analysis1,dataOnly=dataOnly,g=g),
               "Ordinal"=g<-plotParDescription(analysis1,dataOnly=dataOnly,g=g),
               "Categorical"=g<-plotCatDescription(analysis1,dataOnly=dataOnly,g=g)
       )
       braw.env$plotArea<-c(0.55,yoff,0.45,0.5)*plotArea[c(3,4,3,4)] +c(plotArea[c(1,2)],0,0)
       g<-getAxisPrediction(analysis2$hypothesis,g=g) 
-      switch (analysis$hypothesis$DV$type,
+      switch (analysis2$hypothesis$DV$type,
               "Interval"=g<-plotParDescription(analysis2,dataOnly=dataOnly,g=g),
               "Ordinal"=g<-plotParDescription(analysis2,dataOnly=dataOnly,g=g),
               "Categorical"=g<-plotCatDescription(analysis2,dataOnly=dataOnly,g=g)
       )
+      if (analysis$evidence$AnalysisTerms[4]) {
+        analysis3<-analysis
+        analysis3$hypothesis$IV2<-NULL
+        analysis3$hypothesis$DV<-analysis$hypothesis$IV2
+        analysis3$dv<-analysis$iv2
+        analysis3$dvplot<-analysis$iv2plot
+        analysis3$rIV<-analysis2$rIVIV2
+        braw.env$plotArea<-c(0.55/2,0.5,0.45,0.5)*plotArea[c(3,4,3,4)]+c(plotArea[c(1,2)],0,0)
+        g<-getAxisPrediction(analysis3$hypothesis,g=g)
+        switch (analysis3$hypothesis$DV$type,
+                "Interval"=g<-plotParDescription(analysis3,dataOnly=dataOnly,g=g),
+                "Ordinal"=g<-plotParDescription(analysis3,dataOnly=dataOnly,g=g),
+                "Categorical"=g<-plotCatDescription(analysis3,dataOnly=dataOnly,g=g)
+        )
+        
+      }
     }
   }
   

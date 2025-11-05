@@ -167,7 +167,9 @@ showInference<-function(analysis=braw.res$result,showType="Basic",dimension="1D"
       if (whichEffect=="All" && sum(analysis$evidence$AnalysisTerms)<2) whichEffect<-"Main 1"
       if (whichEffect=="All" && sum(analysis$evidence$AnalysisTerms)<3) whichEffect<-"Mains"
       if (whichEffect=="All") {
-        whichEffect<-c("Main 1","Main 2","Interaction")
+        if (analysis$evidence$AnalysisTerms[4])
+          whichEffect<-c("Main 1","Main 2","Covariation")
+          else whichEffect<-c("Main 1","Main 2","Interaction")
         area.y<-c(0,0,0)
         area.x<-c(0,0.485,0.745)
         area.w<-c(0.48,0.255,0.255)

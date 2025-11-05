@@ -58,7 +58,8 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
            "Model"=effectTheory$world$PDFk<-sqrt(effect$rIV^2+effect$rIV2^2+effect$rIVIV2DV^2+effect$rIV*effect$rIV2*effect$rIVIV2),
            "Main 1"=effectTheory$world$PDFk<-effect$rIV,
            "Main 2"=effectTheory$world$PDFk<-effect$rIV2,
-           "Interaction"=effectTheory$world$PDFk<-effect$rIVIV2DV
+           "Interaction"=effectTheory$world$PDFk<-effect$rIVIV2DV,
+           "Covariation"=effectTheory$world$PDFk<-effect$rIVIV2
     )
     effectTheory$world$pRplus<-1
   }
@@ -454,6 +455,11 @@ collectData<-function(analysis,whichEffect) {
             },
             "Interaction"={
               column<-3
+              rs<-rbind(cbind(analysis$r$direct[use,column],analysis$r$unique[use,column],analysis$r$total[use,column]))
+              ps<-rbind(cbind(analysis$p$direct[use,column],analysis$p$unique[use,column],analysis$p$total[use,column]))
+            },
+            "Covariation"={
+              column<-4
               rs<-rbind(cbind(analysis$r$direct[use,column],analysis$r$unique[use,column],analysis$r$total[use,column]))
               ps<-rbind(cbind(analysis$p$direct[use,column],analysis$p$unique[use,column],analysis$p$total[use,column]))
             },
@@ -1254,7 +1260,8 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
     switch(whichEffect,"Model"={mTitle<-"Model";ylines<-c(0)},
                        "Main 1"={mTitle<-hypothesis$IV$name;ylines<-c(0,hypothesis$effect$rIV)},
                        "Main 2"={mTitle<-hypothesis$IV2$name;ylines<-c(0,hypothesis$effect$rIV2)},
-                       "Interaction"={mTitle<-paste0(hypothesis$IV$name,"x",hypothesis$IV2$name);ylines<-c(0,hypothesis$effect$rIVIV2DV)}
+                       "Interaction"={mTitle<-paste0(hypothesis$IV$name,braw.env$interaction_string,hypothesis$IV2$name);ylines<-c(0,hypothesis$effect$rIVIV2DV)},
+                       "Covariation"={mTitle<-paste0(hypothesis$IV$name,braw.env$covariation_string,hypothesis$IV2$name)}
            )
   else mTitle<-""
   if (!showYaxis) ylabel<-NULL

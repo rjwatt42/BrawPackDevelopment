@@ -125,7 +125,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            if (is.null(rIV2)) rIV2<- -0.3
            rIVIV2<- 0
            rIVIV2DV<-0
-           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE))
+           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE,FALSE))
            showNow<-"Basic"
          },
          "6"={ # Interactions
@@ -144,7 +144,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            if (is.null(rIV2)) rIV2<- -0.3
            if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            rIVIV2<- 0
-           setEvidence(AnalysisTerms=c(TRUE,TRUE,TRUE))
+           setEvidence(AnalysisTerms=c(TRUE,TRUE,TRUE,FALSE))
            showNow<-"Basic"
          },
          "7"={ # Interactions
@@ -163,7 +163,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            if (is.null(rIV2)) rIV2<- -0.5
            if (is.null(rIVIV2)) rIVIV2<-0.7
            rIVIV2DV<- 0
-           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE))
+           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE,FALSE))
            showNow<-"Basic"
          }
   )

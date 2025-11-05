@@ -104,7 +104,7 @@ reportDescription<-function(analysis=braw.res$result,plain=FALSE){
   
   an_vars<-sub("iv1:",paste(IV$name,":",sep=""),an_vars)
   an_vars<-sub("iv1",paste(IV$name,"=",sep=""),an_vars)
-  if (!is.null(IV2) && any(evidence$AnalysisTerms[2:3])) {
+  if (!is.null(IV2) && any(evidence$AnalysisTerms[2:4])) {
     an_vars<-sub("iv2$",IV2$name,an_vars)
     an_vars<-sub("iv2",paste(IV2$name,"=",sep=""),an_vars)
   } 
@@ -165,9 +165,16 @@ reportDescription<-function(analysis=braw.res$result,plain=FALSE){
                             paste0("!j",brawFormat(analysis$r$direct[3],digits=braw.env$report_precision)),
                             paste0("!j",brawFormat(analysis$r$unique[3],digits=braw.env$report_precision)),
                             paste0("!j",brawFormat(analysis$r$total[3],digits=braw.env$report_precision)),
-                          rep("",nc-4))
+                            rep("",nc-4))
             }
-
+            if (evidence$AnalysisTerms[4]) {
+              outputText<-c(outputText,paste0(IV$name,braw.env$covariation_string,IV2$name),
+                            paste0("!j",brawFormat(analysis$r$direct[3],digits=braw.env$report_precision)),
+                            paste0("!j",brawFormat(analysis$r$unique[3],digits=braw.env$report_precision)),
+                            paste0("!j",brawFormat(analysis$r$total[3],digits=braw.env$report_precision)),
+                            rep("",nc-4))
+            }
+            
             an_rt<-brawFormat(analysis$rFull,digits=braw.env$report_precision) 
             an_rset<-brawFormat(analysis$rFullse,digits=braw.env$report_precision)
             outputText<-c(outputText,

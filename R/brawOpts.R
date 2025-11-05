@@ -257,7 +257,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           
           braw.env$when_string <- "="
           braw.env$interaction_string <- "&#x00D7"
-          
+          braw.env$covariation_string <- "&#x2194"
           
           ##################################
           # notation for effect sizes
