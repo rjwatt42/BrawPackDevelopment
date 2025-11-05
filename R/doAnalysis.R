@@ -1140,9 +1140,9 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
     analysis$er.kt<-NA
   }
   
-  analysis$hypothesis<-hypothesis
-  analysis$design<-design
-  analysis$evidence<-evidence
+  analysis$hypothesis<-sample$hypothesis
+  analysis$design<-sample$design
+  analysis$evidence<-sample$evidence
   
   analysis$Heteroscedasticity<-0
 
