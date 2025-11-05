@@ -99,6 +99,7 @@ p2r<-function(p,n,df1=1) {
 
 
 r2p<-function(r,n,df1=1){
+  r[is.na(r)]<-0
   r<-check_r(r,"r2p")
   n<-check_n(n,"r2p")
   df2<-n-(df1+1)
@@ -109,21 +110,23 @@ r2p<-function(r,n,df1=1){
   
   if (any(df1>1)) {
     Fvals<-r^2/(1-r^2)*df2/df1
-    (1-pf(Fvals,df1,df2))
+    p<-(1-pf(Fvals,df1,df2))
   } else {
     t_vals<-r/r2se(r,n)
-    (1-pt(abs(t_vals),df2))*2
+    p<-(1-pt(abs(t_vals),df2))*2
   }
-  
+  return(p)
 }
 
 r2se<-function(r,n){
+  r[is.na(r)]<-0
   r<-check_r(r,"r2se")
   n<-check_n(n,"r2se")
   sqrt((1-r^2)/(as.vector(n)-2))
 }
 
 r2ci<-function(r,n,s=0){
+  r[is.na(r)]<-0
   r<-check_r(r,"r2ci")
   n<-check_n(n,"r2ci")
   z<-atanh(r)
@@ -592,9 +595,9 @@ generalAnalysis<-function(allData,AnalysisTerms,withins=FALSE,ssqType="Type3",ca
     pathmodel1<-makeSEMPath(data=model_data,stages="sequence",depth=2)
     z1<-fit_sem_model(pathmodel1,model_data)
     
-    r.direct<-cbind(z1$ES_table["DV","IV1"],z1$ES_table["DV","IV2"],0,z1$ES_table["IV2","IV1"])
-    r.unique<-cbind(r.unique,0,z1$ES_table["IV2","IV1"])
-    r.total<-cbind(r.total,0,z1$ES_table["IV2","IV1"])
+    r.direct<-cbind(z1$ES_table["DV","IV1"],z1$ES_table["DV","IV2"],NA,z1$ES_table["IV2","IV1"])
+    r.unique<-cbind(r.unique,NA,z1$ES_table["IV2","IV1"])
+    r.total<-cbind(r.total,NA,z1$ES_table["IV2","IV1"])
   } else z1<-NULL
   
   p.direct<-r2p(r.direct,n,df)
