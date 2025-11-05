@@ -680,7 +680,7 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
       analysis$rIVIV2CI<-NA
       analysis$pIVIV2CI<-NA
     }
-  }  else hypothesis$IV2<-NULL
+  } # else hypothesis$IV2<-NULL
   analysis$rIVIV2<-0
   
   if (evidence$doSEM) {
@@ -1140,9 +1140,9 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
     analysis$er.kt<-NA
   }
   
-  analysis$hypothesis<-sample$hypothesis
-  analysis$design<-sample$design
-  analysis$evidence<-sample$evidence
+  analysis$hypothesis<-hypothesis
+  analysis$design<-design
+  analysis$evidence<-evidence
   
   analysis$Heteroscedasticity<-0
 
