@@ -143,9 +143,9 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
                     g<-showEffect(r1,moderator=effect$rM1,type=6,showValue=showValue,
                                   plotArea=c(xoff+xgain*0.1,yoff+0.15*ygain,xgain*2,0.3*ygain),g=g)
                     g<-showEffect(r2,moderator=effect$rM2,type=7,showValue=showValue,
-                                  plotArea=c(xoff+xgain*1.4,yoff+0.47*ygain,xgain,0.3*ygain),g=g)
+                                  plotArea=c(xoff+xgain*1.4,yoff+0.45*ygain,xgain,0.3*ygain),g=g)
                     g<-showEffect(r12,type=8,showValue=showValue,
-                                  plotArea=c(xoff+xgain*0.1,yoff+0.47*ygain,xgain,0.3*ygain),g=g)
+                                  plotArea=c(xoff+xgain*0.1,yoff+0.45*ygain,xgain,0.3*ygain),g=g)
                   },
                   "lpath"={
                     g<-showVariable(IV2,plotArea=c(xoff+xgain*1.1,yoff+0.65*ygain,xgain*0.9,0.35*ygain),g=g)
