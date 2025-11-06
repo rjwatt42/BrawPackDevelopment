@@ -137,6 +137,7 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
                     g<-showEffect(effect$rIVIV2DV,type=5,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                   },
                   "path"={
+                    ygain<-ygain*1.15
                     g<-showVariable(IV,plotArea=c(xoff,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain*0.85),g=g)
                     g<-showVariable(IV2,plotArea=c(xoff+xgain*0.9,yoff+0.45*ygain,xgain*0.9*0.85,0.35*ygain*0.85),g=g)
                     g<-showVariable(DV,plotArea=c(xoff+xgain*0.9*2,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain*0.85),g=g)

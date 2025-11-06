@@ -208,7 +208,6 @@ showEffect<-function(r,moderator=NULL,type=1,useCols=c(TRUE,TRUE,TRUE),showValue
         }
       }
     }
-    print(c(type,direction))
     if (direction<0) {off<-c(0.15,0); hjust<-0}
     if (direction>=0) {off<-c(-0.15,0); hjust<-1}
     if (direction>45) {off<-c(0,0.15); hjust<-0}
