@@ -254,7 +254,7 @@ showEffect<-function(r,moderator=NULL,type=1,useCols=c(TRUE,TRUE,TRUE),showValue
     if (direction<=-90) {off<-c(0,0.15); hjust<-0.5}
     if (direction>=90) {off<-c(0,0.15); hjust<-0.5}
     if (direction>100) {off<-c(0,0.15); hjust<-1}
-    if (direction>=90+360) {off<-c(0,-0.15); hjust<-0.5}
+    if (direction>=90+360) {off<-c(0,-0.2); hjust<-0.5}
     labelpts<-start+len*0.5*c(sin(direction/57.296),-cos(direction/57.296))+off
     g<-addG(g,dataText(data=data.frame(x=labelpts[1],y=labelpts[2]), label = lbl, size=size*1, 
                        hjust=hjust, vjust=0.5, colour=col, fontface="bold"))
