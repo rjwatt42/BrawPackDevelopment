@@ -119,19 +119,19 @@ showEffect<-function(r,moderator=NULL,type=1,useCols=c(TRUE,TRUE,TRUE),showValue
           size=0.7
           },
           # 6
-          {start=c(-0.25,0.5)
-          direction=90
+          {start=c(0,0.92)
+          direction=0
           len=0.9
-          labelpts<-data.frame(x=0.25,y=1)
+          labelpts<-data.frame(x=-0.1,y=0.5)
           hjust<-1
           ends="last"
           fill=braw.env$plotColours$maineffectES
           size=0.7
           },
           # 7
-          {start=c(-0.25,0.5)
+          {start=c(0.92,0.92)
           len=sqrt(0.9^2+0.55^2)
-          direction=65
+          direction=-atan(0.55/0.35)*57.296
           labelpts<-data.frame(x=0.6,y=0.4)
           hjust<- 0.35
           ends="last"
@@ -139,9 +139,9 @@ showEffect<-function(r,moderator=NULL,type=1,useCols=c(TRUE,TRUE,TRUE),showValue
           size=0.7
           },
           # 8
-          {start=c(-0.5,0.1)
+          {start=c(0,0.82)
           len=sqrt(0.9^2+0.55^2)
-          direction=180-65
+          direction=atan(0.55/0.35)*57.296
           labelpts<-data.frame(x=0.6,y=0.7)
           hjust<- 0.35
           ends="last"
@@ -173,6 +173,46 @@ showEffect<-function(r,moderator=NULL,type=1,useCols=c(TRUE,TRUE,TRUE),showValue
           len=sqrt(0.9^2+0.55^2)
           direction=-atan(0.55/0.35)*57.296
           labelpts<-data.frame(x=0.0,y=0.7)
+          hjust<- 0.35
+          ends="last"
+          fill=braw.env$plotColours$maineffectES
+          size=0.7
+          },
+          # 12
+          {start=c(0,0.92)
+          len=sqrt(0.9^2+0.55^2)-0.2
+          direction=0
+          labelpts<-data.frame(x=0.0,y=0.7)
+          hjust<- 0.35
+          ends="last"
+          fill=braw.env$plotColours$interactionES
+          size=0.7
+          },
+          # 13
+          {start=c(-0.25,0.5)
+          direction=90+360
+          len=0.9
+          labelpts<-data.frame(x=0.25,y=1)
+          hjust<-1
+          ends="last"
+          fill=braw.env$plotColours$maineffectES
+          size=0.7
+          },
+          # 14
+          {start=c(-0.25,0.5)
+          len=sqrt(0.9^2+0.55^2)
+          direction=65
+          labelpts<-data.frame(x=0.6,y=0.4)
+          hjust<- 0.35
+          ends="last"
+          fill=braw.env$plotColours$maineffectES
+          size=0.7
+          },
+          # 15
+          {start=c(-0.5,0.1)
+          len=sqrt(0.9^2+0.55^2)
+          direction=180-65
+          labelpts<-data.frame(x=0.6,y=0.7)
           hjust<- 0.35
           ends="last"
           fill=braw.env$plotColours$maineffectES
@@ -214,6 +254,7 @@ showEffect<-function(r,moderator=NULL,type=1,useCols=c(TRUE,TRUE,TRUE),showValue
     if (direction<=-90) {off<-c(0,0.15); hjust<-0.5}
     if (direction>=90) {off<-c(0,0.15); hjust<-0.5}
     if (direction>100) {off<-c(0,0.15); hjust<-1}
+    if (direction>=90+360) {off<-c(0,-0.15); hjust<-0.5}
     labelpts<-start+len*0.5*c(sin(direction/57.296),-cos(direction/57.296))+off
     g<-addG(g,dataText(data=data.frame(x=labelpts[1],y=labelpts[2]), label = lbl, size=size*1, 
                        hjust=hjust, vjust=0.5, colour=col, fontface="bold"))

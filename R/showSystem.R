@@ -97,6 +97,7 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
            r1<-effect$rIV
            r2<-effect$rIV2
            r12<-effect$rIVIV2
+           r1x2<-effect$rIVIV2DV
            if (effect$rIVIV2!=0) {
              r1<-c(r1,0,r1*sqrt(1-r12^2))
              r2<-c(r2,0,r2*sqrt(1-r12^2))
@@ -117,7 +118,7 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
                     g<-showVariable(DV,plotArea=c(xoff+xgain/2,yoff,xgain,0.35*ygain),g=g)
                     g<-showEffect(r1,moderator=effect$rM1,type=2,useCols=cols,showValue=showValue,plotArea=c(xoff-xgain*0.3,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                     g<-showEffect(r2,moderator=effect$rM2,type=3,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain*1.3,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
-                    g<-showEffect(effect$rIVIV2DV,type=5,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
+                    g<-showEffect(r1x2,type=5,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                   },
                   "noInteraction"={
                     g<-showVariable(IV,plotArea=c(xoff-xgain*0.3,yoff+0.65*ygain,xgain,0.35*ygain),g=g)
@@ -134,18 +135,35 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
                     g<-showEffect(r1,moderator=effect$rM1,type=2,useCols=cols,showValue=showValue,plotArea=c(xoff-xgain*0.3,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                     g<-showEffect(r2,moderator=effect$rM2,type=3,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain*1.3,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                     g<-showEffect(r12,type=4,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.7*ygain,xgain,0.22*ygain),g=g)
-                    g<-showEffect(effect$rIVIV2DV,type=5,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
+                    g<-showEffect(r1x2,type=5,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                   },
-                  "path"={
+                  "mediation"={
                     g<-showVariable(IV,plotArea=c(xoff,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
                     g<-showVariable(IV2,plotArea=c(xoff+xgain*0.9,yoff+0.45*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
                     g<-showVariable(DV,plotArea=c(xoff+xgain*0.9*2,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
-                    g<-showEffect(r1,moderator=effect$rM1,type=6,showValue=showValue,
+                    g<-showEffect(r1,type=13,showValue=showValue,
                                   plotArea=c(xoff+xgain*0.1,yoff+0.15*ygain,xgain*2,0.3*ygain),g=g)
-                    g<-showEffect(r2,moderator=effect$rM2,type=7,showValue=showValue,
+                    g<-showEffect(r2,type=14,showValue=showValue,
                                   plotArea=c(xoff+xgain*1.4,yoff+0.45*ygain,xgain,0.3*ygain),g=g)
-                    g<-showEffect(r12,type=8,showValue=showValue,
+                    g<-showEffect(r12,type=15,showValue=showValue,
                                   plotArea=c(xoff+xgain*0.1,yoff+0.45*ygain,xgain,0.3*ygain),g=g)
+                  },
+                  "moderation"={
+                    g<-showVariable(IV,plotArea=c(xoff,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
+                    g<-showVariable(IV2,plotArea=c(xoff+xgain*0.9,yoff+0.65*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
+                    g<-showVariable(DV,plotArea=c(xoff+xgain*0.9*2,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
+                    g<-showEffect(r1,type=13,showValue=showValue,
+                                  plotArea=c(xoff+xgain*0.1,yoff+0.15*ygain,xgain*2,0.3*ygain),g=g)
+                    g<-showEffect(r1x2,type=12,showValue=showValue,
+                                  plotArea=c(xoff+xgain*0.79,yoff+0.25*ygain,xgain,0.4*ygain),g=g)
+                  },
+                  "path"={
+                    g<-showVariable(IV,plotArea=c(xoff,yoff+0.65*ygain,xgain*0.9,0.35*ygain),g=g)
+                    g<-showVariable(IV2,plotArea=c(xoff+xgain*1.1,yoff+0.35*ygain,xgain*0.9,0.35*ygain),g=g)
+                    g<-showVariable(DV,plotArea=c(xoff,yoff,xgain,0.35*ygain),g=g)
+                    g<-showEffect(r1,moderator=effect$rM1,type=6,showValue=showValue,plotArea=c(xoff,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
+                    g<-showEffect(r2,moderator=effect$rM2,type=7,showValue=showValue,plotArea=c(xoff+xgain*1.1/2,yoff+0.05*ygain,xgain,0.3*ygain),g=g)
+                    g<-showEffect(r12,type=8,showValue=showValue,plotArea=c(xoff+xgain*1.1/2,yoff+0.65*ygain,xgain,0.3*ygain),g=g)
                   },
                   "lpath"={
                     g<-showVariable(IV2,plotArea=c(xoff+xgain*1.1,yoff+0.65*ygain,xgain*0.9,0.35*ygain),g=g)
@@ -313,7 +331,7 @@ showWorld<-function(hypothesis=braw.def$hypothesis,joinNulls=TRUE,showSingle=NUL
 #' @examples
 #' showDesign(design=makeDesign())
 #' @export
-showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotArea=c(0,0,1,1),autoShow=FALSE,g=NULL) {
+showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotArea=c(0,0,1,1),showPsych=TRUE,autoShow=FALSE,g=NULL) {
 
   nRange<-plotAxis("n",hypothesis)
   binRange<-nRange$lim
@@ -334,6 +352,13 @@ showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotA
     y<-c(0,ndens,0)*0.8
     pts=data.frame(x=log10(x),y=y)
   } else {
+    design1<-getDesign("Psych")
+    ndens<-nDistrDens(nbin,design1)
+    ndens<-ndens/max(ndens)
+    x<-c(min(nbin),nbin,max(nbin))
+    y<-c(0,ndens,0)*0.8
+    pts=data.frame(x=log10(x),y=y)
+    g<-addG(g,dataPolygon(data=pts,fill=desat(braw.env$plotColours$designC,0.1),linetype="dashed"))
     pts<-data.frame(x=log10(design$sN)+xpts,
                     y=c(0,1,1,0)*0.8)
   }

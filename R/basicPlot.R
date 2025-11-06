@@ -815,26 +815,26 @@ drawPoint<-function(data,shape=21,colour="#000000",fill="white",alpha=1,size=3,s
          })
   return(g)
 }
-dataPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25) {
+dataPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,linetype="solid") {
   data<-reRangeXY(data)
-  g<-axisPolygon(data,colour=colour,fill=fill,alpha=alpha,linewidth=linewidth)
+  g<-axisPolygon(data,colour=colour,fill=fill,alpha=alpha,linewidth=linewidth,linetype=linetype)
   return(g)
 }
-axisPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25) {
-  addGraphElement(list(type="Polygon",args=list(data,colour,fill,alpha,linewidth)))
-  drawPolygon(data,colour,fill,alpha,linewidth)
+axisPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,linetype="solid") {
+  addGraphElement(list(type="Polygon",args=list(data,colour,fill,alpha,linewidth,linetype)))
+  drawPolygon(data,colour,fill,alpha,linewidth,linetype)
 }
-drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25) {
+drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,linetype="solid") {
   switch(braw.env$graphicsType,
          "ggplot"={
            if (!is.na(colour) && colour=="none") colour=NA
            if (!is.null(data$ids)) {
-             g<-geom_polygon(data=data,aes(x=x,y=y,group=ids,alpha=alpha*value),colour = colour, fill = fill,linewidth=linewidth)
+             g<-geom_polygon(data=data,aes(x=x,y=y,group=ids,alpha=alpha*value),colour = colour, fill = fill,linewidth=linewidth,linetype=linetype)
            } else {
              if (!is.null(data$fill)) {
-               g<-geom_polygon(data=data,aes(x=x,y=y, fill = fill),colour = colour,alpha=alpha,linewidth=linewidth)
+               g<-geom_polygon(data=data,aes(x=x,y=y, fill = fill),colour = colour,alpha=alpha,linewidth=linewidth,linetype=linetype)
              } else {
-               g<-geom_polygon(data=data,aes(x=x,y=y),colour = colour, fill = fill,alpha=alpha,linewidth=linewidth)
+               g<-geom_polygon(data=data,aes(x=x,y=y),colour = colour, fill = fill,alpha=alpha,linewidth=linewidth,linetype=linetype)
              }
            }
          },
@@ -844,9 +844,12 @@ drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25)
            if (!is.null(data$ids)) {
              g<-""
              for (i in seq(1,length(x),4)) {
-               linestyle<-paste0(' fill="',fill,'" stroke="',colour,'"',
+               ls<-''
+               if (linetype=="dotted") ls<-' stroke-dasharray="2,2"'
+               if (linetype=="dashed") ls<-' stroke-dasharray="4,1"'
+               linestyle<-paste0(' fill="',fill,
                                  ' fill-opacity="',format(alpha*data$value[i],digits=braw.env$htmlDigits),'"',
-                                 ' stroke="',colour,'"',
+                                 ls,' stroke="',colour,'"',
                                  ' stroke-width="',format(linewidth*2,digits=braw.env$htmlDigits),'"',
                                  ' stroke-opacity="',1,'"')
                points<-' points="'
