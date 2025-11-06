@@ -342,7 +342,7 @@ showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotA
                box="x",g=g)
   
   nbin<-seq(binRange[1],binRange[2],length.out=braw.env$worldNPoints)
-  xpts<-c(-1,-1,1,1)*(max(log10(nbin))-min(log10(nbin)))/100
+  xpts<-c(-1,-1,1,1)*(max(log10(nbin))-min(log10(nbin)))/50
   
   if (braw.env$nPlotScale=="log10")  nbin<-10^(nbin)
   if (design$sNRand) {
@@ -358,11 +358,11 @@ showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotA
     x<-c(min(nbin),nbin,max(nbin))
     y<-c(0,ndens,0)*0.8
     pts=data.frame(x=log10(x),y=y)
-    g<-addG(g,dataPolygon(data=pts,fill=desat(braw.env$plotColours$designC,0.1),linetype="dashed"))
+    g<-addG(g,dataPolygon(data=pts,fill=darken(desat(braw.env$plotColours$designC,0.0),off=0.3),linetype="dashed"))
     pts<-data.frame(x=log10(design$sN)+xpts,
                     y=c(0,1,1,0)*0.8)
   }
-  g<-addG(g,dataPolygon(data=pts,fill=braw.env$plotColours$designC))
+  g<-addG(g,dataPolygon(data=pts,fill=darken(braw.env$plotColours$designC,off=0.1)))
   # g<-addG(g,dataLine(data=pts))
 
   if (is.element(design$sMethod$type,c("Cluster","Snowball","Convenience"))) {
