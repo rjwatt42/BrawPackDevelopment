@@ -137,16 +137,15 @@ showHypothesis<-function(hypothesis=braw.def$hypothesis,evidence=braw.def$eviden
                     g<-showEffect(effect$rIVIV2DV,type=5,useCols=cols,showValue=showValue,plotArea=c(xoff+xgain/2,yoff+0.35*ygain,xgain,0.3*ygain),g=g)
                   },
                   "path"={
-                    ygain<-ygain*1.15
-                    g<-showVariable(IV,plotArea=c(xoff,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain*0.85),g=g)
-                    g<-showVariable(IV2,plotArea=c(xoff+xgain*0.9,yoff+0.45*ygain,xgain*0.9*0.85,0.35*ygain*0.85),g=g)
-                    g<-showVariable(DV,plotArea=c(xoff+xgain*0.9*2,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain*0.85),g=g)
+                    g<-showVariable(IV,plotArea=c(xoff,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
+                    g<-showVariable(IV2,plotArea=c(xoff+xgain*0.9,yoff+0.45*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
+                    g<-showVariable(DV,plotArea=c(xoff+xgain*0.9*2,yoff+0.15*ygain,xgain*0.9*0.85,0.35*ygain),g=g)
                     g<-showEffect(r1,moderator=effect$rM1,type=6,showValue=showValue,
                                   plotArea=c(xoff+xgain*0.1,yoff+0.15*ygain,xgain*2,0.3*ygain),g=g)
                     g<-showEffect(r2,moderator=effect$rM2,type=7,showValue=showValue,
-                                  plotArea=c(xoff+xgain*1.4,yoff+0.4*ygain,xgain,0.3*ygain),g=g)
+                                  plotArea=c(xoff+xgain*1.4,yoff+0.47*ygain,xgain,0.3*ygain),g=g)
                     g<-showEffect(r12,type=8,showValue=showValue,
-                                  plotArea=c(xoff+xgain*0.1,yoff+0.4*ygain,xgain,0.3*ygain),g=g)
+                                  plotArea=c(xoff+xgain*0.1,yoff+0.47*ygain,xgain,0.3*ygain),g=g)
                   },
                   "lpath"={
                     g<-showVariable(IV2,plotArea=c(xoff+xgain*1.1,yoff+0.65*ygain,xgain*0.9,0.35*ygain),g=g)
