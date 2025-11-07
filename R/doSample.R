@@ -469,7 +469,10 @@ doSample<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,autoSho
              "Ordinal"={
                ivDiscrete<-discreteVals(ivr,IV$nlevs,OrdProportions(IV))
              })
-
+      
+      if (!is.null(IV2)) iv12r<-ivr*iv2r
+      else               iv12r<-ivr*0
+      
       if (!is.null(IV2)) {
         switch(IV2$type,
                "Interval"={
@@ -483,9 +486,6 @@ doSample<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,autoSho
                })
       }
       
-      if (!is.null(IV2)) iv12r<-ivDiscrete*iv2Discrete
-      else               iv12r<-ivr*0
-
       if (!is.null(effect$rM1) && !effect$rM1) rho<-0
       if (!is.null(effect$rM2) && !effect$rM2) rho2<-0
       

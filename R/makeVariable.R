@@ -198,6 +198,7 @@ makeDefaultVariables<-function() {
     "Musician?"=makeVariable(name="Musician?",type="Categorical",ncats=2,cases="no,yes"),
     TrialOutcome=makeVariable(name="TrialOutcome",type="Categorical",ncats=2,cases="-ve,+ve",proportions="1.2,1"),
     Sessions=makeVariable(name="Sessions",'Ordinal',nlevs=6,ordSource="discrete",ordProportions="0.1,0.2,0.4,0.4,0.6,0.8"),
+    SessionsI=makeVariable(name="Sessions",'Interval',mu=4,sd=1,skew=-0.75),
     TrialPhase=makeVariable(name="TrialPhase",type="Categorical",ncats=2,cases="pre,post",proportions="1.1,1"),
       
     StudySubject=makeVariable(name="StudySubject",type="Categorical",ncats=3,cases="psych,phil,sports",proportions="1.5,1,2"),
