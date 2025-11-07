@@ -34,12 +34,10 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
   setHTML()
   stepBS<-stepBS(doingBasics)
   partBS<-partBS(doingBasics)
-  single<-singleBS(doingBasics)
   rootBS<-paste0("Step",stepBS,partBS)
-
-  variables=list(IV=IV,IV2=IV2,DV=DV)
+  if (singleBS(doingBasics)) process<-"single" else process<-"multiple"
   
-  if (is.null(rIV)) rIV<-0.3
+  variables=list(IV=IV,IV2=IV2,DV=DV)
   
   if (is.null(sN)) {
     if (paste0(stepBS,partBS)=="1C") sN<-500
@@ -49,19 +47,15 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     if (paste0(stepBS)=="5") sN<-150
     if (paste0(stepBS)=="6") sN<-150
     if (paste0(stepBS)=="7") sN<-500
+    if (paste0(stepBS)=="8") sN<-500
+    if (paste0(stepBS)=="9") sN<-500
     if (is.null(sN)) sN<-42
   }
   if (is.null(sMethod)) {
     if (is.element(paste0(stepBS,partBS),c("1B"))) sMethod<-"Convenience"
     if (is.null(sMethod)) sMethod<-"Random"
   }
-  switch(analyse,
-         "Main1"={analyse<-c(TRUE,FALSE,FALSE)},
-         "Main2"={analyse<-c(FALSE,TRUE,FALSE)},
-         "Main12"={analyse<-c(TRUE,TRUE,FALSE)},
-         "Main1x2"={analyse<-c(TRUE,TRUE,TRUE)},
-         "InteractionOnly"={analyse<-c(FALSE,FALSE,TRUE)}
-  )
+  
   hideReport<-FALSE
   makeData<-TRUE
   switch(stepBS,
@@ -107,7 +101,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                   {}
            )
            showNow<-"Basic"
-           single<-TRUE
+           process<-"single"
          },
          "5"={ # Main effects in multiple IVs
            variables$DV<-"ExamGrade"
@@ -125,7 +119,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            if (is.null(rIV2)) rIV2<- -0.3
            rIVIV2<- 0
            rIVIV2DV<-0
-           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE,FALSE))
+           analyse<-"Main12"
            showNow<-"Basic"
          },
          "6"={ # Interactions
@@ -144,45 +138,116 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            if (is.null(rIV2)) rIV2<- -0.3
            if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            rIVIV2<- 0
-           setEvidence(AnalysisTerms=c(TRUE,TRUE,TRUE,FALSE))
+           analyse<-"Main1x2"
            showNow<-"Basic"
          },
-         "7"={ # Interactions
+         "7"={ # Covariation
+           variables$IV<-"Anxiety"
            variables$DV<-"ExamGrade"
+           rIVIV2DV<- 0
            switch(partBS,
-                  "A"={variables$IV<-"Coffee?";variables$IV2<-"Musician?"},
-                  "B"={variables$IV<-"Anxiety";variables$IV2<-"Smoker?"},
-                  "C"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
-                  "D"={
-                    IVs<-c("IQ","Musician?","Anxiety","RiskTaker?","SelfConfidence","Diligence","Coffee?")
-                    variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
-                    IVs<-IVs[IVs!=variables$IV]
-                    variables$IV2<-IVs[ceiling(runif(1)*length(IVs))]
+                  "A"={
+                    variables$IV2<-"HoursSleep"
+                    if (is.null(rIV)) rIV<- -0.05
+                    if (is.null(rIV2)) rIV2<- 0.5
+                    if (is.null(rIVIV2)) rIVIV2<- -0.7
+                  },
+                  "B"={
+                    variables$IV2<-"Perfectionism"
+                    if (is.null(rIV)) rIV<- -0.35
+                    if (is.null(rIV2)) rIV2<- 0.5
+                    if (is.null(rIVIV2)) rIVIV2<- 0.7
+                  },
+                  "C"={
+                    variables$IV2<-"Diligence"
+                    if (is.null(rIV)) rIV<- -0.2
+                    if (is.null(rIV2)) rIV2<- 0.57
+                    if (is.null(rIVIV2)) rIVIV2<- 0.7
                   }
            )
-           if (is.null(rIV2)) rIV2<- -0.5
-           if (is.null(rIVIV2)) rIVIV2<-0.7
-           rIVIV2DV<- 0
-           setEvidence(AnalysisTerms=c(TRUE,TRUE,FALSE,FALSE))
+           if (analyse=="Main12" && 
+               braw.res$result$hypothesis$IV$name==variables$IV &&
+               braw.res$result$hypothesis$IV2$name==variables$IV2 &&
+               braw.res$result$hypothesis$DV$name==variables$DV
+           )    process<-"analysis"
+           else process<-"single"
            showNow<-"Basic"
+         },
+         "8"={ # Moderation
+           variables$IV<-"Anxiety"
+           variables$IV2<-"Smoker?"
+           variables$DV<-"ExamGrade"
+           if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
+           if (is.null(rIV2)) rIV2 <- 0
+           rIVIV2 <- 0
+           switch(partBS,
+                  "A"={if (is.null(rIV)) rIV<-0},
+                  "B"={if (is.null(rIV)) rIV<- -rIVIV2DV}
+           )
+           analyse<-"Main1x2"
+           showNow<-"Basic"
+         },
+         "9"={ # Mediation
+           variables$IV<-"Anxiety"
+           variables$IV2<-"HoursSleep"
+           variables$DV<-"ExamGrade"
+           if (is.null(rIVIV2DV)) rIVIV2DV<-0
+           switch(partBS,
+                  "A"={ # full mediation
+                    if (is.null(rIV)) rIV<-0
+                    if (is.null(rIVIV2)) rIVIV2<-0.6
+                    if (is.null(rIV2)) rIV2<-0.6
+                  },
+                  "B"={ # no mediation
+                    if (is.null(rIV)) rIV<-0.36
+                    if (is.null(rIVIV2)) rIVIV2<-0
+                    if (is.null(rIV2)) rIV2<-0.6
+                  },
+                  "C"={ # partial mediation
+                    if (is.null(rIV)) rIV<-0.18
+                    if (is.null(rIVIV2)) rIVIV2<-0.3
+                    if (is.null(rIV2)) rIV2<-0.6
+                  }
+           )
+           analyse<-"Covariation"
+           showNow<-"Schematic"
          }
   )
+  
+  switch(analyse,
+         "Main1"={analyse<-c(TRUE,FALSE,FALSE,FALSE)},
+         "Main2"={analyse<-c(FALSE,TRUE,FALSE,FALSE)},
+         "Main12"={analyse<-c(TRUE,TRUE,FALSE,FALSE)},
+         "Main1x2"={analyse<-c(TRUE,TRUE,TRUE,FALSE)},
+         "InteractionOnly"={analyse<-c(FALSE,FALSE,TRUE,FALSE)},
+         "Covariation"={analyse<-c(TRUE,TRUE,FALSE,TRUE)}
+  )
+  setEvidence(AnalysisTerms=analyse)
+  
+  if (is.null(rIV)) rIV<-0.3
   hypothesis<-makeHypothesis(IV=variables$IV,IV2=variables$IV2,DV=variables$DV,
                              effect=makeEffect(rIV,rIV2=rIV2,rIVIV2=rIVIV2,rIVIV2DV=rIVIV2DV)
                              )
   if (stepBS=="5") hypothesis$layout<-"simple"
   if (stepBS=="6") hypothesis$layout<-"noCovariation"
   if (stepBS=="7") hypothesis$layout<-"noInteraction"
+  if (stepBS=="8") hypothesis$layout<-"moderation"
+  if (stepBS=="9") hypothesis$layout<-"mediation"
+  
   design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),sOutliers=sOutliers, sDependence=sDependence)
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
   
   if (makeData) {
-    if (single) {
+    if (process=="single") {
       setBrawRes("result",NULL)
       doSingle()
-    } else  {
-      doMultiple(100)
+    } 
+    if (process=="analysis") {
+      doAnalysis(sample=braw.res$result)
+    }      
+    if (process=="multiple") {
+      doMultiple(nreps)
     }      
   }
   
@@ -191,7 +256,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
   setBrawEnv("graphicsType","HTML")
   setBrawEnv("fontSize",0.75)
 
-  if (single) {
+  if (process!="multiple") {
     schematic<-makePanel(showInference(effectType="direct"),reportInference())
   } else  {
     schematic<-makePanel(showMultiple(effectType="direct"),reportMultiple())
