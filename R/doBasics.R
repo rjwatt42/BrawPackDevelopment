@@ -210,7 +210,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                   }
            )
            analyse<-"Covariation"
-           showNow<-"Schematic"
+           showNow<-"SchematicSEM"
          }
   )
   
@@ -256,10 +256,15 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
   setBrawEnv("graphicsType","HTML")
   setBrawEnv("fontSize",0.75)
 
-  if (process!="multiple") {
+  if ((process=="single" || process=="analysis") && showNow!="SchematicSEM") {
     schematic<-makePanel(showInference(effectType="direct"),reportInference())
-  } else  {
+  } 
+  if (process=="multiple") {
     schematic<-makePanel(showMultiple(effectType="direct"),reportMultiple())
+    showNow<-"Schematic"
+  }      
+  if (process=="single" && showNow=="SchematicSEM") {
+    schematic<-makePanel(showInference(effectType="direct"),plotSEMModel(braw.res$result$SEM))
     showNow<-"Schematic"
   }      
   

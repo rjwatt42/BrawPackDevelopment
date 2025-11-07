@@ -169,9 +169,9 @@ reportDescription<-function(analysis=braw.res$result,plain=FALSE){
             }
             if (evidence$AnalysisTerms[4]) {
               outputText<-c(outputText,paste0(IV$name,braw.env$covariation_string,IV2$name),
-                            paste0("!j",brawFormat(analysis$r$direct[3],digits=braw.env$report_precision)),
-                            paste0("!j",brawFormat(analysis$r$unique[3],digits=braw.env$report_precision)),
-                            paste0("!j",brawFormat(analysis$r$total[3],digits=braw.env$report_precision)),
+                            paste0("!j",brawFormat(analysis$r$direct[4],digits=braw.env$report_precision)),
+                            paste0("!j",brawFormat(analysis$r$unique[4],digits=braw.env$report_precision)),
+                            paste0("!j",brawFormat(analysis$r$total[4],digits=braw.env$report_precision)),
                             rep("",nc-4))
             }
             
