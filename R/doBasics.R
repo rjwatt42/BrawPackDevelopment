@@ -177,12 +177,13 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            variables$IV<-"Anxiety"
            variables$IV2<-"Smoker?"
            variables$DV<-"ExamGrade"
-           if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
+           if (is.null(rIVIV2DV)) rIVIV2DV <- -0.3
            if (is.null(rIV2)) rIV2 <- 0
            rIVIV2 <- 0
            switch(partBS,
                   "A"={if (is.null(rIV)) rIV<-0},
-                  "B"={if (is.null(rIV)) rIV<- -rIVIV2DV}
+                  "B"={if (is.null(rIV)) rIV<- -rIVIV2DV},
+                  "C"={rIV<- -rIVIV2DV; rIV2 <- -0.6}
            )
            analyse<-"Main1x2"
            showNow<-"Basic"
