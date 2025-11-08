@@ -188,7 +188,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                     variables$IV2<-"Smoker?"
                     variables$DV<-"Happiness"
                     rIV<- -rIVIV2DV
-                    rIV2 <- min(0.8,rIVIV2DV*2)
+                    rIV2 <- rIVIV2DV+sign(rIVIV2DV)*(1-abs(rIVIV2DV))/2
                     }
            )
            analyse<-"Main1x2"

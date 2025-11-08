@@ -850,10 +850,10 @@ drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,
            if (!is.null(data$ids)) {
              g<-""
              for (i in seq(1,length(x),4)) {
-               linestyle<-paste0(' fill="',fill,'"',
+               linestyle<-paste0(' fill="',fill,
                                  ' fill-opacity="',format(alpha*data$value[i],digits=braw.env$htmlDigits),'"',
-                                 ' stroke="',colour,'"',ls,
-                                 ' stroke-width="',linewidth*2,'"',
+                                 ls,' stroke="',colour,'"',
+                                 ' stroke-width="',format(linewidth*2,digits=braw.env$htmlDigits),'"',
                                  ' stroke-opacity="',format(alpha*data$value[i],digits=braw.env$htmlDigits),'"')
                points<-' points="'
                for (j in 1:4)  points<-paste0(points,' ',format(x[i+j-1],digits=braw.env$htmlDigits),',',format(y[i+j-1],digits=braw.env$htmlDigits))
