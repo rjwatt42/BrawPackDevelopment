@@ -23,13 +23,14 @@ makePanel<-function(g,r=NULL) {
 
 #' @export
 doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlanOnly=FALSE,doHistory=TRUE,
-                          IV="Perfectionism",IV2=NULL,DV="ExamGrade",
-                          rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
-                          sN=NULL,sMethod=NULL,
-                          sOutliers=0, sDependence=0,
-                          analyse="Main1",
-                          nreps=200
-                          ) {
+                   IV="Perfectionism",IV2=NULL,DV="ExamGrade",
+                   rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
+                   sN=NULL,sMethod=NULL,
+                   sOutliers=0, sDependence=0,
+                   sIV1Use="Between",sIV2Use="Between",
+                   analyse="Main1", 
+                   nreps=200
+) {
   
   setHTML()
   stepBS<-stepBS(doingBasics)
@@ -43,12 +44,14 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     if (paste0(stepBS,partBS)=="1C") sN<-500
     if (paste0(stepBS)=="2") sN<-100
     if (paste0(stepBS)=="3") sN<-100
+    if (paste0(stepBS)=="31") sN<-100
     if (paste0(stepBS)=="4") sN<-100
     if (paste0(stepBS)=="5") sN<-150
     if (paste0(stepBS)=="6") sN<-150
-    if (paste0(stepBS)=="7") sN<-500
-    if (paste0(stepBS)=="8") sN<-500
+    if (paste0(stepBS)=="7") sN<-50
+    if (paste0(stepBS)=="8") sN<-50
     if (paste0(stepBS)=="9") sN<-500
+    if (paste0(stepBS)=="10") sN<-500
     if (is.null(sN)) sN<-42
   }
   if (is.null(sMethod)) {
@@ -86,7 +89,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            )
            showNow<-"Basic"
          },
-         "4"={ # Revision of all basic tests with 2 variables
+         "41"={ # Revision of all basic tests with 2 variables
            DVs<-c("ExamGrade","ExamPass?","TrialOutcome","Happiness")
            variables$DV<-DVs[ceiling(runif(1)*length(DVs))]
            
@@ -103,7 +106,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            showNow<-"Basic"
            process<-"single"
          },
-         "5"={ # Main effects in multiple IVs
+         "4"={ # Main effects in multiple IVs
            variables$DV<-"ExamGrade"
            switch(partBS,
                   "A"={variables$IV<-"BirthOrder";variables$IV2<-"Musician?"},
@@ -122,7 +125,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            analyse<-"Main12"
            showNow<-"Basic"
          },
-         "6"={ # Interactions
+         "5"={ # Interactions
            variables$DV<-"ExamGrade"
            switch(partBS,
                   "A"={variables$IV<-"Coffee?";variables$IV2<-"Musician?"},
@@ -141,7 +144,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            analyse<-"Main1x2"
            showNow<-"Basic"
          },
-         "7"={ # Covariation
+         "6"={ # Covariation
            variables$IV<-"Anxiety"
            variables$DV<-"ExamGrade"
            rIVIV2DV<- 0
@@ -173,7 +176,25 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            else process<-"single"
            showNow<-"Basic"
          },
-         "8"={ # Moderation
+         "7"={ # Experimental 1 IV
+           variables$IV<-"Condition"
+           variables$DV<-"Response"
+           switch(partBS,
+                  "A"={ sIV1Use<-"Between" },
+                  "B"={ sIV1Use<-"Within"  }
+                  )
+         },
+         "8"={ # Experimental 2 IV,
+           variables$IV<-"Condition"
+           variables$IV2<-"Group"
+           variables$DV<-"Response"
+           switch(partBS,
+                  "A"={ sIV1Use<-sIV2Use<-"Between" },
+                  "B"={ sIV1Use<-"Within" ; sIV2Use<-"Between" },
+                  "C"={ sIV1Use<-sIV2Use<-"Within"  }
+           )
+         },
+         "9"={ # Moderation
            variables$IV<-"Anxiety"
            variables$IV2<-"Smoker?"
            variables$DV<-"ExamGrade"
@@ -194,7 +215,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            analyse<-"Main1x2"
            showNow<-"Basic"
          },
-         "9"={ # Mediation
+         "10"={ # Mediation
            variables$IV<-"Anxiety"
            variables$IV2<-"HoursSleep"
            variables$DV<-"ExamGrade"
@@ -235,13 +256,15 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
   hypothesis<-makeHypothesis(IV=variables$IV,IV2=variables$IV2,DV=variables$DV,
                              effect=makeEffect(rIV,rIV2=rIV2,rIVIV2=rIVIV2,rIVIV2DV=rIVIV2DV)
                              )
-  if (stepBS=="5") hypothesis$layout<-"simple"
-  if (stepBS=="6") hypothesis$layout<-"noCovariation"
-  if (stepBS=="7") hypothesis$layout<-"noInteraction"
-  if (stepBS=="8") hypothesis$layout<-"moderation"
-  if (stepBS=="9") hypothesis$layout<-"mediation"
+  if (stepBS=="4") hypothesis$layout<-"simple"
+  if (stepBS=="5") hypothesis$layout<-"noCovariation"
+  if (stepBS=="6") hypothesis$layout<-"noInteraction"
+  if (stepBS=="7") hypothesis$layout<-"moderation"
+  if (stepBS=="8") hypothesis$layout<-"mediation"
   
-  design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),sOutliers=sOutliers, sDependence=sDependence)
+  design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),
+                     sOutliers=sOutliers, sDependence=sDependence,
+                     sIV1Use=sIV1Use,sIV2Use=sIV2Use)
   setBrawDef("hypothesis",hypothesis)
   setBrawDef("design",design)
   
