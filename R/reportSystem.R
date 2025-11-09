@@ -124,16 +124,21 @@ reportDesign<-function(design=braw.def$design,plain=FALSE) {
   if (design$sCheating=="None") col1<-'' else col1<-'!r'
   if (design$sCheating=="None") cheat<-'-' else cheat<-tolower(design$sCheating)
   if (design$Replication$On) repl<-tolower(design$Replication$Keep) else repl<-'-'
+  if (is.null(braw.def$hypothesis$IV2)) usage<-tolower(design$sMethod$type)
+  else usage<-paste0("IV1: ",tolower(design$sIV1Use))
   outputText<-c(outputText,
                 "!TDesign:",rep("",nc-1),
                 "!Hn","Method","Usage","Replication","Cheating",rep("",nc-5),
                 paste0("!c",design$sN),
-                paste0("!c",col,tolower(design$sMethod$type)),
+                paste0("!c",col,usage),
                 paste0("!c",tolower(design$sIV1Use)),
                 paste0("!c",repl),
                 paste0("!c",col1,cheat),
                 rep("",nc-5)
   )
+  if (!is.null(braw.def$hypothesis$IV2))
+    outputText<-c(outputText," ",paste0("IV2: ",tolower(design$sIV2Use)),rep(" ",nc-2))
+                  
   if (is.element(design$sMethod$type,c("Convenience","Cluster","Snowball")) ){
     if (design$sMethodSeverity<1) 
       sMethodSeverity<-design$sN*design$sMethodSeverity
