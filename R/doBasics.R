@@ -32,6 +32,10 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                    nreps=200
 ) {
   
+  oldHypothesis<-braw.def$hypothesis
+  oldDesign<-braw.def$design
+  oldEvidence<-braw.def$evidence
+  
   setHTML()
   stepBS<-stepBS(doingBasics)
   partBS<-partBS(doingBasics)
@@ -356,6 +360,11 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     history$place<-length(history$content)
     setBrawRes("demoHistory",history)
   }
+  
+  setBrawDef("hypothesis",oldHypothesis)
+  setBrawDef("design",oldDesign)
+  setBrawDef("evidence",oldEvidence)
+
   if (showOutput) {
     showHTML(demoResults)
     return(invisible(NULL))
