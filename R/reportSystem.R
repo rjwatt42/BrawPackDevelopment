@@ -125,7 +125,7 @@ reportDesign<-function(design=braw.def$design,plain=FALSE) {
   if (design$sCheating=="None") col1<-'' else col1<-'!r'
   if (design$sCheating=="None") cheat<-'-' else cheat<-tolower(design$sCheating)
   if (design$Replication$On) repl<-tolower(design$Replication$Keep) else repl<-'-'
-  if (is.null(braw.def$hypothesis$IV2)) usage<-tolower()
+  if (is.null(braw.def$hypothesis$IV2)) usage<-tolower(design$sIV1Use)
   else usage<-paste0("IV1: ",tolower(design$sIV1Use))
   outputText<-c(outputText,
                 "!TDesign:",rep("",nc-1),
