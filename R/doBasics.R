@@ -183,6 +183,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                   "A"={ sIV1Use<-"Between" },
                   "B"={ sIV1Use<-"Within"  }
                   )
+           showNow<-"Basic"
          },
          "8"={ # Experimental 2 IV,
            variables$IV<-"Condition"
@@ -193,6 +194,11 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                   "B"={ sIV1Use<-"Within" ; sIV2Use<-"Between" },
                   "C"={ sIV1Use<-sIV2Use<-"Within"  }
            )
+           if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
+           if (is.null(rIV)) rIV<-rIVIV2DV
+           if (is.null(rIV2)) rIV2<-rIVIV2DV
+           analyse<-"Main1x2"
+           showNow<-"Basic"
          },
          "9"={ # Moderation
            variables$IV<-"Anxiety"
@@ -258,9 +264,10 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
                              )
   if (stepBS=="4") hypothesis$layout<-"simple"
   if (stepBS=="5") hypothesis$layout<-"noCovariation"
+  if (stepBS=="8") hypothesis$layout<-"noCovariation"
   if (stepBS=="6") hypothesis$layout<-"noInteraction"
-  if (stepBS=="7") hypothesis$layout<-"moderation"
-  if (stepBS=="8") hypothesis$layout<-"mediation"
+  if (stepBS=="9") hypothesis$layout<-"moderation"
+  if (stepBS=="10") hypothesis$layout<-"mediation"
   
   design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),
                      sOutliers=sOutliers, sDependence=sDependence,

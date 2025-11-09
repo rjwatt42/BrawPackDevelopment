@@ -201,6 +201,10 @@ makeDefaultVariables<-function() {
     SessionsI=makeVariable(name="Sessions",'Interval',mu=4,sd=1,skew=-0.75),
     TrialPhase=makeVariable(name="TrialPhase",type="Categorical",ncats=2,cases="pre,post",proportions="1.1,1"),
       
+    Condition=makeVariable(name="Condition",type="Categorical",ncats=2,cases="A,B",proportions="1,1"),
+    Group=makeVariable(name="Group",type="Categorical",ncats=2,cases="C1,C2",proportions="1,1"),
+    Response=makeVariable(name="Response",type="Interval",mu=50,sd=20),
+    
     StudySubject=makeVariable(name="StudySubject",type="Categorical",ncats=3,cases="psych,phil,sports",proportions="1.5,1,2"),
     BirthOrder=makeVariable(name="BirthOrder",type="Categorical",ncats=4,cases="first,middle,last,only",proportions="1,0.4,0.6,0.2")
   )

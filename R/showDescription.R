@@ -253,11 +253,14 @@ plotCatInterDescription<-function(analysis,g=NULL){
     # analysis1<-doAnalysis(analysis1)
     analysis1$rIV<-rho[i]
     
-    analysis1$hypothesis$IV$mu<-mean(analysis1$iv,na.rm=TRUE)
-    analysis1$hypothesis$DV$mu<-mean(analysis1$dv,na.rm=TRUE)
-    analysis1$hypothesis$IV$sd<-sd(analysis1$iv,na.rm=TRUE)
-    analysis1$hypothesis$DV$sd<-sd(analysis1$dv,na.rm=TRUE)
-    
+    if (analysis1$hypothesis$IV$type=="Interval") {
+      analysis1$hypothesis$IV$mu<-mean(analysis1$iv,na.rm=TRUE)
+      analysis1$hypothesis$IV$sd<-sd(analysis1$iv,na.rm=TRUE)
+    }
+    if (analysis1$hypothesis$DV$type=="Interval") {
+      analysis1$hypothesis$DV$mu<-mean(analysis1$dv,na.rm=TRUE)
+      analysis1$hypothesis$DV$sd<-sd(analysis1$dv,na.rm=TRUE)
+    }
     analysis1$hypothesis$IV$vals<-Ivals[use]
     analysis1$hypothesis$DV$vals<-Dvals[use] 
     

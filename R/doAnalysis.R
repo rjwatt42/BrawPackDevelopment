@@ -202,10 +202,10 @@ model2directeffect<-function(mF){
   # looking at the change in prediction around the centre of an interval predictor
   # looking at the sd of predictions for all possible cases of categorical predictors
 
-  if (any(class(mF)[1]==c("lmerMod","glmerMod"))) {
-    p1<-data$participant
-    data$participant<-p1[1]
-  }
+  # if (any(class(mF)[1]==c("lmerMod","glmerMod"))) {
+  #   p1<-data$participant
+  #   data$participant<-p1[1]
+  # }
 
   directEffects<-c()
   for (iTerm in 1:length(mTerms)) {
@@ -214,14 +214,15 @@ model2directeffect<-function(mF){
         if (is.numeric(v1)){
           m1<-mean(v1,na.rm=TRUE)+c(-1,1)*wsd(v1,na.rm=TRUE)
         } else {
-          m1<-levels(v1)
+          m1<-factor(levels(v1))
         }
         rawData<-data
         v<-c()
         for (i in 1:length(m1)) {
           rawData[[mTerms[iTerm]]]<-m1[i]
           if (any(class(mF)[1]==c("lmerMod","glmerMod"))) {
-            v<-c(v,mean(predict(mF,rawData)))
+            use<-v1==m1[i]
+            v<-c(v,mean(predict(mF,data[use,])))
           } else {
             v<-c(v,mean(predict.lm(mF,rawData)))
           }
@@ -238,13 +239,13 @@ model2directeffect<-function(mF){
         h1<-c(1,1)
         m1<-mean(v1,na.rm=TRUE)+c(-1,1)*wsd(v1,na.rm=TRUE)
       } else {
-        m1<-levels(v1)
+        m1<-factor(levels(v1))
       }
       v2<-data[[terms[2]]]
       if (is.numeric(v2)){
         m2<-mean(v2,na.rm=TRUE)+c(-1,1)*wsd(v2,na.rm=TRUE)
       } else {
-        m2<-levels(v2)
+        m2<-factor(levels(v2))
       }
       rawData<-data
       v<-c()
@@ -253,7 +254,8 @@ model2directeffect<-function(mF){
         for (i2 in 1:length(m2)) {
           rawData[[terms[2]]]<-m2[i2]
           if (any(class(mF)[1]==c("lmerMod","glmerMod"))) {
-            v<-c(v,mean(predict(mF,rawData)))
+            use<-v1==m1[i1] & v2==m2[i2]
+            v<-c(v,mean(predict(mF,data[use,])))
           } else {
             v<-c(v,mean(predict.lm(mF,rawData)))
           }
@@ -487,9 +489,9 @@ generalAnalysis<-function(allData,AnalysisTerms,withins=FALSE,ssqType="Type3",ca
   if (any(withins)){
     doingWithin<-TRUE
     formula<-paste(formula,"+(1|participant)",sep="")
-    if (all(withins)){
-      formula<-paste(formula,"+(1|iv1:participant)+(1|iv2:participant)",sep="")
-    }
+    # if (all(withins)){
+    #   formula<-paste(formula,"+(1|iv1:participant)+(1|iv2:participant)",sep="")
+    # }
   } else {
     doingWithin<-FALSE
   }
