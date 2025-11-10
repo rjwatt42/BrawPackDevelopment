@@ -70,10 +70,12 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
            "t-test"={
              ribbon="T-Tests"
              if (repeated) menu="Paired Samples T-Test"
-             else menu="Independent Samples T-Test"
-             IVgoes="Grouping Variable"
-             DVgoes="Dependent Variables"
-             options=paste("<b>Student's</b>",in_char,"<b>Tests</b>")
+             else {
+               menu="Independent Samples T-Test"
+               IVgoes="Grouping Variable"
+               DVgoes="Dependent Variables"
+               options=paste("<b>Student's</b>",in_char,"<b>Tests</b>")
+             }
              graphMenu="Box Plot"
              IVGraph="Split by"
              DVGraph="Variables"

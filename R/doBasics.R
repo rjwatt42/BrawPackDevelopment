@@ -25,10 +25,11 @@ makePanel<-function(g,r=NULL) {
 doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlanOnly=FALSE,doHistory=TRUE,
                    IV="Perfectionism",IV2=NULL,DV="ExamGrade",
                    rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
-                   sN=NULL,sMethod=NULL,
+                   sN=NULL,sMethod=NULL,sDataFormat=NULL,
                    sOutliers=0, sDependence=0,
                    sIV1Use="Between",sIV2Use="Between",
                    analyse="Main1", 
+                   allScatter=NULL,fullWithinNames=NULL,
                    nreps=200
 ) {
   
@@ -93,7 +94,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            )
            showNow<-"Basic"
          },
-         "41"={ # Revision of all basic tests with 2 variables
+         "31"={ # Revision of all basic tests with 2 variables
            DVs<-c("ExamGrade","ExamPass?","TrialOutcome","Happiness")
            variables$DV<-DVs[ceiling(runif(1)*length(DVs))]
            
@@ -201,6 +202,8 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            if (is.null(rIV)) rIV<-rIVIV2DV
            if (is.null(rIV2)) rIV2<-rIVIV2DV
+           if (is.null(sDataFormat)) sDataFormat<-"wide"
+           if (is.null(allScatter)) allScatter<-FALSE
            analyse<-"Main1x2"
            showNow<-"Basic"
          },
@@ -273,7 +276,8 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
   if (stepBS=="9") hypothesis$layout<-"moderation"
   if (stepBS=="10") hypothesis$layout<-"mediation"
   
-  design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),
+  if (is.null(sDataFormat)) sDataFormat<-"long"
+  design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),sDataFormat=sDataFormat,
                      sOutliers=sOutliers, sDependence=sDependence,
                      sIV1Use=sIV1Use,sIV2Use=sIV2Use)
   setBrawDef("hypothesis",hypothesis)
@@ -292,6 +296,8 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     }      
   }
   
+  if(!is.null(allScatter)) setBrawEnv("allScatter",allScatter)
+  if(!is.null(fullWithinNames)) setBrawEnv("fullWithinNames",fullWithinNames)
   # display the results
   svgBox(height=350,aspect=1.5)
   setBrawEnv("graphicsType","HTML")
