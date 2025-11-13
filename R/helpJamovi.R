@@ -9,6 +9,7 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
   
   optionsGroup=NULL
   options=c()
+  repeated<-FALSE
   if (is.null(hypothesis$IV2)) {
     switch(hypothesis$DV$type,
            "Interval"={
