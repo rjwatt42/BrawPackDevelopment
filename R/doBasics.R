@@ -64,6 +64,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     if (is.null(sMethod)) sMethod<-"Random"
   }
   
+  marginalsStyle<-"all"
   hideReport<-FALSE
   makeData<-TRUE
   switch(stepBS,
@@ -104,11 +105,10 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
            variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
 
            switch(partBS,
-                  "A"={hideReport<-TRUE;showJamovi<-FALSE},
-                  "B"={hideReport<-FALSE;makeData<-FALSE},
+                  "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
+                  "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Basic"},
                   {}
            )
-           showNow<-"Basic"
            process<-"single"
          },
          "4"={ # Main effects in multiple IVs
@@ -320,14 +320,14 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(showMarginals(style="all"),NULL),
-      makePanel(showDescription(dataOnly=TRUE),NULL),
+      makePanel(nullPlot(),NULL),
       makePanel(nullPlot(),NULL)
     )
   } else {
     tabs<-c("Plan","Sample","Basic","Schematic")
     tabContents<-c(
       makePanel(showPlan()),
-      makePanel(showMarginals(style="all"),reportSample()),
+      makePanel(showMarginals(style=marginalsStyle),reportSample()),
       makePanel(showDescription(),
                 paste0(reportInference(),reportDescription(plain=TRUE))),
       schematic
