@@ -246,18 +246,20 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
     output<-c(output,paste0('<ol style="margin-top:0px;"><li>Press the ',ribbon," icon",
                             "<br> & choose ",menu," from the drop down menu</li>"))
     done<-FALSE
+    list1<-paste0("<li>Now<ul>")
+    
     if (is.null(hypothesis$IV2) && repeated) {
       names<-paste0('<b style=color:red>',hypothesis$IV$cases,'</b>')
       names<-paste0(names,collapse = " & ")
-      list1<-paste0("<li>","Move ",names," data to <b>",DVgoes,"</b></li>")
+      list1<-paste0(list1,"<li>","Move ",names," data to <b>",DVgoes,"</b></li>")
       done<-TRUE
     } 
     if (!is.null(hypothesis$IV2) && repeated1 && !repeated2) {
       names<-paste0('<b style=color:red>"',hypothesis$IV$cases,'"</b>')
       names<-paste0(names,collapse = " & ")
-      list1<-""
       list1<-paste0(list1,"<li>","Change text <b>RM Factor 1</b>"," to <b style=color:red>",'"',hypothesis$IV$name,'"',"</b></li>")
       list1<-paste0(list1,"<li>","Change text <b>Level 1, 2 etc</b>"," to ",names,"</li>")
+      list1<-paste0(list1,"</ul><li>Then<ul>")
       list1<-paste0(list1,"<li>","Move data ",gsub('\"','',names)," to <b>","Repeated Measures Cells","</b></li>")
       if (hypothesis$IV2$type=="Categorical")
         list1<-paste0(list1,"<li>","Move data ","<b style=color:red>",hypothesis$IV2$name,"</b> to <b>","Between Subject Factors","</b></li>")
@@ -268,9 +270,9 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
     if (!is.null(hypothesis$IV2) && !repeated1 && repeated2) {
       names<-paste0('<b style=color:red>"',hypothesis$IV2$cases,'"</b>')
       names<-paste0(names,collapse = " & ")
-      list1<-""
       list1<-paste0(list1,"<li>","Change text <b>RM Factor 1</b>"," to <b style=color:red>",'"',hypothesis$IV2$name,'"',"</b></li>")
       list1<-paste0(list1,"<li>","Change text <b>Level 1, 2 etc</b>"," to ",names,"</li>")
+      list1<-paste0(list1,"</ul><li>Then<ul>")
       list1<-paste0(list1,"<li>","Move data ",gsub('\"','',names)," to <b>","Repeated Measures Cells","</b></li>")
       if (hypothesis$IV$type=="Categorical")
         list1<-paste0(list1,"<li>","Move data ","<b style=color:red>",hypothesis$IV$name,"</b> to <b>","Between Subject Factors","</b></li>")
@@ -290,21 +292,21 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
         }
       names<-paste0('<b style=color:red>',names,'</b>')
       names<-paste0(names,collapse = ", ")
-      list1<-""
       list1<-paste0(list1,"<li>","Change text <b>RM Factor 1</b>"," to <b style=color:red>",'"',hypothesis$IV$name,'"',"</b></li>")
       list1<-paste0(list1,"<li>","Change text <b>Level 1, 2 etc</b>"," to ",names1,"</li>")
       list1<-paste0(list1,"<li>","Change text <b>RM Factor 2</b>"," to <b style=color:red>",'"',hypothesis$IV2$name,'"',"</b></li>")
       list1<-paste0(list1,"<li>","Change text <b>Level A, B etc</b>"," to ",names2,"</li>")
+      list1<-paste0(list1,"</ul><li>Then<ul>")
       list1<-paste0(list1,"<li>","Move data ",gsub('\"','',names)," to <b>","Repeated Measures Cells","</b></li>")
       done<-TRUE
     } 
     if (!done) {
-    list1<-paste0("<li><b style=color:red>",hypothesis$DV$name,"</b> to <b>",DVgoes,"</b></li>")
+    list1<-paste0(list1,"<li><b style=color:red>",hypothesis$DV$name,"</b> to <b>",DVgoes,"</b></li>")
     list1<-paste0(list1,"<li><b style=color:red>",hypothesis$IV$name,"</b> to <b>",IVgoes,"</b></li>")
     if (!is.null(hypothesis$IV2))
       list1<-paste0(list1,"<li><b style=color:red>",hypothesis$IV2$name,"</b> to <b>",IV2goes,"</b></li>")
     }
-    output<-c(output,paste0("<li>Now<ul>",list1,"</ul></li>"))
+    output<-c(output,paste0(list1,"</ul></li>"))
     
     if (!is.null(options)) {
       if (!is.null(optionsGroup)) 
