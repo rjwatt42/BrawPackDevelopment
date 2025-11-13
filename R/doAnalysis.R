@@ -550,6 +550,13 @@ generalAnalysis<-function(allData,AnalysisTerms,withins=FALSE,ssqType="Type3",ca
             anNormC<-Anova(lmNormC,test=braw.env$anovaMethod,type=3,singular.ok=TRUE)
           }
   )
+  # a hack to match Jamovi output
+  if (no_ivs>=2 && doingWithin && all(withins)) {
+    anNormC1<-afex::aov_car(dv~1+Error(participant/(iv1+iv2)),analysisNormData)
+    anNormC1<-anNormC1$anova_table
+    anNormC$F[2:4]<-anNormC1$F
+    anNormC$`Pr(>F)`[2:4]<-anNormC1$`Pr(>F)`
+  }
   
   if (grepl("Intercept",rownames(anNormC)[[1]])) {n1<-2} else {n1<-1}
   n2<-nrow(anNormC)
