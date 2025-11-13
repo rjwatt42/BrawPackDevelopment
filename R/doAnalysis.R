@@ -551,6 +551,7 @@ generalAnalysis<-function(allData,AnalysisTerms,withins=FALSE,ssqType="Type3",ca
           }
   )
   # a hack to match Jamovi output
+  # there's probably a principled way of doing the same thing
   if (no_ivs>=2 && doingWithin && all(withins)) {
     anNormC1<-afex::aov_car(dv~1+Error(participant/(iv1+iv2)),analysisNormData)
     anNormC1<-anNormC1$anova_table
