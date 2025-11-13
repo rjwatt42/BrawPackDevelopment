@@ -69,13 +69,17 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
            },
            "t-test"={
              ribbon="T-Tests"
-             if (repeated) menu="Paired Samples T-Test"
-             else {
+             if (repeated) {
+               menu="Paired Samples T-Test"
+               IVgoes=""
+               DVgoes="Paired Variables"
+               options=paste("<b>Student's</b>",in_char,"<b>Tests</b>")
+             } else {
                menu="Independent Samples T-Test"
                IVgoes="Grouping Variable"
                DVgoes="Dependent Variables"
-               options=paste("<b>Student's</b>",in_char,"<b>Tests</b>")
              }
+             options=paste("<b>Student's</b>",in_char,"<b>Tests</b>")
              graphMenu="Box Plot"
              IVGraph="Split by"
              DVGraph="Variables"
@@ -83,10 +87,15 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
            },
            "anova"={
              ribbon="ANOVA"
-             if (repeated) menu="Repeated Measures ANOVA"
-             else menu="One-way ANOVA"
-             IVgoes="Grouping Variable"
-             DVgoes="Dependent Variables"
+             if (repeated) {
+               menu="Repeated Measures ANOVA"
+               IVgoes="Grouping Variable"
+               DVgoes="Dependent Variables"
+             } else {
+               menu="One-way ANOVA"
+               IVgoes="Grouping Variable"
+               DVgoes="Dependent Variables"
+             }
              if (!repeated) 
                 options=paste("<b>Assume equal (Fisher's)</b>",in_char,"<b>Variances</b>")
              graphMenu="Box Plot"
@@ -210,13 +219,18 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
   menu<-paste0('<span style="color:hsl(205, 100%, 41%)">',menu,'</span>')
   if (HelpType=="All" || HelpType=="Analysis") {
     output<-c(output,'<b>Analysis</b>: choose the menu <span style="color:hsl(205, 100%, 41%);"><b>Analyses</b></span>')
-      output<-c(output,paste0('<ol style="margin-top:0px;"><li>Press the ',ribbon," icon",
-                              "<br> & choose ",menu," from the drop down menu</li>"))
+    output<-c(output,paste0('<ol style="margin-top:0px;"><li>Press the ',ribbon," icon",
+                            "<br> & choose ",menu," from the drop down menu</li>"))
+    if (is.null(IV2) && repeated) {
+      names<-paste0(hypothesis$IV$cases,collapse = "&")
+      list1<-paste0("<ul><li><b style=color:red>",names,"</b> to <b>",DVgoes,"</b></li>")
+    } else {
     list1<-paste0("<ul><li><b style=color:red>",hypothesis$DV$name,"</b> to <b>",DVgoes,"</b></li>")
     list1<-paste0(list1,"<li><b style=color:red>",hypothesis$IV$name,"</b> to <b>",IVgoes,"</b></li>")
     if (!is.null(hypothesis$IV2))
       list1<-paste0(list1,"<li><b style=color:red>",hypothesis$IV2$name,"</b> to <b>",IV2goes,"</b></li>")
     list1<-paste0(list1,"</ul>")
+    }
     output<-c(output,paste0("<li>Now move",list1,"</li>"))
     
     if (!is.null(options)) {
