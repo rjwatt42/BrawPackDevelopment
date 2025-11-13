@@ -222,8 +222,9 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
     output<-c(output,paste0('<ol style="margin-top:0px;"><li>Press the ',ribbon," icon",
                             "<br> & choose ",menu," from the drop down menu</li>"))
     if (is.null(hypothesis$IV2) && repeated) {
-      names<-paste0(hypothesis$IV$cases,collapse = "&")
-      list1<-paste0("<ul><li><b style=color:red>",names,"</b> to <b>",DVgoes,"</b></li>")
+      names<-paste0('<b style=color:red>',hypothesis$IV$cases,'</b>')
+      names<-paste0(names,collapse = " & ")
+      list1<-paste0("<ul><li>",names," to <b>",DVgoes,"</b></li>")
     } else {
     list1<-paste0("<ul><li><b style=color:red>",hypothesis$DV$name,"</b> to <b>",DVgoes,"</b></li>")
     list1<-paste0(list1,"<li><b style=color:red>",hypothesis$IV$name,"</b> to <b>",IVgoes,"</b></li>")
