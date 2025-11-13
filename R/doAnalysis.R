@@ -490,7 +490,7 @@ generalAnalysis<-function(allData,AnalysisTerms,withins=FALSE,ssqType="Type3",ca
     doingWithin<-TRUE
     formula<-paste(formula,"+(1|participant)",sep="")
     if (no_ivs>1 && all(withins)){
-      formula<-paste(formula,"+(1|iv1:participant)+(1|iv2:participant)",sep="")
+      formula<-paste(formula,"+(iv1|participant)+(iv2|participant)",sep="")
     }
   } else {
     doingWithin<-FALSE
