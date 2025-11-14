@@ -22,7 +22,8 @@ makePanel<-function(g,r=NULL) {
 }
 
 #' @export
-doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlanOnly=FALSE,doHistory=TRUE,
+doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp=TRUE,
+                   showPlanOnly=FALSE,doHistory=TRUE,
                    IV="Perfectionism",IV2=NULL,DV="ExamGrade",
                    rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
                    sN=NULL,sMethod=NULL,sDataFormat=NULL,
@@ -340,6 +341,12 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
     tabs<-c(tabs,"Jamovi")
     tabContents<-c(tabContents,nullPlot())
   }
+  
+  if (showHelp) {
+    tabs<-c(tabs,"Help")
+    tabContents<-c(tabContents,brawBasicsHelp(open=c(0,0),indent=100,plainTabs=TRUE))
+  }
+
   open<-which(showNow==tabs)
   
   history<-braw.res$demoHistory
@@ -350,7 +357,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showPlan
   demoResults<-
     generate_tab(
       title="Basics:",
-      plainTabs=FALSE,
+      plainTabs=TRUE,
       titleWidth=100,
       width=550,
       tabs=tabs,
