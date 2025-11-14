@@ -186,7 +186,7 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
                IVgoes="Fixed Factors"
                IV2goes="Covariates"
              }
-             if (hypothesis$IV$type=="Categorical" && hypothesis$IV2$type!="Categorical") {
+             if (hypothesis$IV2$type=="Categorical" && hypothesis$IV$type!="Categorical") {
                ribbon="ANOVA"
                menu="ANCOVA"
                DVgoes="Dependent Variable"
