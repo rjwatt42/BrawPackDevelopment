@@ -33,12 +33,13 @@ brawStartHelp<-function(indent=0) {
 }
 
 #' @export
-brawSimHelp<-function(open=0,indent=0) {
+brawSimHelp<-function(open=0,indent=0,plainTabs=TRUE) {
   return(
     generate_tab(
       title="Simulation",
       indent=indent,
       titleWidth=0,
+      plainTabs=plainTabs,
       # titleTab="Click on the tabs for specific help.",
       tabs=c("Start","Plan","Single Sample","Multiple Samples","Explore"),
       tabContents = c(
@@ -54,12 +55,13 @@ brawSimHelp<-function(open=0,indent=0) {
 }
 
 #' @export
-brawMetaSciHelp<-function(open=0,indent=0) {
+brawMetaSciHelp<-function(open=0,indent=0,plainTabs=TRUE) {
   return(
     generate_tab(
       title="MetaScience",
       indent=indent,
       titleWidth=0,
+      plainTabs=plainTabs,
       # titleTab="Click on the tabs for specific help.",
       tabs=c(
         # "Start",
@@ -78,7 +80,7 @@ brawMetaSciHelp<-function(open=0,indent=0) {
 }
 
 #' @export
-brawJamoviHelp<-function(open=0,indent=0,hypothesis=braw.def$hypothesis,design=braw.def$design) {
+brawJamoviHelp<-function(open=0,indent=0,hypothesis=braw.def$hypothesis,design=braw.def$design,plainTabs=TRUE) {
   return(
   generate_tab(
     title="Jamovi",
@@ -165,7 +167,7 @@ brawBasicsHelp<-function(open=c(0,0),indent=0,titleWidth=100,plainTabs=TRUE) {
       title="Basics",
       indent=indent,
       titleWidth=0,
-      plainTabs=TRUE,
+      plainTabs=plainTabs,
       plain=1,
       tabs=basicsTabNames,
       tabContents=basicsTabs,
