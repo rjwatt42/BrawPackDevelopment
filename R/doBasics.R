@@ -77,9 +77,9 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          },
          "1"={ # making samples and analysing them in Jamovi
            switch(partBS,
-                  "A"={showNow<-"Basic"},
+                  "A"={showNow<-"Effect"},
                   "B"={showNow<-"Sample"},
-                  "C"={showNow<-"Basic"}
+                  "C"={showNow<-"Effect"}
            )
          },
          "2"={ # 3 basic tests with Interval DV
@@ -90,7 +90,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                   "C"={variables$IV<-"BirthOrder"},
                   {}
            )
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "3"={ # 2 basic tests with Categorical DV
            variables$DV<-"TrialOutcome"
@@ -100,7 +100,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                   "C"={variables$IV<-"Diligence"},
                   {}
            )
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "31"={ # Revision of all basic tests with 2 variables
            DVs<-c("ExamGrade","ExamPass?","TrialOutcome","Happiness")
@@ -113,7 +113,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
 
            switch(partBS,
                   "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
-                  "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Basic"},
+                  "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Effect"},
                   {}
            )
            process<-"single"
@@ -135,7 +135,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            rIVIV2<- 0
            rIVIV2DV<-0
            analyse<-"Main12"
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "5"={ # Interactions
            variables$DV<-"ExamGrade"
@@ -154,7 +154,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            rIVIV2<- 0
            analyse<-"Main1x2"
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "6"={ # Covariation
            variables$IV<-"Anxiety"
@@ -186,7 +186,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                braw.res$result$hypothesis$DV$name==variables$DV
            )    process<-"analysis"
            else process<-"single"
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "7"={ # Experimental 1 IV
            variables$IV<-"Condition"
@@ -195,7 +195,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                   "A"={ sIV1Use<-"Between" },
                   "B"={ sIV1Use<-"Within"  }
                   )
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "8"={ # Experimental 2 IV,
            variables$IV<-"Condition"
@@ -212,7 +212,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            if (is.null(sDataFormat)) sDataFormat<-"wide"
            if (is.null(allScatter)) allScatter<-FALSE
            analyse<-"Main1x2"
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "9"={ # Moderation
            variables$IV<-"Anxiety"
@@ -233,7 +233,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                     }
            )
            analyse<-"Main1x2"
-           showNow<-"Basic"
+           showNow<-"Effect"
          },
          "10"={ # Mediation
            variables$IV<-"Anxiety"
