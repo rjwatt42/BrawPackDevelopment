@@ -32,6 +32,7 @@ brawStartHelp<-function(indent=0) {
       )
 }
 
+#' @export
 brawSimHelp<-function(open=0,indent=0) {
   return(
     generate_tab(
@@ -52,6 +53,7 @@ brawSimHelp<-function(open=0,indent=0) {
   )
 }
 
+#' @export
 brawMetaSciHelp<-function(open=0,indent=0) {
   return(
     generate_tab(
@@ -75,6 +77,7 @@ brawMetaSciHelp<-function(open=0,indent=0) {
   )
 }
 
+#' @export
 brawJamoviHelp<-function(open=0,indent=0,hypothesis=braw.def$hypothesis,design=braw.def$design) {
   return(
   generate_tab(
@@ -93,6 +96,7 @@ brawJamoviHelp<-function(open=0,indent=0,hypothesis=braw.def$hypothesis,design=b
   )
 }
 
+#' @export
 brawBasicsHelp<-function(open=c(0,0),indent=0,titleWidth=100,plainTabs=TRUE) {
   basicsTabNames<-c("Start","Data","Uncertainty","Design","Linear Models")
   basicsTabs<-c(
