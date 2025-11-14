@@ -162,8 +162,9 @@ JamoviInstructions <- function(hypothesis=braw.def$hypothesis,
            "Ordinal"=test<-"generalLinear",
            "Categorical"=test<-"generalizedLinear"
     )
-    if(hypothesis$IV$type=="Categorical") repeated1<-(design$sIV1Use=="Within")
-    if(hypothesis$IV2$type=="Categorical") repeated2<-(design$sIV2Use=="Within")
+    
+    repeated1<-(hypothesis$IV$type=="Categorical" && design$sIV1Use=="Within")
+    repeated2<-(hypothesis$IV2$type=="Categorical" && design$sIV2Use=="Within")
     switch(test,
            "generalLinear"={
              if (repeated1 || repeated1) {
