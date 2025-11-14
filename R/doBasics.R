@@ -22,7 +22,7 @@ makePanel<-function(g,r=NULL) {
 }
 
 #' @export
-doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp=TRUE,
+doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRUE,
                    showPlanOnly=FALSE,doHistory=TRUE,
                    IV="Perfectionism",IV2=NULL,DV="ExamGrade",
                    rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
@@ -39,11 +39,14 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp
   oldEvidence<-braw.def$evidence
   
   setHTML()
+  
+  if (is.null(doingBasics)) doingBasics<-"0A"
+  
   stepBS<-stepBS(doingBasics)
   partBS<-partBS(doingBasics)
   rootBS<-paste0("Step",stepBS,partBS)
-  if (singleBS(doingBasics)) process<-"single" else process<-"multiple"
-  
+    if (singleBS(doingBasics)) process<-"single" else process<-"multiple"
+
   variables=list(IV=IV,IV2=IV2,DV=DV)
   
   if (is.null(sN)) {
@@ -69,6 +72,9 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp
   hideReport<-FALSE
   makeData<-TRUE
   switch(stepBS,
+         "0"={
+           showNow<-"Plan"
+         },
          "1"={ # making samples and analysing them in Jamovi
            switch(partBS,
                   "A"={showNow<-"Basic"},
@@ -316,8 +322,18 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp
     showNow<-"Schematic"
   }      
   
+  if (showNow=="Plan") {
+    tabs<-c("Plan","Sample","Effect","Schematic")
+    tabContents<-c(
+      makePanel(showPlan()),
+      makePanel(nullPlot(),NULL),
+      makePanel(nullPlot(),NULL),
+      makePanel(nullPlot(),NULL)
+    )
+    
+  } else {
   if (hideReport) {
-    tabs<-c("Plan","Sample","Basic","Schematic")
+    tabs<-c("Plan","Sample","Effect","Schematic")
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(showMarginals(style="all"),NULL),
@@ -325,7 +341,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp
       makePanel(nullPlot(),NULL)
     )
   } else {
-    tabs<-c("Plan","Sample","Basic","Schematic")
+    tabs<-c("Plan","Sample","Effect","Schematic")
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(showMarginals(style=marginalsStyle),reportSample()),
@@ -333,6 +349,7 @@ doBasics<-function(doingBasics="Step1A",showOutput=TRUE,showJamovi=TRUE,showHelp
                 paste0(reportInference(),reportDescription(plain=TRUE))),
       schematic
     )
+  }
   }
   if (showJamovi) {
     tabs<-c(tabs,"Jamovi")

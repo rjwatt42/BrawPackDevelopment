@@ -1,27 +1,18 @@
 
 #' @export
 emptyPlot<-function(mode,useHelp=FALSE) {
-
-    switch(mode,
-           "Basics"=tabs<-c("Plan","Sample","Data","Schematic","Jamovi"),
-           "MetaScience"=tabs<-c("Plan","Data","Schematic"),
-           "Simulation"=tabs<-c("Plan","Single","Multiple","Explore")
-    )
-    switch(mode,
-           "Basics"=tabTitle<-"Basics:",
-           "MetaScience"=tabTitle<-"MetaScience:",
-           "Simulation"=tabTitle<-"Simulation:"
-    )
-  tabContents<-c(rep(nullPlot(),length(tabs)))
   
-  if (useHelp) {
-    tabs<-c(tabs,"Help")
-    switch(mode,
-           "Basics"=tabContents<-c(tabContents,brawBasicsHelp(indent=100)),
-           "MetaScience"=tabContents<-c(tabContents,brawMetaSciHelp(indent=100)),
-           "Simulation"=tabContents<-c(tabContents,brawSimHelp(indent=100))
-    )
-  }
+  if (mode=="Basics") return(doBasics(NULL,showOutput=FALSE))
+  if (mode=="MetaScience") return(doMetaScience(NULL,showOutput=FALSE))
+  
+  if (mode=="Simulation") {
+    tabTitle<-"Simulation:"
+    tabs<-c("Plan","Single","Multiple","Explore")
+    tabContents<-c(rep(nullPlot(),length(tabs)))
+    if (useHelp) {
+      tabs<-c(tabs,"Help")
+      tabContents<-c(tabContents,brawSimHelp(indent=100))
+    }
     nullResults<-generate_tab(
       title=tabTitle,
       plainTabs=TRUE,
@@ -33,6 +24,5 @@ emptyPlot<-function(mode,useHelp=FALSE) {
       open=1
     )
     return(nullResults)
-    # self$results$simGraphHTML$setContent(nullResults)
-  
+  }
 }
