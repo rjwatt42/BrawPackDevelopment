@@ -3,10 +3,13 @@
 stepBS<-function(doing) gsub('[A-Za-z]*([0-9]*)[A-Da-d]*','\\1',doing)
 
 #' @export
-partBS<-function(doing) toupper(gsub('[A-Za-z]*[0-9]*([A-Da-b]*)','\\1',doing))
+partBS<-function(doing) toupper(gsub('[A-Za-z]*[0-9]*([A-Da-d]*)','\\1',doing))
 
 #' @export
-singleBS<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
+singleBS<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([rm]*)','\\1',doing)),fixed=TRUE)
+
+#' @export
+reanalyseBS<-function(doing) grepl('r',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([rm]*)','\\1',doing)),fixed=TRUE)
 
 #' @export
 makePanel<-function(g,r=NULL) {
@@ -41,12 +44,18 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   setHTML()
   
   if (is.null(doingBasics)) doingBasics<-"0A"
-  
-  stepBS<-stepBS(doingBasics)
-  partBS<-partBS(doingBasics)
-  rootBS<-paste0("Step",stepBS,partBS)
-    if (singleBS(doingBasics)) process<-"single" else process<-"multiple"
 
+  if (reanalyseBS(doingBasics)) {
+    stepBS<-braw.res$basicsDone[1]
+    partBS<-braw.res$basicsDone[2]
+    reanalyse<-TRUE
+    process<-"analysis"
+  } else {
+    stepBS<-stepBS(doingBasics)
+    partBS<-partBS(doingBasics)
+    if (singleBS(doingBasics)) process<-"single" else process<-"multiple"
+  }  
+  rootBS<-paste0("Step",stepBS,partBS)
   variables=list(IV=IV,IV2=IV2,DV=DV)
   
   if (is.null(sN)) {
@@ -134,7 +143,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            if (is.null(rIV2)) rIV2<- -0.3
            rIVIV2<- 0
            rIVIV2DV<-0
-           analyse<-"Main12"
+           if (is.null(analyse)) analyse<-"Main12"
            showNow<-"Effect"
          },
          "5"={ # Interactions
@@ -153,7 +162,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            if (is.null(rIV2)) rIV2<- -0.3
            if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            rIVIV2<- 0
-           analyse<-"Main1x2"
+           if (is.null(analyse)) analyse<-"Main1x2"
            showNow<-"Effect"
          },
          "6"={ # Covariation
@@ -180,12 +189,6 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                     if (is.null(rIVIV2)) rIVIV2<- 0.7
                   }
            )
-           if (analyse=="Main12" && 
-               braw.res$result$hypothesis$IV$name==variables$IV &&
-               braw.res$result$hypothesis$IV2$name==variables$IV2 &&
-               braw.res$result$hypothesis$DV$name==variables$DV
-           )    process<-"analysis"
-           else process<-"single"
            showNow<-"Effect"
          },
          "7"={ # Experimental 1 IV
@@ -262,6 +265,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          }
   )
   
+  if (is.character(analyse))
   switch(analyse,
          "Main1"={analyse<-c(TRUE,FALSE,FALSE,FALSE)},
          "Main2"={analyse<-c(FALSE,TRUE,FALSE,FALSE)},
@@ -366,12 +370,12 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
 
   open<-which(showNow==tabs)
   
-  history<-braw.res$demoHistory
+  history<-braw.res$basicsHistory
   if (is.null(history)) history<-list(content='')
   if (!doHistory) history$content<-NULL
   
   linkLabel<-paste0(rootBS)
-  demoResults<-
+  basicsResults<-
     generate_tab(
       title="Basics:",
       plainTabs=TRUE,
@@ -386,19 +390,20 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
     )
   
   if (doHistory) {
-    history$content<-demoResults
+    history$content<-basicsResults
     history$place<-length(history$content)
-    setBrawRes("demoHistory",history)
+    setBrawRes("basicsHistory",history)
   }
+  setBrawRes("basicsDone",c(stepBS,partBS))
   
   setBrawDef("hypothesis",oldHypothesis)
   setBrawDef("design",oldDesign)
   setBrawDef("evidence",oldEvidence)
 
   if (showOutput) {
-    showHTML(demoResults)
+    showHTML(basicsResults)
     return(invisible(NULL))
   }
   
-  return(demoResults)
+  return(basicsResults)
 }
