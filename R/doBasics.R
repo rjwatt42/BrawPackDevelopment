@@ -40,7 +40,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   oldHypothesis<-braw.def$hypothesis
   oldDesign<-braw.def$design
   oldEvidence<-braw.def$evidence
-  setBrawRes("debug",doingBasics)
+  setBrawRes("debug",analyse)
   setHTML()
   
   if (is.null(doingBasics)) doingBasics<-"0A"
