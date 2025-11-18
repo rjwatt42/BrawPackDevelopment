@@ -11,7 +11,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
                         tabLink=NULL,tabLinkLabel='here',tabLinkStyle='button',
                         plainTabs=FALSE,indent=0,topMargin=5,
                         colours=c("#3498db","#888","#888"),fontSize="12px",
-                        plain=FALSE,width=550,height=NULL,outerHeight=NULL,open=0) {
+                        plain=FALSE,width=600,height=NULL,outerHeight=NULL,open=0) {
   if (is.null(height)) ht<-'' else ht<-paste0('height: ',height,'px;')
   if (is.null(open)) open<-0
   if (open==0) openCode<-''

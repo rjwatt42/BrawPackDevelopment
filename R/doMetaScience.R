@@ -320,7 +320,7 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
       title="MetaScience:",
       plainTabs=TRUE,
       titleWidth=100,
-      width=550,
+      width=600,
       tabs=tabs,
       tabContents=tabContents,
       tabLink=paste0('https://doingpsychstats.wordpress.com/metascience-',stepMetaSci,'#','Part',stepMetaSci,partMetaSci),
