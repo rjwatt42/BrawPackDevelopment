@@ -328,7 +328,6 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   
   if (showNow=="Plan") {
     tabs<-c("Plan","Sample","Effect","Schematic")
-    setWorld(TRUE)
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(nullPlot(),NULL),
