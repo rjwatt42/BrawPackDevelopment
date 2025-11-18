@@ -251,7 +251,8 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
   else setBrawEnv("reportCounts",FALSE)
 
     if (doingMetaScience=="0A") {
-      showPlan<-show1<-show2<-nullPlot()
+      showP<-showPlan()
+        show1<-show2<-nullPlot()
       open<- -1
     } else {
   investgD<-braw.res$investgD
@@ -296,7 +297,8 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
                 '</table>',
                 '</div>'
   )
-  showPlan<-reportWorldDesign()
+  # showP<-reportWorldDesign()
+  showP<-showPlan()
   
     }
     
@@ -308,7 +310,7 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
   if (!doHistory) history$content<-NULL
   
   tabs<-c("Plan","Data","Schematic")
-  tabContents<-c(showPlan,show1,show2)
+  tabContents<-c(showP,show1,show2)
   if (showHelp) {
     tabs<-c(tabs,"Help")
     tabContents<-c(tabContents,metaSciInstructions(stepMetaSci))
