@@ -380,7 +380,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
       title="Basics:",
       plainTabs=TRUE,
       titleWidth=100,
-      width=650,
+      width=600,
       tabs=tabs,
       tabContents=tabContents,
       tabLink=paste0('https://doingpsychstats.wordpress.com/basics-',partBS,'#','A'),
