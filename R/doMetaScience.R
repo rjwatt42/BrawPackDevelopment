@@ -252,8 +252,8 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
 
     if (doingMetaScience=="0A") {
       showP<-showPlan()
-        show1<-show2<-nullPlot()
-      open<- -1
+      show1<-show2<-nullPlot()
+      open<- 0
     } else {
   investgD<-braw.res$investgD
   investgS<-braw.res$investgS
