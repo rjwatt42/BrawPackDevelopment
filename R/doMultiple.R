@@ -220,7 +220,7 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
     ns<-10^min_ns
   } else
     ns<-nsims
-  if (braw.env$timeLimit<Inf) ns<-1
+  if (nsims>0 && braw.env$timeLimit<Inf) ns<-1
     
     setBrawRes("debug",ns)
     
