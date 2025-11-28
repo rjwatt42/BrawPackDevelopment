@@ -222,6 +222,8 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
     ns<-nsims
   if (braw.env$timeLimit<Inf) ns<-1
     
+    setBrawRes("debug",ns)
+    
   nsims<-nsims+multipleResult$count
   time.at.start<-Sys.time()
   while (multipleResult$count<nsims && (Sys.time()-time.at.start)<braw.env$timeLimit) {
