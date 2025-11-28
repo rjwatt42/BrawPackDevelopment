@@ -226,7 +226,7 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
     ns<-0
   }
     
-    setBrawRes("debug",ns)
+    setBrawRes("debug",c(nsims,ns))
     
   nsims<-nsims+multipleResult$count
   time.at.start<-Sys.time()
