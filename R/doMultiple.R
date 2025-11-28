@@ -214,7 +214,7 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
     }
   }
   
-  if (inSteps && autoShow) {
+  if (nsims>0 && inSteps && autoShow) {
     min_ns<-floor(log10(nsims/100))
     min_ns<-max(0,min_ns)
     ns<-10^min_ns
