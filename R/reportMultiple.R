@@ -28,6 +28,7 @@ reportMultiple<-function(multipleResult=braw.res$multiple,showType="Basic",
     multipleResult$result<-multipleResult$ResultHistory
     multipleResult$count<-length(multipleResult$result$rIV)
   }
+  if (multipleResult$count==0) return()
   
     reportMeans<-(reportStats=="Means")
     reportQuants<-FALSE
