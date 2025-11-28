@@ -241,7 +241,7 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
   }
 
   multipleResult<-c(list(type="multiple"),multipleResult)
-  if (multipleResult$count>0)
+  # if (multipleResult$count>0)
     setBrawRes("multiple",multipleResult)
   return(multipleResult)
 }
