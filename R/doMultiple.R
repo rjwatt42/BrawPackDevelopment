@@ -214,13 +214,17 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
     }
   }
   
+  if (nsims>0) {
   if (nsims>0 && inSteps && autoShow) {
     min_ns<-floor(log10(nsims/100))
     min_ns<-max(0,min_ns)
     ns<-10^min_ns
   } else
     ns<-nsims
-  if (nsims>0 && braw.env$timeLimit<Inf) ns<-1
+  if (braw.env$timeLimit<Inf) ns<-1
+  } else {
+    ns<-0
+  }
     
     setBrawRes("debug",ns)
     
