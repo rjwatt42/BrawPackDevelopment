@@ -349,6 +349,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
     vals<-seq(-1,1,length=braw.env$worldNPoints)*braw.env$r_range
 
   # distribution of population effect sizes
+  if (is.numeric(world)) world<-makeWorld(TRUE,"Single","r",PDFk=world)
   if (!is.null(world$On)) pR<-getRList(world,HQ=HQ)
   else pR<-world
   rvals<-pR$pRho

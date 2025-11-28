@@ -2,7 +2,7 @@ theoryPlot<-function(g,theory,orientation,baseColour,theoryAlpha,xoff,lineOnly=F
   theoryVals<-theory$theoryVals
   theoryDens_all<-theory$theoryDens_all
   theoryDens_sig<-theory$theoryDens_sig
-  showAll<-all(theoryDens_all==theoryDens_sig)
+  showAll<-!isempty(theoryDens_sig) && all(theoryDens_all==theoryDens_sig)
   if (showAll) theoryDens_all<-theoryDens_all*0
   
   switch(orientation,
@@ -256,8 +256,9 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
          },
          "ws"={
            dw<-0.01
-           theoryVals<-seq(braw.env$alphaSig*(1+dw),1/(1+dw),length.out=npt)
+           theoryVals<-seq(braw.env$alphaSig*(1+dw),1/(1+dw),length.out=npt*5)
            theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"ws",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_sig<-theoryDens_all*(theoryVals>=0.5)
          },
          "log(lrs)"={
            theoryVals<-seq(0,braw.env$lrRange,length.out=npt)
@@ -1431,6 +1432,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
   } 
 
   if (doingMetaAnalysis) { theoryAlpha<-0.5} else {theoryAlpha<-0.8}
+  if (is.null(sampleVals)) theoryAlpha<-1
   
   for (i in 1:length(xoff)){
     histGain<-NA
@@ -1600,10 +1602,11 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
       )
     }
     if (showTheory) {
+      if (theoryAlpha<1) theoryAlpha<-theoryAlpha/2
     if (!theoryFirst)
-      g<-theoryPlot(g,theory,orientation,baseColour,theoryAlpha/2,xoff[i])
+      g<-theoryPlot(g,theory,orientation,baseColour,theoryAlpha,xoff[i])
     else
-      g<-theoryPlot(g,theory,orientation,baseColour,theoryAlpha/2,xoff[i],lineOnly=TRUE)
+      g<-theoryPlot(g,theory,orientation,baseColour,theoryAlpha,xoff[i],lineOnly=TRUE)
     }
     
     if (is.element(showType,c("rse","sig","ns","nonnulls","nulls","rss","p","e1r","e2r","e1+","e2+","e1-","e2-",

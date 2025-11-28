@@ -99,7 +99,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
   }
   
   script<-paste0(
-  '<script>',
+  # '<script>',
     # 'function openTab(evt, tabName) {',
     # '  var tabState;',
     # '  if (tabName!="tabtitle") {',
@@ -150,7 +150,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     # '    open(linkName);',
     # '}',
     # openCode,
-  '</script>'
+  # '</script>'
   )
   
   style<-paste0(
