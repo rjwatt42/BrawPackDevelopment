@@ -165,7 +165,8 @@ resetMultiple<-function(nsims=0,evidence,multipleResult=NULL){
 #' @export
 doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,
                          doingNull=FALSE,inSteps=FALSE,autoShow=braw.env$autoShow,showType="Basic",onlyReplication=FALSE) {
-
+  setBrawRes("debug",c(braw.res$debug,nsims))
+  
   if (length(multipleResult)==1 && is.na(multipleResult)) {
       if (identical(hypothesis,braw.res$multiple$hypothesis) &&
           identical(design,braw.res$multiple$design) &&
@@ -215,7 +216,7 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
   }
   
   if (nsims>0) {
-  if (nsims>0 && inSteps && autoShow) {
+  if (inSteps && autoShow) {
     min_ns<-floor(log10(nsims/100))
     min_ns<-max(0,min_ns)
     ns<-10^min_ns
@@ -226,7 +227,7 @@ doMultiple <- function(nsims=10,multipleResult=NA,hypothesis=braw.def$hypothesis
     ns<-0
   }
     
-    setBrawRes("debug",c(nsims,ns))
+    setBrawRes("debug",c(braw.res$debug,nsims,ns))
     
   nsims<-nsims+multipleResult$count
   time.at.start<-Sys.time()
