@@ -93,8 +93,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          "2"={ # 3 basic tests with Interval DV
            variables$DV<-"ExamGrade"
            switch(partBS,
-                  "A"={variables$IV<-"Smoker?"},
-                  "B"={variables$IV<-"Perfectionism"},
+                  "A"={variables$IV<-"Perfectionism"},
+                  "B"={variables$IV<-"Smoker?"},
                   "C"={variables$IV<-"BirthOrder"},
                   {}
            )
