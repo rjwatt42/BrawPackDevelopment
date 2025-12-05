@@ -25,12 +25,12 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
   hypothesisType=paste(IV$type,DV$type,sep=" ")
 
   dotSize<-braw.env$dotSize
-  if (length(x)>100) {
+  print(dotSize)
+  if (length(x)>10) {
     dotSize<-max(dotSize*sqrt(100/length(x)),2)
   }
   # dotSize<-dotSize/2
   col<-darken(col,off=0.2)
-  
   switch (hypothesisType,
           "Interval Interval"={
             pts<-data.frame(x=x,y=y)
@@ -92,9 +92,9 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
             full_y<-c()
             full_f<-c()
             full_c<-c()
-            if (braw.env$onesided) i2<-2:1
-            else i2=1:2
-            for (i2 in i2){
+            if (braw.env$onesided) i2use<-2:1
+            else i2use=1:2
+            for (i2 in i2use){
               xv<-c()
               yv<-c()
               dens1<-hist(analysis$iv[analysis$dv==DV$cases[i2]],breaks=bin_breaks,freq=TRUE,plot=FALSE,warn.unused = FALSE)
@@ -111,10 +111,10 @@ plotPoints<-function(g,IV,DV,analysis,colindex=1,maxoff=1){
               full_x<-c(full_x,xv)
               full_y<-c(full_y,yv)
               full_f<-c(full_f,rep(i2,length(xv)))
+              col<-braw.env$plotColours$descriptionC
               if (i2==1) col<-darken(col,0.25,off=0.75)
               full_c<-c(full_c,rep(col,length(xv)))
             }
-
             pts<-data.frame(x=full_x+xoff,y=full_y)
             if (showRawData) {
               if (colindex>=2) {
