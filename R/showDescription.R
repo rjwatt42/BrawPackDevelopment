@@ -345,9 +345,6 @@ plotParInterDescription<-function(analysis,g=NULL){
 
 plotParDescription<-function(analysis,dataOnly=FALSE,g) {
   
-  analysis$hypothesis$IV$vals<-analysis$iv
-  analysis$hypothesis$DV$vals<-analysis$dv
-  
   g<-plotPoints(g,analysis$hypothesis$IV,analysis$hypothesis$DV,analysis,1)
   if (!dataOnly)
   g<-plotPrediction(analysis$hypothesis$IV,analysis$hypothesis$IV2,analysis$hypothesis$DV,analysis,analysis$design,evidence=analysis$evidence,offset=1,g=g)
@@ -388,6 +385,8 @@ showDescription<-function(analysis=braw.res$result,plotArea=c(0,0,1,1),dataOnly=
   if (!is.null(analysis$hypothesis$IV2)) setBrawEnv("newSampleDisplay",FALSE)
   if (analysis$hypothesis$DV$type=="Categorical") setBrawEnv("newSampleDisplay",FALSE)
   
+  analysis$hypothesis$IV$vals<-analysis$iv
+  analysis$hypothesis$DV$vals<-analysis$dv
   if (braw.env$newSampleDisplay && braw.env$allScatter) {
     g<-NULL
     if (analysis$design$Replication$On && !is.null(analysis$ResultHistory$original)) 
