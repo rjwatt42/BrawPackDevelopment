@@ -168,9 +168,9 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          "2"={ # 3 basic tests with Interval DV
            variables$DV<-randomParDV()
            switch(partBS,
-                  "A"={variables$IV<-randomParIV(variables$DV)},
-                  "B"={variables$IV<-randomCat2IV(variables$DV)},
-                  "C"={variables$IV<-randomCat3IV(variables$DV)},
+                  "A"={variables$IV<-randomParIV(variables$DV$name)},
+                  "B"={variables$IV<-randomCat2IV(variables$DV$name)},
+                  "C"={variables$IV<-randomCat3IV(variables$DV$name)},
                   {}
            )
            showNow<-"Effect"
@@ -178,9 +178,9 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          "3"={ # 2 basic tests with Categorical DV
            variables$DV<-randomCatDV()
            switch(partBS,
-                  "A"={variables$IV<-randomCat2IV(variables$DV)},
-                  "B"={variables$IV<-randomOrdIV(variables$DV)},
-                  "C"={variables$IV<-randomParIV(variables$DV)},
+                  "A"={variables$IV<-randomCat2IV(variables$DV$name)},
+                  "B"={variables$IV<-randomOrdIV(variables$DV$name)},
+                  "C"={variables$IV<-randomParIV(variables$DV$name)},
                   {}
            )
            showNow<-"Effect"
@@ -189,16 +189,16 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            if (runif(1)<0.5) {
              variables$DV<-randomParDV()
              switch(ceiling(runif(1)*3),
-                    {variables$IV<-randomParIV(variables$DV)},
-                    {variables$IV<-randomCat2IV(variables$DV)},
-                    {variables$IV<-randomCat3IV(variables$DV)}
+                    {variables$IV<-randomParIV(variables$DV$name)},
+                    {variables$IV<-randomCat2IV(variables$DV$name)},
+                    {variables$IV<-randomCat3IV(variables$DV$name)}
              )
            } else {
              variables$DV<-randomCatDV()
              switch(ceiling(runif(1)*3),
-                    {variables$IV<-randomParIV(variables$DV)},
-                    {variables$IV<-randomOrdIV(variables$DV)},
-                    {variables$IV<-randomCat2IV(variables$DV)}
+                    {variables$IV<-randomParIV(variables$DV$name)},
+                    {variables$IV<-randomOrdIV(variables$DV$name)},
+                    {variables$IV<-randomCat2IV(variables$DV$name)}
              )
            }
 
