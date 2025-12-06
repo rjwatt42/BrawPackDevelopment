@@ -15,7 +15,7 @@ reanalyseBS<-function(doing) grepl('r',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([R
 randomParDV<-function() {
   all<-c("Happiness","ExamGrade","ReactionTime","RiskTaking"
   )
-  use<-celing(runif(1)*length(all))
+  use<-ceiling(runif(1)*length(all))
   return(getVariable(all[use]))
 }
 
@@ -23,7 +23,7 @@ randomParDV<-function() {
 randomCatDV<-function() {
   all<-c("TrialOutcome","ExamPass?","RiskTaker?"
   )
-  use<-celing(runif(1)*length(all))
+  use<-ceiling(runif(1)*length(all))
   return(getVariable(all[use]))
 }
 
@@ -39,7 +39,7 @@ randomParIV<-function(DV="DV") {
          "ExamPass?"={all<-c("Perfectionism","Diligence","Anxiety")},
          "RiskTaker?"={all<-c("SelfConfidence","Perfectionism")}
   )
-  use<-celing(runif(1)*length(all))
+  use<-ceiling(runif(1)*length(all))
   return(getVariable(all[use]))
 }
 
@@ -52,7 +52,7 @@ randomOrdIV<-function(DV="DV") {
          "ExamPass?"={all<-c("SelfConfidenceOrd","PerfectionismOrd")},
          "RiskTaker?"={all<-c("SelfConfidenceOrd","PerfectionismOrd")}
   )
-  use<-celing(runif(1)*length(all))
+  use<-ceiling(runif(1)*length(all))
   return(getVariable(all[use]))
 }
 
@@ -67,7 +67,7 @@ randomCat2IV<-function(DV="DV") {
          "TrialOutcome"={all<-c("Treatment?","TrialPhase")},
          "ExamPass?"={all<-c("NeuroType","Coffee?","RiskTaker?")}
   )
-  use<-celing(runif(1)*length(all))
+  use<-ceiling(runif(1)*length(all))
   return(getVariable(all[use]))
 }
 
@@ -82,7 +82,7 @@ randomCat3IV<-function(DV="DV") {
          "TrialOutcome"={all<-c("Treatment3","TrialPhase3")},
          "ExamPass?"={all<-c("Diagnosis","BirthOrder")}
   )
-  use<-celing(runif(1)*length(all))
+  use<-ceiling(runif(1)*length(all))
   return(getVariable(all[use]))
 }
 
