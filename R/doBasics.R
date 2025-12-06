@@ -12,6 +12,81 @@ singleBS<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([RMr
 reanalyseBS<-function(doing) grepl('r',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([RMrm]*)','\\1',doing)),fixed=TRUE)
 
 #' @export
+randomParDV<-function() {
+  all<-c("Happiness","ExamGrade","ReactionTime","RiskTaking"
+  )
+  use<-celing(runif(1)*length(all))
+  return(getVariable(all[use]))
+}
+
+#' @export
+randomCatDV<-function() {
+  all<-c("TrialOutcome","ExamPass?","RiskTaker?"
+  )
+  use<-celing(runif(1)*length(all))
+  return(getVariable(all[use]))
+}
+
+#' @export
+randomParIV<-function(DV="DV") {
+  switch(DV,
+         "DV"={all<-c("IV")},
+         "Happiness"={all<-c("Perfectionism","Diligence","Anxiety")},
+         "ExamGrade"={all<-c("HoursSleep","SelfConfidence","Perfectionism","Diligence","IQ")},
+         "RiskTaking"={all<-c("SelfConfidence","Perfectionism")},
+         "ReactionTime"={all<-c("SelfConfidence","Perfectionism","InformationLevel")},
+         "TrialOutcome"={all<-c("SelfConfidence","Perfectionism","InformationLevel")},
+         "ExamPass?"={all<-c("Perfectionism","Diligence","Anxiety")},
+         "RiskTaker?"={all<-c("SelfConfidence","Perfectionism")}
+  )
+  use<-celing(runif(1)*length(all))
+  return(getVariable(all[use]))
+}
+
+#' @export
+randomOrdIV<-function(DV="DV") {
+  # only for Categorical DV
+  switch(DV,
+         "DV"={all<-c("IVOrd")},
+         "TrialOutcome"={all<-c("Sessions","PracticeTrials")},
+         "ExamPass?"={all<-c("SelfConfidenceOrd","PerfectionismOrd")},
+         "RiskTaker?"={all<-c("SelfConfidenceOrd","PerfectionismOrd")}
+  )
+  use<-celing(runif(1)*length(all))
+  return(getVariable(all[use]))
+}
+
+#' @export
+randomCat2IV<-function(DV="DV") {
+  switch(DV,
+         "DV"={all<-c("IVCat")},
+         "Happiness"={all<-c("NeuroType","Gender")},
+         "ExamGrade"={all<-c("NeuroType","Coffee?","RiskTaker?")},
+         "RiskTaking"={all<-c("NeuroType","Gender")},
+         "ReactionTime"={all<-c("Condition","Group")},
+         "TrialOutcome"={all<-c("Treatment?","TrialPhase")},
+         "ExamPass?"={all<-c("NeuroType","Coffee?","RiskTaker?")}
+  )
+  use<-celing(runif(1)*length(all))
+  return(getVariable(all[use]))
+}
+
+#' @export
+randomCat3IV<-function(DV="DV") {
+  switch(DV,
+         "DV"={all<-c("IV3Cat")},
+         "Happiness"={all<-c("Diagnosis","BirthOrder","StudySubject")},
+         "ExamGrade"={all<-c("Diagnosis","BirthOrder?")},
+         "RiskTaking"={all<-c("Diagnosis","BirthOrder")},
+         "ReactionTime"={all<-c("Condition","Group3","MemoryCondition")},
+         "TrialOutcome"={all<-c("Treatment3","TrialPhase3")},
+         "ExamPass?"={all<-c("Diagnosis","BirthOrder")}
+  )
+  use<-celing(runif(1)*length(all))
+  return(getVariable(all[use]))
+}
+
+#' @export
 makePanel<-function(g,r=NULL) {
   paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:10px;">',
                 '<table>',
@@ -91,33 +166,41 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            )
          },
          "2"={ # 3 basic tests with Interval DV
-           variables$DV<-"ExamGrade"
+           variables$DV<-randomParDV()
            switch(partBS,
-                  "A"={variables$IV<-"Perfectionism"},
-                  "B"={variables$IV<-"Smoker?"},
-                  "C"={variables$IV<-"BirthOrder"},
+                  "A"={variables$IV<-randomParIV(variables$DV)},
+                  "B"={variables$IV<-randomCat2IV(variables$DV)},
+                  "C"={variables$IV<-randomCat3IV(variables$DV)},
                   {}
            )
            showNow<-"Effect"
          },
          "3"={ # 2 basic tests with Categorical DV
-           variables$DV<-"TrialOutcome"
+           variables$DV<-randomCatDV()
            switch(partBS,
-                  "A"={variables$IV<-"Treatment?"},
-                  "B"={variables$IV<-"Sessions"},
-                  "C"={variables$IV<-"Diligence"},
+                  "A"={variables$IV<-randomCat2IV(variables$DV)},
+                  "B"={variables$IV<-randomOrdIV(variables$DV)},
+                  "C"={variables$IV<-randomParIV(variables$DV)},
                   {}
            )
            showNow<-"Effect"
          },
          "31"={ # Revision of all basic tests with 2 variables
-           DVs<-c("ExamGrade","ExamPass?","TrialOutcome","Happiness")
-           variables$DV<-DVs[ceiling(runif(1)*length(DVs))]
-           
-           if (is.element(variables$DV,c("ExamGrade","ExamPass?")))
-                 IVs<-c("Perfectionism","Musician?","RiskTaking","RiskTaker?")
-           else  IVs<-c("Sessions","Treatment?","Smoker?","Diligence")
-           variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
+           if (runif(1)<0.5) {
+             variables$DV<-randomParDV()
+             switch(ceiling(runif(1)*3),
+                    {variables$IV<-randomParIV(variables$DV)},
+                    {variables$IV<-randomCat2IV(variables$DV)},
+                    {variables$IV<-randomCat3IV(variables$DV)}
+             )
+           } else {
+             variables$DV<-randomCatDV()
+             switch(ceiling(runif(1)*3),
+                    {variables$IV<-randomParIV(variables$DV)},
+                    {variables$IV<-randomOrdIV(variables$DV)},
+                    {variables$IV<-randomCat2IV(variables$DV)}
+             )
+           }
 
            switch(partBS,
                   "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
