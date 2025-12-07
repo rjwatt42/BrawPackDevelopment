@@ -12,6 +12,31 @@ singleBS<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([RMr
 reanalyseBS<-function(doing) grepl('r',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-d]*([RMrm]*)','\\1',doing)),fixed=TRUE)
 
 #' @export
+randomDV<-function() {
+  if (runif(1)<0.5)   DV<-randomParDV()
+  else                DV<-randomCatDV()
+  return(DV)
+}
+
+#' @export
+randomIV<-function(DV="DV") {
+  if (DV$type=="Interval") {
+    switch(ceiling(runif(1)*3),
+           {IV<-randomParIV(DV)},
+           {IV<-randomCat2IV(DV)},
+           {IV<-randomCat3IV(DV)}
+    )
+  } else {
+      switch(ceiling(runif(1)*3),
+             {IV<-randomParIV(DV)},
+             {IV<-randomOrdIV(DV)},
+             {IV<-randomCat2IV(DV)}
+      )
+  }
+  return(IV)
+}
+
+#' @export
 randomParDV<-function() {
   all<-c("Happiness","ExamGrade","ReactionTime","RiskTaking"
   )
@@ -29,7 +54,7 @@ randomCatDV<-function() {
 
 #' @export
 randomParIV<-function(DV="DV") {
-  switch(DV,
+  switch(DV$name,
          "DV"={all<-c("IV")},
          "Happiness"={all<-c("Perfectionism","Diligence","Anxiety")},
          "ExamGrade"={all<-c("HoursSleep","SelfConfidence","Perfectionism","Diligence","IQ")},
@@ -46,7 +71,7 @@ randomParIV<-function(DV="DV") {
 #' @export
 randomOrdIV<-function(DV="DV") {
   # only for Categorical DV
-  switch(DV,
+  switch(DV$name,
          "DV"={all<-c("IVOrd")},
          "TrialOutcome"={all<-c("Sessions","PracticeTrials")},
          "ExamPass?"={all<-c("SelfConfidenceOrd","PerfectionismOrd")},
@@ -58,7 +83,7 @@ randomOrdIV<-function(DV="DV") {
 
 #' @export
 randomCat2IV<-function(DV="DV") {
-  switch(DV,
+  switch(DV$name,
          "DV"={all<-c("IVCat")},
          "Happiness"={all<-c("NeuroType","Gender")},
          "ExamGrade"={all<-c("NeuroType","Coffee?","RiskTaker?")},
@@ -73,7 +98,7 @@ randomCat2IV<-function(DV="DV") {
 
 #' @export
 randomCat3IV<-function(DV="DV") {
-  switch(DV,
+  switch(DV$name,
          "DV"={all<-c("IV3Cat")},
          "Happiness"={all<-c("Diagnosis","BirthOrder","StudySubject")},
          "ExamGrade"={all<-c("Diagnosis","BirthOrder?")},
@@ -168,9 +193,9 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          "2"={ # 3 basic tests with Interval DV
            variables$DV<-randomParDV()
            switch(partBS,
-                  "A"={variables$IV<-randomParIV(variables$DV$name)},
-                  "B"={variables$IV<-randomCat2IV(variables$DV$name)},
-                  "C"={variables$IV<-randomCat3IV(variables$DV$name)},
+                  "A"={variables$IV<-randomParIV(variables$DV)},
+                  "B"={variables$IV<-randomCat2IV(variables$DV)},
+                  "C"={variables$IV<-randomCat3IV(variables$DV)},
                   {}
            )
            showNow<-"Effect"
@@ -178,29 +203,16 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          "3"={ # 2 basic tests with Categorical DV
            variables$DV<-randomCatDV()
            switch(partBS,
-                  "A"={variables$IV<-randomCat2IV(variables$DV$name)},
-                  "B"={variables$IV<-randomOrdIV(variables$DV$name)},
-                  "C"={variables$IV<-randomParIV(variables$DV$name)},
+                  "A"={variables$IV<-randomCat2IV(variables$DV)},
+                  "B"={variables$IV<-randomOrdIV(variables$DV)},
+                  "C"={variables$IV<-randomParIV(variables$DV)},
                   {}
            )
            showNow<-"Effect"
          },
          "31"={ # Revision of all basic tests with 2 variables
-           if (runif(1)<0.5) {
-             variables$DV<-randomParDV()
-             switch(ceiling(runif(1)*3),
-                    {variables$IV<-randomParIV(variables$DV$name)},
-                    {variables$IV<-randomCat2IV(variables$DV$name)},
-                    {variables$IV<-randomCat3IV(variables$DV$name)}
-             )
-           } else {
-             variables$DV<-randomCatDV()
-             switch(ceiling(runif(1)*3),
-                    {variables$IV<-randomParIV(variables$DV$name)},
-                    {variables$IV<-randomOrdIV(variables$DV$name)},
-                    {variables$IV<-randomCat2IV(variables$DV$name)}
-             )
-           }
+           variables$DV<-randomDV()
+           variables$IV<-randomIV(variables$DV)
 
            switch(partBS,
                   "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
