@@ -393,7 +393,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   if(!is.null(allScatter)) setBrawEnv("allScatter",allScatter)
   if(!is.null(fullWithinNames)) setBrawEnv("fullWithinNames",fullWithinNames)
   # display the results
-  svgBox(height=350,aspect=1.5,fontScale=1.2)
+  svgBox(height=350,aspect=1.5)
   setBrawEnv("graphicsType","HTML")
   # setBrawEnv("fontSize",0.75)
 
