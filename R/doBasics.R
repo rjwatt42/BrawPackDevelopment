@@ -137,6 +137,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                    nreps=200
 ) {
   
+  if (is.logical(analyse) && length(analyse)<4) analyse<-c(analyse,rep(FALSE,4-length(analyse)))
+  
   oldHypothesis<-braw.def$hypothesis
   oldDesign<-braw.def$design
   oldEvidence<-braw.def$evidence
