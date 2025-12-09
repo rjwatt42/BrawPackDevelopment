@@ -258,6 +258,10 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            rIVIV2<- 0
            if (is.null(analyse)) analyse<-"Main1x2"
+           if (length(analyse)>1) {
+             if (analyse[3]) analyse<-"Main1x2"
+             else analyse<-"Main12"
+           }
            showNow<-"Effect"
            if (analyse=="Main1x2") whichEffect<-"Main1x2"
            else whichEffect<-"Main1"
@@ -286,6 +290,10 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                     if (is.null(rIVIV2)) rIVIV2<- 0.7
                   }
            )
+           if (length(analyse)>1) {
+             if (analyse[2]) analyse<-"Main12"
+             else analyse<-"Main1"
+           }
            showNow<-"Effect"
            whichEffect<-"Main1+2"
          },
