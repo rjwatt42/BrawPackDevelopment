@@ -179,6 +179,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   marginalsStyle<-"all"
   hideReport<-FALSE
   makeData<-TRUE
+  whichEffect="Main1"
   switch(stepBS,
          "0"={
            showNow<-"Plan"
@@ -258,6 +259,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
            rIVIV2<- 0
            if (is.null(analyse)) analyse<-"Main1x2"
            showNow<-"Effect"
+           if (analyse=="Main1x2") whichEffect<-"Main1x2"
+           else whichEffect<-"Main1"
          },
          "6"={ # Covariation
            variables$IV<-"Anxiety"
@@ -284,6 +287,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
                   }
            )
            showNow<-"Effect"
+           whichEffect<-"Main1+2"
          },
          "7"={ # Experimental 1 IV
            variables$IV<-"Condition"
@@ -444,7 +448,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(showMarginals(style=marginalsStyle),reportSample()),
-      makePanel(showDescription(),
+      makePanel(showDescription(whichEffect=whichEffect),
                 paste0(reportInference(),reportDescription(plain=TRUE))),
       schematic
     )
