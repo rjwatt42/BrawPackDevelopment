@@ -138,6 +138,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
 ) {
   
   if (is.logical(analyse) && length(analyse)<4) analyse<-c(analyse,rep(FALSE,4-length(analyse)))
+  if (is.logical(sOutliers) && sOutliers) sOutliers<-0.1
+  if (is.logical(sDependence) && sDependence) sDependence<-0.25
   
   oldHypothesis<-braw.def$hypothesis
   oldDesign<-braw.def$design
