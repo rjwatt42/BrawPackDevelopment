@@ -197,6 +197,7 @@ makeDefaultVariables<-function() {
     RiskTaking=makeVariable(name="RiskTaking",type="Interval",mu=30,sd=6,skew=0.5),
     Interesting=makeVariable(name="Interesting",type="Interval",mu=10,sd=2),
     NeuroType=makeVariable(name="NeuroType",type="Categorical",ncats=2,cases="NT,ND",proportions="2,1"),
+    Gender=makeVariable(name="Gender",type="Categorical",ncats=2,cases="F,M",proportions="1,1"),
     
     SelfConfidenceOrd=makeVariable(name="SelfConfidenceRating",'Ordinal',nlevs=6),
     PerfectionismOrd=makeVariable(name="PerfectionismRating",'Ordinal',nlevs=6),
