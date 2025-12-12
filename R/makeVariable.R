@@ -212,6 +212,7 @@ makeDefaultVariables<-function() {
     TrialPhase3=makeVariable(name="TrialPhase",type="Categorical",ncats=3,cases="before,during,after",proportions="1.2,1.1,1"),
     
     Condition=makeVariable(name="Condition",type="Categorical",ncats=2,cases="1,2",proportions="1,1"),
+    Condition3=makeVariable(name="Condition",type="Categorical",ncats=3,cases="A,B,C",proportions="1,1,1"),
     MemoryCondition=makeVariable(name="Prompt",type="Categorical",ncats=3,cases="none,implicit,explicit",proportions="1,1,1"),
     Group=makeVariable(name="Group",type="Categorical",ncats=2,cases="group1,group2",proportions="1,1"),
     Group3=makeVariable(name="Group",type="Categorical",ncats=3,cases="group1,group2,grop3",proportions="1,1,1"),

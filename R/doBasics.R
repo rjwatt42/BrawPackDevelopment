@@ -103,7 +103,7 @@ randomCat3IV<-function(DV="DV") {
          "Happiness"={all<-c("Diagnosis","BirthOrder","StudySubject")},
          "ExamGrade"={all<-c("Diagnosis","BirthOrder?")},
          "RiskTaking"={all<-c("Diagnosis","BirthOrder")},
-         "ReactionTime"={all<-c("Condition","Group3","MemoryCondition")},
+         "ReactionTime"={all<-c("Condition3","Group3","MemoryCondition")},
          "TrialOutcome"={all<-c("Treatment3","TrialPhase3")},
          "ExamPass?"={all<-c("Diagnosis","BirthOrder")}
   )
