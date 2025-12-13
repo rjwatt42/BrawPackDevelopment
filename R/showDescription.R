@@ -379,6 +379,7 @@ plotCatDescription<-function(analysis,dataOnly=FALSE,g) {
 #' @export
 showDescription<-function(analysis=braw.res$result,whichEffect=NULL,
                           plotArea=c(0,0,1,1),dataOnly=FALSE,g=NULL) {
+  
   if(is.null(analysis)) analysis<-doAnalysis(autoShow=FALSE)
   
   braw.env$plotArea<-plotArea
