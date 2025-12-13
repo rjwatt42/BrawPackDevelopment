@@ -101,7 +101,7 @@ randomCat3IV<-function(DV="DV") {
   switch(DV$name,
          "DV"={all<-c("IV3Cat")},
          "Happiness"={all<-c("Diagnosis","BirthOrder","StudySubject")},
-         "ExamGrade"={all<-c("Diagnosis","BirthOrder?")},
+         "ExamGrade"={all<-c("Diagnosis","BirthOrder")},
          "RiskTaking"={all<-c("Diagnosis","BirthOrder")},
          "ReactionTime"={all<-c("Condition3","Group3","MemoryCondition")},
          "TrialOutcome"={all<-c("Treatment3","TrialPhase3")},
