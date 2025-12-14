@@ -655,6 +655,10 @@ doSample<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,autoSho
                dv<-discreteVals(dvr,DV$ncats,DV$proportions,"discrete",DV$cases)
              }
       )
+      
+      if (IV$type=="Interval" && IV$asInteger) iv<-round(iv)
+      if (!is.null(IV2) && IV2$type=="Interval" && IV2$asInteger) iv2<-round(iv2)
+      if (DV$type=="Interval" && DV$asInteger) dv<-round(dv)
       braw.env$lastSample<-list(participant=id, iv=iv, iv2=iv2, dv=dv)
       
     }
