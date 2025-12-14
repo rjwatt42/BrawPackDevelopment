@@ -482,8 +482,10 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   open<-which(showNow==tabs)
   
   history<-braw.res$basicsHistory
-  if (is.null(history)) history<-list(content='')
-  if (!doHistory) history$content<-NULL
+  if (is.null(history)) {
+    if (doHistory) history<-list(content='',place=1)
+    else history<-list(content=NULL,sequence=c(),place=1)
+  }
   
   linkLabel<-paste0(rootBS)
   basicsResults<-
@@ -505,7 +507,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
     history$place<-length(history$content)
   } else {
     history$sequence<-c(history$sequence,basicsResults)
-    history$display<-length(history$sequence)
+    history$place<-length(history$sequence)
   }
   setBrawRes("basicsHistory",history)
   setBrawRes("basicsDone",c(stepBS,partBS))
