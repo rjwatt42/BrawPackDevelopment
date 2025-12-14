@@ -506,7 +506,6 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   } else {
     history$sequence<-c(history$sequence,basicsResults)
     history$display<-length(history$sequence)
-    setBrawRes("debug",history$display)
   }
   setBrawRes("basicsHistory",history)
   setBrawRes("basicsDone",c(stepBS,partBS))
