@@ -503,8 +503,12 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
   if (doHistory) {
     history$content<-basicsResults
     history$place<-length(history$content)
-    setBrawRes("basicsHistory",history)
+  } else {
+    history$sequence<-c(history$sequence,basicsResults)
+    history$display<-length(history$sequence)
+    setBrawRes("debug",history$display)
   }
+  setBrawRes("basicsHistory",history)
   setBrawRes("basicsDone",c(stepBS,partBS))
   
   setBrawDef("hypothesis",oldHypothesis)
