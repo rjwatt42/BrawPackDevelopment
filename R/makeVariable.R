@@ -73,7 +73,7 @@ r2OrdProportions<-function(rho,ng) {
 #'              )
 #' @export
 makeVariable<-function(name,type="Interval",
-                       mu=0,sd=1,skew=0,kurtosis=0,asInteger=FALSE,
+                       mu=0,sd=1,skew=0,kurtosis=0,noDigits=NA,
                        nlevs=7,iqr=3,median=NULL,ordSource="discrete",ordProportions=NA,
                        ncats=2,cases=c("C1","C2"),proportions=c(1,1),catSource="discrete",
                        deploy="Between",targetDeploys="",process="sim"){
@@ -81,7 +81,7 @@ makeVariable<-function(name,type="Interval",
   if (is.null(median)) median<-((1+nlevs)/2)
   
   var<-list(name=name,type=type,
-            mu=mu,sd=sd,skew=skew,kurtosis=kurtosis,asInteger=asInteger,
+            mu=mu,sd=sd,skew=skew,kurtosis=kurtosis,noDigits=noDigits,
             nlevs=nlevs,iqr=iqr,median=median,ordSource=ordSource,ordProportions=ordProportions,
             ncats=ncats,cases=cases,proportions=proportions,catSource=catSource,
             deploy=deploy,targetDeploys=targetDeploys,
@@ -191,7 +191,7 @@ makeDefaultVariables<-function() {
     Happiness=makeVariable(name="Happiness",type="Interval",mu=50,sd=12),
     SelfConfidence=makeVariable(name="SelfConfidence",type="Interval",mu=50,sd=12),
     HoursSleep=makeVariable(name="HoursSleep",type="Interval",mu=7,sd=1,skew=-0.7),
-    ExamGrade=makeVariable(name="ExamGrade",type="Interval",mu=65,sd=10,skew=-0.6,asInteger=TRUE),
+    ExamGrade=makeVariable(name="ExamGrade",type="Interval",mu=65,sd=10,skew=-0.6,noDigits=0),
     ExamPass=makeVariable(name="ExamPass?",type="Categorical",ncats=2,cases="no,yes",proportions="1,3"),
     "ExamPass?"=makeVariable(name="ExamPass?",type="Categorical",ncats=2,cases="no,yes",proportions="1,3"),
     RiskTaking=makeVariable(name="RiskTaking",type="Interval",mu=30,sd=6,skew=0.5),

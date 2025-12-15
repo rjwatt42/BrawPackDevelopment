@@ -656,9 +656,9 @@ doSample<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,autoSho
              }
       )
       
-      if (IV$type=="Interval" && IV$asInteger) iv<-round(iv)
-      if (!is.null(IV2) && IV2$type=="Interval" && IV2$asInteger) iv2<-round(iv2)
-      if (DV$type=="Interval" && DV$asInteger) dv<-round(dv)
+      if (IV$type=="Interval" && !is.na(IV$noDigits)) iv<-round(iv,IV$noDigits)
+      if (!is.null(IV2) && IV2$type=="Interval" && !is.na(IV2$noDigits)) iv2<-round(iv2,IV2$noDigits)
+      if (DV$type=="Interval" && !is.na(DV$noDigits)) dv<-round(dv,DV$noDigits)
       braw.env$lastSample<-list(participant=id, iv=iv, iv2=iv2, dv=dv)
       
     }
