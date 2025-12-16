@@ -167,7 +167,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
     if (paste0(stepBS)=="3") sN<-100
     if (paste0(stepBS)=="31") sN<-100
     if (paste0(stepBS)=="4") sN<-100
-    if (paste0(stepBS)=="5") sN<-150
+    if (paste0(stepBS)=="5") sN<-450
     if (paste0(stepBS)=="6") sN<-150
     if (paste0(stepBS)=="7") sN<-35
     if (paste0(stepBS)=="8") sN<-50
@@ -247,19 +247,13 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRU
          },
          "5"={ # Interactions
            variables$DV<-"ExamGrade"
+           variables$IV<-"Coffee?";variables$IV2<-"Musician?"
+           if (is.null(rIVIV2DV)) rIVIV2DV<-0.5
            switch(partBS,
-                  "A"={variables$IV<-"Coffee?";variables$IV2<-"Musician?"},
-                  "B"={variables$IV<-"Anxiety";variables$IV2<-"Smoker?"},
-                  "C"={variables$IV<-"Perfectionism";variables$IV2<-"HoursSleep"},
-                  "D"={
-                    IVs<-c("IQ","Musician?","Anxiety","RiskTaker?","SelfConfidence","Diligence","Coffee?")
-                    variables$IV<-IVs[ceiling(runif(1)*length(IVs))]
-                    IVs<-IVs[IVs!=variables$IV]
-                    variables$IV2<-IVs[ceiling(runif(1)*length(IVs))]
-                  }
+                  "A"={rIV<-0; rIV2<-0}, # +ve/-ve
+                  "B"={rIV<-rIVIV2DV; rIV2<- rIVIV2DV}, # on/off
+                  "C"={rIV<-0;rIV2<-rIVIV2DV} # diverge
            )
-           if (is.null(rIV2)) rIV2<- -0.3
-           if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
            rIVIV2<- 0
            if (is.null(analyse)) analyse<-"Main1x2"
            if (length(analyse)>1) {
