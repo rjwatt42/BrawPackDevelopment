@@ -270,6 +270,8 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$dpLabel<-'d[p]'
           braw.env$dsLabel<-'d[s]'
           
+          braw.env$chi2Label<-'χ²'
+          
           ###############################
           # notation for world
           #
