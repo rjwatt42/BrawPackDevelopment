@@ -144,10 +144,12 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   oldHypothesis<-braw.def$hypothesis
   oldDesign<-braw.def$design
   oldEvidence<-braw.def$evidence
+  oldAllScatter<-braw.env$allScatter
   setHTML()
   
-  if (is.null(doingBasics)) doingBasics<-"0A"
-
+  if (is.null(doingBasics)) {
+    showNow<-"None"
+  } else {
   if (reanalyseBS(doingBasics)) {
     stepBS<-braw.res$basicsDone[1]
     partBS<-braw.res$basicsDone[2]
@@ -411,7 +413,6 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     }      
   }
   
-  oldAllScatter<-braw.env$allScatter
   if(!is.null(allScatter)) setBrawEnv("allScatter",allScatter)
   if(!is.null(fullWithinNames)) setBrawEnv("fullWithinNames",fullWithinNames)
   # display the results
@@ -430,7 +431,20 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     schematic<-makePanel(showInference(effectType="direct"),plotSEMModel(braw.res$result$SEM))
     showNow<-"Schematic"
   }      
+  }
   
+  if (showNow=="None") {
+    tabs<-c("Plan","Sample","Effect","Schematic")
+    tabContents<-c(
+      makePanel(nullPlot(),NULL),
+      makePanel(nullPlot(),NULL),
+      makePanel(nullPlot(),NULL),
+      makePanel(nullPlot(),NULL)
+    )
+    tabLink=NULL
+    tabLinkLabel=NULL
+  } 
+    
   if (showNow=="Plan") {
     tabs<-c("Plan","Sample","Effect","Schematic")
     tabContents<-c(
@@ -439,9 +453,11 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
       makePanel(nullPlot(),NULL),
       makePanel(nullPlot(),NULL)
     )
-    
-  } else {
-  if (hideReport) {
+    tabLink=NULL
+    tabLinkLabel=NULL
+  } 
+  if (!is.element(showNow,c("None","Plan"))) {
+    if (hideReport) {
     tabs<-c("Plan","Sample","Effect","Schematic")
     tabContents<-c(
       makePanel(showPlan()),
@@ -459,6 +475,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
       schematic
     )
   }
+    tabLink=paste0('https://doingpsychstats.wordpress.com/basics-',stepBS,'#',partBS)
+    tabLinkLabel=paste0('&#x24D8 ',rootBS)
   }
   if (showJamovi) {
     tabs<-c(tabs,"Jamovi")
@@ -474,6 +492,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   }
 
   open<-which(showNow==tabs)
+  if (isempty(open)) open<-0
   
   history<-braw.res$basicsHistory
   if (is.null(history)) {
@@ -481,7 +500,6 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     else history<-list(content=NULL,sequence=c(),place=1)
   }
   
-  linkLabel<-paste0(rootBS)
   basicsResults<-
     generate_tab(
       title="Basics:",
@@ -490,8 +508,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
       width=600,
       tabs=tabs,
       tabContents=tabContents,
-      tabLink=paste0('https://doingpsychstats.wordpress.com/basics-',stepBS,'#',partBS),
-      tabLinkLabel=paste0('&#x24D8 ',linkLabel),
+      tabLink=tabLink,
+      tabLinkLabel=tabLinkLabel,
       history=history$content,
       open=open
     )
