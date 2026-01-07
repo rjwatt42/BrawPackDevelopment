@@ -21,7 +21,7 @@ emptyPlot<-function(mode,useHelp=FALSE) {
       tabContents=tabContents,
       height=450,
       outerHeight=450,
-      open=1
+      open=0
     )
     return(nullResults)
   }
