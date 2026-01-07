@@ -125,7 +125,7 @@ makePanel<-function(g,r=NULL) {
 }
 
 #' @export
-doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=TRUE,
+doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FALSE,
                    showPlanOnly=FALSE,doHistory=TRUE,
                    IV="Perfectionism",IV2=NULL,DV="ExamGrade",
                    rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
