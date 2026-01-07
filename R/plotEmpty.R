@@ -2,7 +2,7 @@
 #' @export
 emptyPlot<-function(mode,useHelp=FALSE) {
   
-  if (mode=="Basics") return(doBasics(NULL,showOutput=FALSE,doHistory=FALSE))
+  if (mode=="Basics") return(doBasics(NULL,showOutput=FALSE))
   if (mode=="MetaScience") return(doMetaScience(NULL,showOutput=FALSE))
   
   if (mode=="Simulation") {
