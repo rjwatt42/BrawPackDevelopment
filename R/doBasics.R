@@ -128,6 +128,7 @@ makePanel<-function(g,r=NULL) {
 doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FALSE,
                    showPlanOnly=FALSE,doHistory=TRUE,
                    IV="Perfectionism",IV2=NULL,DV="ExamGrade",
+                   skew=0,kurtosis=0,
                    rIV=NULL,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
                    sN=NULL,sMethod=NULL,sDataFormat=NULL,
                    sOutliers=0, sDependence=0,
@@ -386,6 +387,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   hypothesis<-makeHypothesis(IV=variables$IV,IV2=variables$IV2,DV=variables$DV,
                              effect=makeEffect(rIV,rIV2=rIV2,rIVIV2=rIVIV2,rIVIV2DV=rIVIV2DV)
                              )
+  if (stepBS=="1") hypothesis$DV$skew<-skew
+  if (stepBS=="1") hypothesis$DV$kurtosis<-kurtosis
   if (stepBS=="4") hypothesis$layout<-"simple"
   if (stepBS=="5") hypothesis$layout<-"noCovariation"
   if (stepBS=="8") hypothesis$layout<-"noCovariation"
