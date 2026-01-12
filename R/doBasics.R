@@ -248,6 +248,24 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
            if (is.null(analyse)) analyse<-"Main12"
            showNow<-"Effect"
          },
+         "41"={ # Revision of all basic tests with 3 variables
+           variables$DV<-randomDV()
+           variables$IV<-randomIV(variables$DV)
+           while (1==1) {
+           variables$IV2<-randomIV(variables$DV)
+           if (variables$IV2$name!=variables$IV$name) break;
+           }
+           switch(partBS,
+                  "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
+                  "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Effect"},
+                  {}
+           )
+           if (runif(1)>0.5) rIV<-0.3 else rIV<-0
+           if (runif(1)>0.5) rIV2<-0.3 else rIV2<-0
+           if (runif(1)>0.5) rIVIV2<-0.3 else rIVIVIV2<-0
+           if (runif(1)>0.5) rIVIV2DV<-0.3 else rIVIV2DV<-0
+           process<-"single"
+         },
          "5"={ # Interactions
            variables$DV<-"ExamGrade"
            variables$IV<-"Coffee?";variables$IV2<-"Musician?"
