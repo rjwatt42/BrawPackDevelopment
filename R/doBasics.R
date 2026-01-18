@@ -240,7 +240,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
              )
              
              if (makeData) {
-               variables$DV<-randomDV()
+               variables$DV<-getVariable("ExamGrade")
                variables$IV<-randomIV(variables$DV)
                while (1==1) {
                  variables$IV2<-randomIV(variables$DV)
