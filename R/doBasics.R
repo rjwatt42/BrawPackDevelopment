@@ -333,6 +333,30 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
              analyse<-"Main1x2"
              showNow<-"Effect"
            },
+           "81"={ # Experimental 2 IV,
+             switch(partBS,
+                    "A"={hideReport<-TRUE;showJamovi<-FALSE;showNow<-"Sample"},
+                    "B"={hideReport<-FALSE;makeData<-FALSE;showNow<-"Effect"},
+                    {}
+             )
+             
+             variables$IV<-"Condition"
+             if (runif(1)>0.5) sIV1Use<-"Within" else sIV1Use<-"Between"
+             doing2IVs<-(runif(1)>0.5)
+             if (doing2IVs) {
+               variables$IV2<-"Group"
+               if (runif(1)>0.5) sIV2Use<-"Within" else sIV2Use<-"Between"
+             } else variables$IV2<-NULL
+             variables$DV<-"Response"
+             
+             if (is.null(rIVIV2DV)) rIVIV2DV<-0.3
+             if (is.null(rIV)) rIV<-rIVIV2DV
+             if (is.null(rIV2)) rIV2<-rIVIV2DV
+             if (is.null(sDataFormat)) sDataFormat<-"wide"
+             if (is.null(allScatter)) allScatter<-FALSE
+             if (is.null(sN))  sN<-50
+             analyse<-"Main1x2"
+           },
            "9"={ # Moderation
              variables$IV<-"Anxiety"
              variables$IV2<-"Smoker?"
