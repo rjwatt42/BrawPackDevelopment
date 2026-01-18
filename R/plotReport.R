@@ -17,6 +17,7 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
   cellFilledStyle<-'padding-left:5px;padding-right:5px;'
   cellEmptyStyle<-'padding-left:0px;padding-right:0px;'
   blankLineStyle="padding-top:20px;"
+  table1Start<-paste0('<table style="',placing,'margin-top:0px;margin-right:5px;margin-left:5px;margin-bottom:25px;vertical-align:top;">')
   tableStart<-paste0('<table style="',placing,'margin-top:0px;margin-right:5px;margin-left:5px;margin-bottom:25px;float:left;vertical-align:top;">')
   if (renderAsHTML) {
     fontSize<-fontSize*13
@@ -32,7 +33,7 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
       outputBack<-''
     }
     if (!is.null(outputText)) {
-      outputFront<-paste0(outputFront,tableStart)
+      outputFront<-paste0(outputFront,table1Start)
       index<-0
       col1Use<-0
       col2Use<-0
@@ -42,7 +43,6 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
       headerRow<-FALSE
       headerCol<-FALSE
       headerRowUsed<-FALSE
-      topLine<-TRUE
       for (j in 1:nr) {
         bgcolor<-""
         colspan<-""
@@ -192,10 +192,7 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
         outputFront<-paste0(outputFront,"</tr>")
         } else {
           index<-index+nc
-          outputFront<-paste0(outputFront,'</table>',tableStart)
-          if (topLine) {
-            topLine<-FALSE
-          }
+            outputFront<-paste0(outputFront,'</table>',tableStart)
           col1Use<-0
           col2Use<-0
           col1Style<-""
