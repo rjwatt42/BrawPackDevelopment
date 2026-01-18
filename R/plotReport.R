@@ -42,6 +42,7 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
       headerRow<-FALSE
       headerCol<-FALSE
       headerRowUsed<-FALSE
+      topLine<-TRUE
       for (j in 1:nr) {
         bgcolor<-""
         colspan<-""
@@ -192,6 +193,9 @@ reportPlot<-function(outputText,nc,nr,fontSize=braw.env$reportFontSize,maxRows=1
         } else {
           index<-index+nc
           outputFront<-paste0(outputFront,'</table>',tableStart)
+          if (topLine) {
+            topLine<-FALSE
+          }
           col1Use<-0
           col2Use<-0
           col1Style<-""
