@@ -64,9 +64,12 @@ doTheory<-function(doingTheory=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
                     "C"={world$pRplus<-0.5},
                     {}
              )
-             showNow<-"Effect"
+             showNow<-"NHST"
            },
            "3"={ # 
+             if (is.null(rIV)) rIV<-0.3
+             world<-makeWorld(TRUE,"Single","r",rIV,pRplus=0.5)
+             showNow<-"NHST"
            },
            "4"={ # 
            },
@@ -173,6 +176,7 @@ doTheory<-function(doingTheory=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     mType="rs;p"
     if (showNow=="Mean") {mType<-"dv.mn;dv.sd"; showNow<-"Sample"}
     if (showNow=="Kurt") {mType<-"dv.sk;dv.kt"; showNow<-"Sample"}
+    if (showNow=="NHST") {mType<-"NHST"; showNow<-"Schematic"}
     if ((process=="single" || process=="analysis") && showNow!="SchematicSEM") {
       schematic<-makePanel(showInference(showType=mType,effectType="direct"),reportInference())
     } 
