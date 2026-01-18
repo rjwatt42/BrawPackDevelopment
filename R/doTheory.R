@@ -176,12 +176,13 @@ doTheory<-function(doingTheory=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     mType="rs;p"
     if (showNow=="Mean") {mType<-"dv.mn;dv.sd"; showNow<-"Sample"}
     if (showNow=="Kurt") {mType<-"dv.sk;dv.kt"; showNow<-"Sample"}
-    if (showNow=="NHST") {mType<-"NHST"; showNow<-"Schematic"}
+    mrType<-mType
+    if (showNow=="NHST") {mType<-"rse;pe"; mrType<-"NHST"; showNow<-"Schematic"}
     if ((process=="single" || process=="analysis") && showNow!="SchematicSEM") {
       schematic<-makePanel(showInference(showType=mType,effectType="direct"),reportInference())
     } 
     if (process=="multiple") {
-      schematic<-makePanel(showMultiple(showType=mType,effectType="direct"),reportMultiple())
+      schematic<-makePanel(showMultiple(showType=mType,effectType="direct"),reportMultiple(showType=mrType))
       showNow<-"Schematic"
     }      
     if (process=="single" && showNow=="SchematicSEM") {
