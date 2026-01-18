@@ -4,7 +4,9 @@ doTheory<-function(doingTheory=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
                    showPlanOnly=FALSE,doHistory=TRUE,
                    IVtype="Interval",IV2type=NULL,DVtype="Interval",
                    DVmean=0,DVsd=1,DVskew=0,DVkurtosis=0,
+                   residuals="normal",
                    rIV=0.3,rIV2=NULL,rIVIV2=NULL,rIVIV2DV=NULL,
+                   heteroscedasticity=0,
                    sN=42,sMethod="Random",sDataFormat="long",
                    sOutliers=0, sDependence=0,
                    sIV1Use="Between",sIV2Use="Between",
@@ -133,7 +135,8 @@ doTheory<-function(doingTheory=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     
     hypothesis<-makeHypothesis(IV=variables$IV,IV2=variables$IV2,DV=variables$DV,
                                effect=makeEffect(rIV,rIV2=rIV2,rIVIV2=rIVIV2,rIVIV2DV=rIVIV2DV,
-                                                 world=world
+                                                 world=world,
+                                                 Heteroscedasticity=heteroscedasticity,ResidDistr=residuals
                                                  )
     )
     hypothesis$layout<-"simple"
