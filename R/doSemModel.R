@@ -4,7 +4,7 @@
 #' @examples
 #' fit_sem_model<-function(pathmodel,model_data,fixedCoeffs=NULL)
 #' @export
-fit_sem_model<-function(pathmodel,model_data,fixedCoeffs=NULL,doinglavaan=TRUE,self) {
+fit_sem_model<-function(pathmodel,model_data,fixedCoeffs=NULL,doinglavaan=TRUE) {
 # this follows the notation in 
   # Flora D.B. (2018) Statistical Methods for the Social and Behavioural Sciences
 #  
@@ -37,7 +37,7 @@ fit_sem_model<-function(pathmodel,model_data,fixedCoeffs=NULL,doinglavaan=TRUE,s
   m_stages<-max(sapply(stages,length))
 
   pathLocalModel<-matrix(0,n_stages,m_stages)
-  sem<-path2sem(pathmodel,model_data,doinglavaan,self)
+  sem<-path2sem(pathmodel,model_data,doinglavaan)
   if (!is.null(fixedCoeffs)) {
     for (i in 1:length(fixedCoeffs$v1)) {
       if (is.element(fixedCoeffs$v2[i],rownames(sem$Ldesign)) &&
@@ -119,7 +119,7 @@ fit_sem_model<-function(pathmodel,model_data,fixedCoeffs=NULL,doinglavaan=TRUE,s
   return(sem)
 }
 
-path2sem<-function(pathmodel,model_data,doinglavaan=TRUE,self) {
+path2sem<-function(pathmodel,model_data,doinglavaan=TRUE) {
 
   # firstly get all the details local
   stages<-pathmodel$path$stages
@@ -166,7 +166,7 @@ path2sem<-function(pathmodel,model_data,doinglavaan=TRUE,self) {
           nn<-paste0(full_varnames[iv],cases[2:length(cases)])
           colnames(nv)<-nn
           new_data<-cbind(new_data,nv)
-          new_names<-cbind(new_names,nn)
+          new_names<-c(new_names,nn)
           for (is in 1:length(stages)){
             s<-stages[[is]]
             change<-which(full_varnames[iv]==s)
@@ -190,9 +190,6 @@ path2sem<-function(pathmodel,model_data,doinglavaan=TRUE,self) {
   }
   full_varnames<-new_names
   full_data<-new_data
-  self$results$debug$setContent(new_data)
-  self$results$debug$setVisible(TRUE)
-  
   colnames(full_data)<-new_names
 
   if (length(stages)==1) {
