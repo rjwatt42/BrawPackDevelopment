@@ -190,7 +190,7 @@ path2sem<-function(pathmodel,model_data,doinglavaan=TRUE,self) {
   }
   full_varnames<-new_names
   full_data<-new_data
-  self$results$debug$setContent(braw.res$debug)
+  self$results$debug$setContent(new_data)
   self$results$debug$setVisible(TRUE)
   
   colnames(full_data)<-new_names
