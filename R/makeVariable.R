@@ -210,6 +210,7 @@ makeDefaultVariables<-function() {
     SessionsI=makeVariable(name="Sessions",'Interval',mu=4,sd=1,skew=-0.75),
     TrialPhase=makeVariable(name="TrialPhase",type="Categorical",ncats=2,cases="pre,post",proportions="1.1,1"),
     TrialPhase3=makeVariable(name="TrialPhase",type="Categorical",ncats=3,cases="before,during,after",proportions="1.2,1.1,1"),
+    Attempt=makeVariable(name="Attempt",type="Categorical",ncats=2,cases="1st,2nd"),
     
     Condition=makeVariable(name="Condition",type="Categorical",ncats=2,cases="A,B",proportions="1,1"),
     Condition3=makeVariable(name="Condition",type="Categorical",ncats=3,cases="A,B,C",proportions="1,1,1"),
