@@ -213,8 +213,8 @@ showPossible <- function(possibleResult=NULL,
   if (is.null(possibleResult$possible)) possibleResult<-doPossible(possible=possibleResult)
 
   possible<-possibleResult$possible
-  world<-possible$hypothesis$effect$world
-  design<-possible$design
+  world<-possibleResult$hypothesis$effect$world
+  design<-possibleResult$design
   
   oldRZ<-braw.env$RZ
   braw.env$RZ<-possible$axisType

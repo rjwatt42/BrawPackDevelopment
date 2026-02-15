@@ -8,7 +8,7 @@
 #' @examples
 #' doPossible<-function(possible=makePossible(),possibleResult=NULL)
 #' @export
-doPossible <- function(possible=NULL,possibleResult=NULL){
+doPossible <- function(possible=braw.def$possible,possibleResult=NULL){
   
   if (is.null(possible)) possible<-makePossible()
   oldRZ<-braw.env$RZ
@@ -17,8 +17,10 @@ doPossible <- function(possible=NULL,possibleResult=NULL){
 
   npoints=201
 
-  design<-possible$design
+  design<-possible$design 
+  if (is.null(design)) design<-braw.def$design
   hypothesis<-possible$hypothesis
+  if (is.null(hypothesis)) hypothesis<-braw.def$hypothesis
   world<-hypothesis$effect$world
   n<-design$sN
 
@@ -247,7 +249,8 @@ doPossible <- function(possible=NULL,possibleResult=NULL){
                        mle=densityFunctionStats(sampleLikelihoodTotal_r,rp)$peak,
                        mleNull=approx(rs,sourceSampDens_r_null,sRho)$y,
                        mlePlus=approx(rs,colSums(sourceSampDens_r_plus),sRho)$y,
-                       mleTotal=approx(rs,sourceSampDens_r_total,sRho)$y
+                       mleTotal=approx(rs,sourceSampDens_r_total,sRho)$y,
+                       design=design,hypothesis=hypothesis
   )
   
   setBrawRes("possibleResult",possibleResult)
