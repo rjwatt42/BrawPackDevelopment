@@ -226,6 +226,23 @@ doPossible <- function(possible=braw.def$possible,possibleResult=NULL){
     sampleLikelihood_r_show<-c()
   }
   
+  switch(braw.env$RZ,
+         "r"={
+           mleNull=approx(rs,sourceSampDens_r_null,sRho)$y/(sum(sourceSampDens_r_total)*diff(rs[1:2]))
+           mlePlus=approx(rs,colSums(sourceSampDens_r_plus),sRho)$y/(sum(sourceSampDens_r_total)*diff(rs[1:2]))
+           mleTotal=approx(rs,sourceSampDens_r_total,sRho)$y/(sum(sourceSampDens_r_total)*diff(rs[1:2]))
+         },
+         "z"={
+           zs<-atanh(rs)
+           zsn<-rdens2zdens(sourceSampDens_r_null,rs)
+           zsp<-rdens2zdens(sourceSampDens_r_plus,rs)
+           zst<-rdens2zdens(sourceSampDens_r_total,rs)
+           mleNull=approx(zs,zsn,atanh(sRho))$y/(sum(zst)*diff(zs[1:2]))
+           mlePlus=approx(zs,colSums(zsp),atanh(sRho))$y/(sum(zst)*diff(zs[1:2]))
+           mleTotal=approx(zs,zst,atanh(sRho))$y/(sum(zst)*diff(zs[1:2]))
+         }
+           )
+  
   possibleResult<-list(possible=possible,
                        sourceRVals=sourceRVals,
                        sRho=sRho,
@@ -247,9 +264,9 @@ doPossible <- function(possible=braw.def$possible,possibleResult=NULL){
                          n<-possible$sims$nval
                        ),
                        mle=densityFunctionStats(sampleLikelihoodTotal_r,rp)$peak,
-                       mleNull=approx(rs,sourceSampDens_r_null,sRho)$y,
-                       mlePlus=approx(rs,colSums(sourceSampDens_r_plus),sRho)$y,
-                       mleTotal=approx(rs,sourceSampDens_r_total,sRho)$y,
+                       mleNull=mleNull,
+                       mlePlus=mlePlus,
+                       mleTotal=mleTotal,
                        design=design,hypothesis=hypothesis
   )
   
