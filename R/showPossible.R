@@ -191,7 +191,7 @@ describePossiblePopulations<-function(possibleResult,possible) {
 showPossible <- function(possibleResult=NULL,
                          showType="Populations",
                          cutaway=FALSE,walls="both",showP=0,doTextResult=TRUE,showSig=FALSE,
-                         view="3D",axisScale=1,showEvLk=FALSE,
+                         view="3D",axisScale=1,showEvLk=FALSE,normSampDist=FALSE,
                          azimuth=NULL,elevation=15,distance=8){
   
   # x-axis is population effect size, 
@@ -288,7 +288,6 @@ showPossible <- function(possibleResult=NULL,
   doCILines<-FALSE
   showJointLk<-FALSE
   showNull<-FALSE
-  normSampDist<-FALSE
   endFace<-TRUE
   continuousSampling<-2
   
@@ -336,7 +335,8 @@ showPossible <- function(possibleResult=NULL,
   sourceRVals<-possibleResult$sourceRVals
   sRho<-possibleResult$sRho
   if (length(sRho)==0) sRho<-NA
-  n<-possibleResult$possible$design$sN
+  if (braw.env$RZ=="z") sRho<-atanh(sRho)
+  n<-possibleResult$design$sN
   if (showType=="Populations") n<-possibleResult$possible$targetSampleN
   
   rs<-possibleResult$Theory$rs
@@ -471,6 +471,12 @@ showPossible <- function(possibleResult=NULL,
   rpw_dens[rpw_dens>1 | is.na(rpw_dens)]<-1
     rsw_dens_plus<-rsw_dens_plus/max(rsw_dens,na.rm=TRUE)
     rsw_dens_null<-rsw_dens_null/max(rsw_dens,na.rm=TRUE)
+    if (normSampDist) {
+      rsw_dens_plus<-rsw_dens_plus/sum(rsw_dens,na.rm=TRUE)*50
+      rsw_dens_null<-rsw_dens_null/sum(rsw_dens,na.rm=TRUE)*50
+      sourceSampDens_r_plus<-sourceSampDens_r_plus/sum(rsw_dens,na.rm=TRUE)*50
+    }
+    
   populationBackwall<-list(rpw=rpw,rpw_dens=rpw_dens,priorSampDens_r=priorSampDens_r,rp=rp)
   sampleBackwall<-list(rsw=rsw,rsw_dens_plus=rsw_dens_plus,rsw_dens_null=rsw_dens_null)
   
@@ -798,11 +804,6 @@ showPossible <- function(possibleResult=NULL,
               y<-sampleBackwall$rsw
               x<-y*0+xlim[1]
               ztotal<-sampleBackwall$rsw_dens_plus+sampleBackwall$rsw_dens_null
-              if (normSampDist) {
-                ztotal<-ztotal/sum(ztotal,na.rm=TRUE)
-                zgain<-1/max(ztotal,na.rm=TRUE)
-                ztotal<-ztotal*zgain
-              }
               if (logZ) {
                 ztotal<-log10(ztotal)
                 ztotal[ztotal<zlim[1]]<-zlim[1]
@@ -1393,9 +1394,10 @@ showPossible <- function(possibleResult=NULL,
                           rpd<-populationBackwall$rpw_dens
                           rpd<-rpd/(sum(rpd)/sum(rsd))
                           zgain<-25/sum(rsd)
+                          if (max(rpd)*zgain>zlim[2]) zgain<-zlim[2]/max(rpd)
 
                           g<-addG(g,dataPolygon(data.frame(x=rp[c(1,1:length(rp),length(rp))],
-                                                           y=c(0,rpd,0)*zgain),fill="white",colour=NA))
+                                                           y=c(0,rpd,0)*zgain),fill=colP))
                           g<-addG(g,dataPolygon(data.frame(x=rs[c(1,1:length(rs),length(rs))],
                                                            y=c(0,rsd,0)*zgain),fill=colSsum,alpha=0.8))
                           g<-addG(g,dataPath(data.frame(x=rs,y=rsd*zgain),colour="#000000",linewidth=0.35))
@@ -1409,12 +1411,12 @@ showPossible <- function(possibleResult=NULL,
                           if (!all(is.na(sRho))) {
                             for (si in 1:length(sRho)) {
                                   z<-approx(sampleBackwall$rsw,rsd,sRho[si])$y
-                                  zt<-approx(rs,sourceSampDens_r_total,sRho[si])$y
+                                  zt<-approx(rs,sourceSampDens_r_total,sRho[si])$y/(sum(sourceSampDens_r_total)*diff(rs[1:2]))
                                   z[z<0]<-0
                                   if (logZ) z<-log10(z)
                                   if (z>=zlim[1])
                                     g<-addG(g,dataPath(data.frame(x=c(0,0)+sRho[si],y=c(0,z)*zgain),colour=colVline,linewidth=0.75))
-                                  g<-addG(g,dataText(data.frame(x=sRho[si],y=z*zgain),paste0("pd(",braw.env$RZ,"[s])=",brawFormat(zt)),size=0.85))
+                                  g<-addG(g,dataText(data.frame(x=sRho[si],y=z*zgain),paste0("pdf(",braw.env$RZ,"[s]=",brawFormat(sRho[si]),")=",brawFormat(zt)),size=0.85))
                                 }
                           }
                         }
