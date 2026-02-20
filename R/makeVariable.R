@@ -188,6 +188,7 @@ getVariable<-function(name=NULL) {
     use<-ceiling(runif(1)*length(names))
     print(use)
     name<-names[use]
+    print(name)
   } 
   return(braw.env$variables[[name]])
   
