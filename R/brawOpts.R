@@ -335,11 +335,11 @@ braw.def$defaultEvidence<-braw.def$evidence
 braw.def$defaultMetaAnalysis<-braw.def$metaAnalysis
 braw.def$defaultExplore<-braw.def$explore
 
-# braw.def$possible<-makePossible(targetSample=0.3)
-
 braw.def<<-braw.def
 braw.env<<-braw.env          
 braw.res<<-braw.res
+
+setBrawDef("possible",makePossible(targetSample=0.3))
 
 }
 

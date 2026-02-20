@@ -186,6 +186,7 @@ getVariable<-function(name=NULL) {
   }
   if (!is.null(names)) {
     use<-ceiling(runif(1)*length(names))
+    print(use)
     name<-names[use]
   } 
   return(braw.env$variables[[name]])
@@ -212,11 +213,11 @@ makeDefaultVariables<-function() {
     IV2=makeVariable(name="IV2",type="Interval",mu=0,sd=1,ncats=2,cases="D1,D2"),
     DV=makeVariable(name="DV",type="Interval",mu=0,sd=1,ncats=2,cases="E1,E2"),
     
-    IVOrd=makeVariable(name="IV",type="Ordinal"),
-    IVCat=makeVariable(name="IV",type="Categorical",ncats=2,cases="C1,C2"),
-    IV3Cat=makeVariable(name="IV",type="Categorical",ncats=3,cases="C1,C2,C3"),
+    IVOrd=makeVariable(name="IVOrd",type="Ordinal"),
+    IVCat=makeVariable(name="IVCat",type="Categorical",ncats=2,cases="C1,C2"),
+    IV3Cat=makeVariable(name="IVCat3",type="Categorical",ncats=3,cases="C1,C2,C3"),
     
-    Treatment3=makeVariable(name="Treatment",type="Categorical",ncats=3,cases="active,passive,none",proportions="1,1,1"),
+    Treatment3=makeVariable(name="Treatment3",type="Categorical",ncats=3,cases="active,passive,none",proportions="1,1,1"),
     Treatment=makeVariable(name="Treatment",type="Categorical",ncats=2,cases="active,control",proportions="1,1"),
     "Treatment?"=makeVariable(name="Treatment?",type="Categorical",ncats=2,cases="no,yes",proportions="1,1"),
     IQ=makeVariable(name="IQ",type="Interval",mu=100,sd=15),
