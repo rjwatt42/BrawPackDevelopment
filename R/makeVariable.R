@@ -153,6 +153,41 @@ makeVariable<-function(name,type="Interval",
 getVariable<-function(name=NULL) {
   
   if (is.null(name)) return(NULL)
+  
+  names<-c()
+  if (name=="?") {
+    for (i in 1:length(braw.env$variables)) {
+        names<-c(names,braw.env$variables[[i]]$name)
+    }
+  }
+  if (name=="?Interval") {
+    for (i in 1:length(braw.env$variables)) {
+      if (braw.env$variables[[i]]$type=="Interval") 
+        names<-c(names,braw.env$variables[[i]]$name)
+    }
+  }
+  if (name=="?Categorical") {
+    for (i in 1:length(braw.env$variables)) {
+      if (braw.env$variables[[i]]$type=="Categorical") 
+        names<-c(names,braw.env$variables[[i]]$name)
+    }
+  }
+  if (name=="?Categorical2") {
+    for (i in 1:length(braw.env$variables)) {
+      if (braw.env$variables[[i]]$type=="Categorical" && braw.env$variables[[i]]$ncats==2) 
+        names<-c(names,braw.env$variables[[i]]$name)
+    }
+  }
+  if (name=="?Categorical3") {
+    for (i in 1:length(braw.env$variables)) {
+      if (braw.env$variables[[i]]$type=="Categorical" && braw.env$variables[[i]]$ncats>2) 
+        names<-c(names,braw.env$variables[[i]]$name)
+    }
+  }
+  if (!is.null(names)) {
+    use<-ceiling(runif(1)*length(names))
+    name<-names[use]
+  } 
   return(braw.env$variables[[name]])
   
 }
