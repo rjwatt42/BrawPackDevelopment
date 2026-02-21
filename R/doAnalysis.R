@@ -867,6 +867,7 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
   
   anRaw<-anNormC
   # simulate the single IV analyses
+  dval<-2*analysis$rIV/sqrt(1-analysis$rIV^2)
   if (is.null(IV2)) {
     hypothesisType=paste(IV$type,DV$type,sep=" ")
     switch (hypothesisType,
@@ -906,6 +907,7 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
                   df<-paste("(",format(tv$parameter),")",sep="")
                   }
                 }
+                dval<-mean(dv[as.numeric(iv1)==1])-mean(dv[as.numeric(iv1)==2])/sqrt(sd(dv[as.numeric(iv1)==1])^2+sd(dv[as.numeric(iv1)==2])^2)
                 t_name<-"t"
                 # tval<-sqrt(anRaw$`F value`[2])*sign(analysis$rIV)
               } else {
@@ -1109,6 +1111,7 @@ doAnalysis<-function(sample=doSample(autoShow=FALSE),evidence=braw.def$evidence,
   analysis$df<-df
   analysis$test_val<-tval
   # analysis$rCalc<-test2effectsize(t_name,tval,analysis$df1,analysis$df)
+  analysis$dval<-dval
   
   if (IV$type=="Interval"){
     analysis$iv.mn<-mean(iv1,na.rm=TRUE)
