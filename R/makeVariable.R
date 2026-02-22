@@ -187,8 +187,8 @@ getVariable<-function(name=NULL) {
     }
   }
   if (!is.null(usenames)) {
-    use<-ceiling(runif(1)*length(varnames))
-    name<-varnames[use]
+    use<-ceiling(runif(1)*length(usenames))
+    name<-usenames[use]
   } 
   
   variable<-variables[[name]]
