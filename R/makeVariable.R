@@ -155,6 +155,7 @@ getVariable<-function(name=NULL) {
   if (is.null(name)) return(NULL)
   
   variables<-makeDefaultVariables()
+  variables<-variables[7:length(variables)]
   varnames<-names(variables)
   
   if (name=="?") {
@@ -186,8 +187,8 @@ getVariable<-function(name=NULL) {
     }
   }
   if (!is.null(usenames)) {
-    use<-ceiling(runif(1)*length(names))
-    name<-names[use]
+    use<-ceiling(runif(1)*length(varnames))
+    name<-varnames[use]
   } 
   
   variable<-variables[[name]]
