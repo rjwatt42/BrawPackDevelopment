@@ -163,31 +163,31 @@ getVariable<-function(name=NULL) {
   } else {
     usenames<-c()
     
-    if (isempty(grep("?Int",name))) {
+    if (!isempty(grep("?Int",name))) {
       for (i in 1:length(variables)) {
         if (variables[[i]]$type=="Interval") 
           usenames<-c(usenames,varnames[i])
       }
     }
-    if (isempty(grep("?Ord",name))) {
+    if (!isempty(grep("?Ord",name))) {
       for (i in 1:length(variables)) {
         if (variables[[i]]$type=="Ordinal") 
           usenames<-c(usenames,varnames[i])
       }
     }
-    if (isempty(grep("?Categorical",name))) {
+    if (!isempty(grep("?Categorical",name))) {
       for (i in 1:length(variables)) {
         if (variables[[i]]$type=="Categorical") 
           usenames<-c(usenames,varnames[i])
       }
     }
-    if (isempty(grep("?Cat2",name))) {
+    if (!isempty(grep("?Cat2",name))) {
       for (i in 1:length(variables)) {
         if (variables[[i]]$type=="Categorical" && variables[[i]]$ncats==2) 
           usenames<-c(usenames,varnames[i])
       }
     }
-    if (isempty(grep("?Cat3",name))) {
+    if (!isempty(grep("?Cat3",name))) {
       for (i in 1:length(variables)) {
         if (variables[[i]]$type=="Categorical" && variables[[i]]$ncats>2) 
           usenames<-c(usenames,varnames[i])
