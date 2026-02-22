@@ -175,7 +175,7 @@ getVariable<-function(name=NULL) {
           usenames<-c(usenames,varnames[i])
       }
     }
-    if (!isempty(grep("?Categorical",name))) {
+    if (!isempty(grep("?CatN",name))) {
       for (i in 1:length(variables)) {
         if (variables[[i]]$type=="Categorical") 
           usenames<-c(usenames,varnames[i])
