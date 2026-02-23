@@ -4,7 +4,7 @@
 \alias{doPossible}
 \title{likelihood theory}
 \usage{
-doPossible(possible = NULL, possibleResult = NULL)
+doPossible(possible = braw.def$possible, possibleResult = NULL)
 }
 \value{
 possibleResult object

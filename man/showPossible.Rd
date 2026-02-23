@@ -15,6 +15,7 @@ showPossible(
   view = "3D",
   axisScale = 1,
   showEvLk = FALSE,
+  normSampDist = FALSE,
   azimuth = NULL,
   elevation = 15,
   distance = 8

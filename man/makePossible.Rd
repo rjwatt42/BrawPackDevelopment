@@ -15,8 +15,8 @@ makePossible(
   sigOnlyCompensate = FALSE,
   axisType = braw.env$RZ,
   sims = NULL,
-  hypothesis = braw.def$hypothesis,
-  design = braw.def$design,
+  hypothesis = NULL,
+  design = NULL,
   simSlice = 0.1,
   correction = TRUE,
   HQ = FALSE
