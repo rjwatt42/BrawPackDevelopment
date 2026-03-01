@@ -237,9 +237,13 @@ doPossible <- function(possible=braw.def$possible,possibleResult=NULL){
            zsn<-rdens2zdens(sourceSampDens_r_null,rs)
            zsp<-rdens2zdens(sourceSampDens_r_plus,rs)
            zst<-rdens2zdens(sourceSampDens_r_total,rs)
+           if (!is.na(sRho)) {
            mleNull=approx(zs,zsn,atanh(sRho))$y/(sum(zst)*diff(zs[1:2]))
            mlePlus=approx(zs,colSums(zsp),atanh(sRho))$y/(sum(zst)*diff(zs[1:2]))
            mleTotal=approx(zs,zst,atanh(sRho))$y/(sum(zst)*diff(zs[1:2]))
+           } else {
+             mleNull<-mlePlus<-mleTotal<-NA
+           }
          }
            )
   

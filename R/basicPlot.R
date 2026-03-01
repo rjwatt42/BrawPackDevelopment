@@ -976,8 +976,8 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location
 dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),linewidth=0.25,linetype="solid") {
   data<-reRangeXY(data)
   # because the x & y values may have been truncated to ylim
-  usex<-c(diff(data$x)>0,TRUE)
-  usey<-c(diff(data$y)>0,TRUE)
+  usex<-c(diff(data$x)>0,TRUE) 
+  usey<-c(diff(data$y)>0,TRUE) & rowSums(is.na(data$z))==0
   data$x<-data$x[usex]
   data$y<-data$y[usey]
   data$z<-data$z[usey,usex]

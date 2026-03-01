@@ -135,7 +135,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   
   if (metaAnalysis$analyseBias) {
     param3Use<-seq(0,1,length.out=np2points)
-  } else param3Use<-metaAnalysis$sourceBias
+  } else param3Use<-metaAnalysis$assumeBias
   
   param4Use<-0
   param5Use<-0
@@ -383,7 +383,9 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
              genexp<-getMaxLikelihood(zs,ns,df1,"GenExp",metaAnalysis,hypothesis)
            
          })
-  use<-which.max(c(fixed$Smax,random$Smax,single$Smax,gauss$Smax,exp$Smax,gamma$Smax,genexp$Smax))
+  allResults<-c(fixed$Smax,random$Smax,single$Smax,gauss$Smax,exp$Smax,gamma$Smax,genexp$Smax)
+  if (all(is.na(allResults))) use<-1
+  else use<-which.max(allResults)
   bestDist<-c("fixed","random","Single","Gauss","Exp","Gamma","GenExp")[use]
   if (metaAnalysis$analysisType=="none")
     best<-fixed

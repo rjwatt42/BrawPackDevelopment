@@ -21,11 +21,13 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
            "r"={},
            "z"={
              p1<-atanh(p1)
-             p4<-atanh(p4)
+             if (is.numeric(p4))
+               p4<-atanh(p4)
            },
            "d"={
              p1<-2*p1/sqrt(1-p1^2)
-             p4<-2*p4/sqrt(1-p4^2)
+             if (is.numeric(p4))
+               p4<-2*p4/sqrt(1-p4^2)
            }
     )
   
@@ -149,7 +151,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   g<-drawWorld(hypothesis,design,metaResult,showType,g,
                braw.env$plotColours$metaAnalysisTheory,
                # sigOnly=metaAnalysis$analyseBias,
-               showTheory=FALSE,svalExponent=svalExponent,showLines=showLines)
+               showTheory=TRUE,svalExponent=svalExponent,showLines=showLines)
   if (showSig && metaAnalysis$analyseBias) {
     nv<-10^seq(log10(braw.env$minN),log10(braw.env$maxN),length.out=101)
     rv<-p2r(0.05,nv,1)
@@ -173,7 +175,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (showData) {
   if (length(d1)<=10000) {
   colgain<-1-min(1,sqrt(max(0,(length(d1)-50))/200))
-  alphaUse<-max(0.5,1/(max(1,sqrt(length(d1)/100))))
+  alphaUse<-max(0.5,1/(max(1,sqrt(length(d1)/4))))
   dotSize<-braw.env$dotSize*min(1,alphaUse)
   fill1<-rep(braw.env$plotColours$metaAnalysis,length(ptsAll$x))
   fill2<-braw.env$plotColours$infer_nsigC
@@ -239,14 +241,20 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
 #' @export
 showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimension="1D",orientation="vert") {
   if (is.null(metaResult)) metaResult<-doMetaMultiple()
-  
-  if (is.element(showType,c("Riv","Spread","Smax","K","PRplus","Bias")))
-    showType<-paste0("meta",showType)
+  use<-is.na(metaResult$best$PDFk)
+  if (any(use)) {
+    metaResult$best$PDF<-metaResult$best$PDF[!use]
+    metaResult$best$PDFk<-metaResult$best$PDFk[!use]
+    metaResult$best$PDFshape<-metaResult$best$PDFshape[!use]
+    metaResult$best$pRplus<-metaResult$best$pRplus[!use]
+    metaResult$best$sigOnly<-metaResult$best$sigOnly[!use]
+    metaResult$best$Smax<-metaResult$best$Smax[!use]
+  }
   
   if (is.null(showType)) {
     switch(metaResult$metaAnalysis$analysisType,
            "fixed"={
-             showType<-"metaRiv"
+             showType<-"metaRiv;metaSmax"
              if (metaResult$metaAnalysis$analyseBias) showType<-"metaRiv;metaBias"
            },
            "random"={
@@ -257,6 +265,8 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
              if (metaResult$metaAnalysis$analyseBias) showType<-"metaRiv;metaBias"
            })
   }
+  if (is.element(showType,c("Riv","Spread","Smax","K","PRplus","Bias")))
+    showType<-paste0("meta",showType)
   
   if (is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
     autoPrintOld<-braw.env$autoPrint

@@ -190,7 +190,7 @@ describePossiblePopulations<-function(possibleResult,possible) {
 #' @export
 showPossible <- function(possibleResult=NULL,
                          showType="Populations",
-                         cutaway=FALSE,walls="both",showP=0,doTextResult=TRUE,showSig=FALSE,
+                         cutaway=FALSE,walls="both",showP=0,doTextResult="Sample",showSig=FALSE,
                          view="3D",axisScale=1,showEvLk=FALSE,normSampDist=FALSE,
                          azimuth=NULL,elevation=15,distance=8){
   
@@ -1217,55 +1217,67 @@ showPossible <- function(possibleResult=NULL,
             )
             
             # text annotations
-            if (doTextResult && !is.na(sRho)) {
+            if (!(doTextResult=="None") && !is.na(sRho)) {
               if (showType=="Samples") position<-c(xlim[1],mean(ylim))
               else                     position<-c(mean(xlim),ylim[2])
               # samples
               zoff<-diff(zlim)*1.2
-              if (!is.na(sRho) && length(sRho)<=10) {
-                use<-order(sRho)
-                  h<-c(paste0(braw.env$RZ,"[s]"),
-                       paste0("= ",paste(brawFormat(sRho[use],digits=2),collapse=", "))
-                  )
-                pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
-                for (hi in 1:length(h)) {
-                  g<-addG(g,
-                          dataText(pos,
-                                   h[hi],fontface="bold",
-                                   hjust=0,size=0.6,colour=colPdark)
-                  )
-                  pos$x<-pos$x+diff(xlim)*0.05
-                }
-                zoff<-zoff-diff(zlim)*0.06
-                h<-c(paste0("n"),
-                     paste0("=  ",paste(brawFormat(n[use],digits=2),collapse=",    "))
-                )
-                pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
-                for (hi in 1:length(h)) {
-                  g<-addG(g,
-                          dataText(pos,
-                                   h[hi],fontface="bold",
-                                   hjust=0,size=0.6,colour=colPdark)
-                  )
-                  pos$x<-pos$x+diff(xlim)*0.05
-                }
-              }
-              # mle population
-              # if (showType=="Populations") {
-                h<-c(paste0(braw.env$RZ,"[mle]"),
-                     paste0("= ",brawFormat(rp_peak,digits=3))
-                )
-                zoff<-zoff-diff(zlim)*0.06
-                pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
-                for (hi in 1:length(h)) {
-                  g<-addG(g,
-                          dataText(pos,
-                                   h[hi],fontface="bold",
-                                   hjust=0,size=0.6,colour=colPdark)
-                  )
-                  pos$x<-pos$x+diff(xlim)*0.05
-                }
-              # }
+              switch(doTextResult,
+                     "Sample"={
+                       if (!is.na(sRho) && length(sRho)<=10) {
+                         use<-order(sRho)
+                         h<-c(paste0(braw.env$RZ,"[s]"),
+                              paste0("= ",paste(brawFormat(sRho[use],digits=2),collapse=", "))
+                         )
+                         pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
+                         for (hi in 1:length(h)) {
+                           g<-addG(g,
+                                   dataText(pos,
+                                            h[hi],fontface="bold",
+                                            hjust=0,size=0.6,colour=colPdark)
+                           )
+                           pos$x<-pos$x+diff(xlim)*0.05
+                         }
+                         zoff<-zoff-diff(zlim)*0.06
+                         h<-c(paste0("n"),
+                              paste0("=  ",paste(brawFormat(n[use],digits=2),collapse=",    "))
+                         )
+                         pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
+                         for (hi in 1:length(h)) {
+                           g<-addG(g,
+                                   dataText(pos,
+                                            h[hi],fontface="bold",
+                                            hjust=0,size=0.6,colour=colPdark)
+                           )
+                           pos$x<-pos$x+diff(xlim)*0.05
+                         }
+                         # mle population
+                         h<-c(paste0(braw.env$RZ,"[mle]"),
+                              paste0("= ",brawFormat(rp_peak,digits=3))
+                         )
+                         zoff<-zoff-diff(zlim)*0.06
+                         pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
+                         for (hi in 1:length(h)) {
+                           g<-addG(g,
+                                   dataText(pos,
+                                            h[hi],fontface="bold",
+                                            hjust=0,size=0.6,colour=colPdark)
+                           )
+                           pos$x<-pos$x+diff(xlim)*0.05
+                         }
+                       }
+                       },
+                       "PDF"={
+                         pos<-rotate3D(data.frame(x=position[1],y=position[2],z=zlim[1]+zoff), mapping)
+                         pdf<-approx(rs,rsw_dens,sRho[1])$y/sum(rsw_dens)/diff(rs[1:2])
+                         g<-addG(g,
+                                 dataText(pos,
+                                          paste0("PD=",brawFormat(pdf,digits=3)),fontface="bold",
+                                          hjust=0,size=0.6,colour=colPdark)
+                         )
+                         
+                       }
+              )
               # zoff<-zoff-diff(zlim)*0.085
               # llrA<-dnorm(atanh(sRho),mean=atanh(sRho),sd=1/sqrt(n-3))
               # llr0<-dnorm(0,mean=atanh(sRho),sd=1/sqrt(n-3))

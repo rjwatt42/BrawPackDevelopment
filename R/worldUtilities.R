@@ -456,13 +456,13 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
           critRval<-critR(nvals[ni])
           if (any(abs(rp)<critRval)) {
             addition[abs(rp)<critRval]<-addition[abs(rp)<critRval]*(1-sigOnly)
-            use<-which(rp>critRval)[1]
-            addition[use]<-addition[use]*(sigOnly)*(rp[use]-critRval)/diff(rp[1:2])
-            if (any(rp<0)) {
-              use<-which(rp<(-critRval))
-              use<-max(use)
-              addition[use]<-addition[use]*(sigOnly)*(-rp[use]-critRval)/diff(rp[1:2])
-            }
+            # use<-which(rp>critRval)[1]
+            # addition[use]<-addition[use]*(sigOnly)*(rp[use]-critRval)/diff(rp[1:2])
+            # if (any(rp<0)) {
+            #   use<-which(rp<(-critRval))
+            #   use<-max(use)
+            #   addition[use]<-addition[use]*(sigOnly)*(-rp[use]-critRval)/diff(rp[1:2])
+            # }
             if (sigOnlyCompensate) addition<-addition/sum(addition)
           }
         }
