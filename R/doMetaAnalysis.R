@@ -346,6 +346,10 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
          "none"={},
          "fixed"={
            # a fixed analysis finds a single effect size
+           if (metaAnalysis$method=="TF" && length(unique(ns))==1) {
+             print("Trim & Fill not possible with single sample size")
+             metaAnalysis$method<-"MLE"
+           }
            metaAnalysis$analyseNulls<-FALSE
            switch(metaAnalysis$method,
                   "MLE"={fixed<-getMaxLikelihood(zs,ns,df1,"fixed",metaAnalysis,hypothesis)},
@@ -353,6 +357,10 @@ runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
                   )
          },
          "random"={
+           if (metaAnalysis$method=="TF" && length(unique(ns))==1) {
+             print("Trim & Fill not possible with single sample size")
+             metaAnalysis$method<-"MLE"
+           }
            metaAnalysis$analyseNulls<-FALSE
            switch(metaAnalysis$method,
                   "MLE"={random<-getMaxLikelihood(zs,ns,df1,"random",metaAnalysis,hypothesis)},
