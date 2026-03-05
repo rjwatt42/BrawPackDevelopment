@@ -10,7 +10,7 @@
 #' sourceBias=FALSE,
 #' analyseBias=FALSE)
 #' @export
-makeMetaAnalysis<-function(On=FALSE, nstudies=10,
+makeMetaAnalysis<-function(On=FALSE, nstudies=10,studies=NULL,
                            analysisType="random",analysisVar="sd",modelPDF="All",
                            method="MLE",analysisPrior="none",
                            sourceNulls=0,analyseNulls=FALSE,
@@ -19,6 +19,7 @@ makeMetaAnalysis<-function(On=FALSE, nstudies=10,
   metaAnalysis<-list(
     On=On,
     nstudies=nstudies,
+    studies=studies,
     analysisType=analysisType,
     analysisVar=analysisVar,
     method=method,

@@ -28,10 +28,14 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
     localHypothesis$effect$world$On<-FALSE
   }
 
+  if (!is.null(metaAnalysis$studies)) {
+    studies<-metaAnalysis$studies
+  } else {
   if (is.null(metaSingle) || !keepStudies)
     studies<-multipleAnalysis(metaAnalysis$nstudies,localHypothesis,design,evidence)
   else
     studies<-metaSingle$result
+  }
   metaSingle<-runMetaAnalysis(metaAnalysis,studies,hypothesis,NULL)
 
   metaSingle$hypothesis<-hypothesis

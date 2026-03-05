@@ -265,7 +265,12 @@ drawNullPlot<-function(background=braw.env$plotColours$graphC) {
 containsSubscript<-function(label) any(grepl('\\[([^ ]*)\\]',label))
 containsSuperscript<-function(label) any(grepl('[\\^].',label))
 
-makeTicks<-function(breaks=NULL,labels=NULL,logScale=FALSE,angle=0) {
+makeTicks<-function(breaks=NULL,labels=NULL,logScale=FALSE,angle=0,lim=NULL) {
+  if (!is.null(lim)) {
+    use<-breaks>=lim[1] & breaks<=lim[2]
+    breaks<-breaks[use]
+    if (!is.null(labels)) labels<-labels[use]
+  }
   return(list(breaks=breaks,labels=labels,logScale=logScale,angle=angle))
 }
 makeLabel<-function(label=NULL) {
@@ -288,8 +293,8 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   # }
   if (is.character(xlabel)) xlabel<-makeLabel(xlabel)
   if (is.character(ylabel)) ylabel<-makeLabel(ylabel)
-  if (is.numeric(xticks)) xticks<-makeTicks(xticks)
-  if (is.numeric(yticks)) yticks<-makeTicks(yticks)
+  if (is.numeric(xticks)) xticks<-makeTicks(xticks,lim=xlim)
+  if (is.numeric(yticks)) yticks<-makeTicks(yticks,lim=ylim)
   
   fontDimensions<-c(1) # this overrides plotArea in effect
   if (!is.null(xticks) || !is.null(xlabel))
@@ -1020,21 +1025,29 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
 }
 
 #' @export
-dataGraph<-function(data,xlim=NULL,ylim=NULL,
+dataGraph<-function(data,fill='white',
+                         xlim=NULL,ylim=NULL,
                          xlabel=NULL,ylabel=NULL,
-                         xticks=NULL,yticks=NULL) {
-  if (is.null(xlim)) xlim<-c(min(data$x),max(data$x))+c(-1,1)*(max(data$x)-min(data$x))*0.05
-  if (is.null(ylim)) ylim<-c(min(data$y),max(data$y))+c(-1,1)*(max(data$y)-min(data$y))*0.05
-  if (is.null(xticks)) xticks<-seq(xlim[1],xlim[2],length.out=5)
-  if (is.null(yticks)) yticks<-seq(ylim[1],ylim[2],length.out=5)
+                         xticks=NULL,yticks=NULL,
+                         title=NULL,
+                    g=NULL
+                    ) {
+  if (is.null(g)) {
+  if (is.null(xlim)) xlim<-c(min(data$x),max(data$x))+c(-1,1)*(max(data$x)-min(data$x))*0.1
+  if (is.null(ylim)) ylim<-c(min(data$y),max(data$y))+c(-1,1)*(max(data$y)-min(data$y))*0.1
+  if (is.null(xticks)) xticks<-axisTicks(xlim,log=FALSE)
+  if (is.null(yticks)) yticks<-axisTicks(ylim,log=FALSE)
   if (is.null(xlabel)) xlabel<-"x"
   if (is.null(ylabel)) ylabel<-"y"
   
+  if (!is.null(title)) top=TRUE else top=FALSE
   g<-startPlot(xlim=xlim,xticks=xticks,xlabel=xlabel,
                ylim=ylim,yticks=yticks,ylabel=ylabel,
-               orientation="horz") 
-  g<-addG(g,dataPath(data,linewidth=1))
-  g<-addG(g,dataPoint(data))
+               orientation="horz",top=top) 
+  if (!is.null(title)) g<-addG(g,plotTitle(title))
+  }
+  g<-addG(g,dataPath(data,linewidth=0.5))
+  g<-addG(g,dataPoint(data,fill=fill))
   return(g)
 }
 
