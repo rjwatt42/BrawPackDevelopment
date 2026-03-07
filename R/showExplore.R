@@ -805,7 +805,10 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
               
               "PDF"={
                 showVals<-NULL
-                showMeans<-colMeans(result$dists==effect$world$PDF,na.rm=TRUE)
+                if (explore$exploreType=="PDF")
+                showMeans<-colMeans(result$PDF==matrix(exploreResult$vals,exploreResult$count,length(exploreResult$vals),byrow = TRUE),na.rm=TRUE)
+                else
+                  showMeans<-colMeans(result$PDF==hypothesis$effect$world$PDF)
                 showSE<-sqrt(showMeans*(1-showMeans)/nrow(showVals))
               },
               "iv.mn"={
@@ -858,8 +861,8 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
         y62<-NULL
         y38<-NULL
         # draw the basic line and point data
-        if (is.element(showType[si],c("n(sig)","n(fd)","p(sig)","p(w80)","Hits","Misses","Inference","Source"))) {
-          if (nrow(showMeans)>1) {
+        if (is.element(showType[si],c("n(sig)","n(fd)","p(sig)","p(w80)","Hits","Misses","Inference","Source","PDF"))) {
+          if (is.matrix(showMeans) && nrow(showMeans)>1) {
             y50<-showMeans[1,]
             y50a<-showMeans[2,]
             if (all(y50a==0)) y50a<-y50+NA

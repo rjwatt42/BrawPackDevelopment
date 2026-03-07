@@ -76,7 +76,7 @@ getExploreRange<-function(explore) {
          "CheatingAmount"=range<-list(minVal=0, maxVal=0.8,logScale=FALSE,np=13),
          "ClusterRad"=range<-list(minVal=0, maxVal=1,logScale=FALSE,np=13),
          "SampleSD"=range<-list(minVal=1, maxVal=100,logScale=TRUE,np=13),
-         "NoStudies"=range<-list(minVal=2,maxVal=200,logScale=TRUE,np=13),
+         "NoStudies"=range<-list(minVal=2,maxVal=1000,logScale=TRUE,np=13),
          {range<-list(minVal=0,maxVal=1,logScale=FALSE,np=2)}
   )
   return(range)
@@ -134,11 +134,13 @@ summariseResult<-function(result) {
     }
   } else {
     use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax))
+    PDF<-res$best$PDF
     PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk,res$genexp$PDFk,res$gamma$PDFk)[use]
     PDFshape<-c(res$fixed$PDFshape,res$random$PDFshape,res$single$PDFshape,res$gauss$PDFshape,res$exp$PDFshape,res$genexp$PDFshape,res$gamma$PDFshape)[use]
     pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus,res$genexp$pRplus,res$gamma$pRplus)[use]
     sigOnly<-c(res$fixed$sigOnly,res$random$sigOnly,res$single$sigOnly,res$gauss$sigOnly,res$exp$sigOnly,res$genexp$sigOnly,res$gamma$sigOnly)[use]
     Smax<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax)[use]
+    result$PDF<-PDF
     result$PDFk<-PDFk
     result$PDFshape<-PDFshape
     result$pRplus<-pRplus
@@ -159,7 +161,7 @@ summariseResult<-function(result) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               PDFk=b,PDFshape=b,pRplus=b,sigOnly=b,Smax=b
+               PDF=b,PDFk=b,PDFshape=b,pRplus=b,sigOnly=b,Smax=b
   )
   return(result)
 }
@@ -183,7 +185,7 @@ resetExploreResult<-function(nsims,n_vals,oldResult=NULL) {
                rIV2=b,rIVIV2DV=b,pIV2=b,pIVIV2DV=b,
                r=list(direct=bm,unique=bm,total=bm),
                p=list(direct=bm,unique=bm,total=bm),
-               PDFk=b,PDFshape=b,pRplus=b,sigOnly=b,Smax=b
+               PDF=b,PDFk=b,PDFshape=b,pRplus=b,sigOnly=b,Smax=b
   )
   if (!is.null(oldResult)) {
     result<-mergeExploreResult(oldResult,result)
@@ -241,6 +243,7 @@ storeExploreResult<-function(result,res,ri,vi) {
     }
   } else {
     use<-which.max(c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax))
+    PDF<-c(res$fixed$PDF,res$random$PDF,res$single$PDF,res$gauss$PDF,res$exp$PDF,res$genexp$PDF,res$gamma$PDF)[use]
     PDFk<-c(res$fixed$PDFk,res$random$PDFk,res$single$PDFk,res$gauss$PDFk,res$exp$PDFk,res$genexp$PDFk,res$gamma$PDFk)[use]
     PDFshape<-c(res$fixed$PDFshape,res$random$PDFshape,res$single$PDFshape,res$gauss$PDFshape,res$exp$PDFshape,res$genexp$PDFshape,res$gamma$PDFshape)[use]
     pRplus<-c(res$fixed$pRplus,res$random$pRplus,res$single$pRplus,res$gauss$pRplus,res$exp$pRplus,res$genexp$pRplus,res$gamma$pRplus)[use]
@@ -248,6 +251,7 @@ storeExploreResult<-function(result,res,ri,vi) {
     Smax<-c(res$fixed$Smax,res$random$Smax,res$single$Smax,res$gauss$Smax,res$exp$Smax,res$genexp$Smax,res$gamma$Smax)[use]
     sigs<-isSignificant(braw.env$STMethod,res$result$pIV,res$result$rIV,res$result$nval,res$result$df1,res$result$evidence)
     nSig<-sum(sigs)
+    result$PDF[ri,vi]<-PDF
     result$PDFk[ri,vi]<-PDFk
     result$PDFshape[ri,vi]<-PDFshape
     result$pRplus[ri,vi]<-pRplus
@@ -305,6 +309,7 @@ mergeExploreResult<-function(res1,res2) {
     result$pIVIV2DV<-rbind(res1$pIVIV2DV,res2$pIVIV2DV)
   }
   
+  result$PDF<-rbind(res1$PDF,res2$PDF)
   result$PDFk<-rbind(res1$PDFk,res2$PDFk)
   result$PDFshape<-rbind(res1$PDFshape,res2$PDFshape)
   result$pRplus<-rbind(res1$pRplus,res2$pRplus)
@@ -479,7 +484,11 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
           "rIVIV2DV"={vals<-seq(minVal,maxVal,length.out=npoints)},
           "sourceBias"={vals<-seq(0,1,length.out=npoints)},
           
-          "PDF"={vals<-c("Single","Double","Uniform","Gauss","Exp","Gamma","GenExp")},
+          "PDF"={
+            vals<-c("Gauss","Exp")
+            if (braw.env$includeGamma) vals<-c(vals,"Gamma")
+            if (braw.env$includeGenExp) vals<-c(vals,"GenExp")
+            },
           "PDFshape"={
             if (hypothesis$effect$world$PDF=="GenExp")
             vals<-seq(0,4,length.out=npoints)
