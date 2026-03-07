@@ -261,18 +261,26 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
              showType<-"metaRiv;metaSpread"
            },
            "world"={
-             showType<-"metaRiv"
-             if (metaResult$metaAnalysis$analyseBias) showType<-"metaRiv;metaBias"
+             showType<-"metaK"
+             if (metaResult$metaAnalysis$analyseBias) showType<-"metaK;metaBias"
            })
   }
   if (is.element(showType,c("Riv","Spread","Smax","K","PRplus","Bias")))
     showType<-paste0("meta",showType)
   
-  if (is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
+  # if (is.element(metaResult$metaAnalysis$analysisType,c("fixed","random"))) {
+  if (dimension=="1D") {
     autoPrintOld<-braw.env$autoPrint
     on.exit(setBrawEnv("autoPrint",autoPrintOld))
     setBrawEnv("autoPrint",FALSE)
     g<-showMultiple(metaResult,showType=showType,dimension=dimension,orientation=orientation)
+    switch(showType,
+           "metaK"=names<-c(paste0('mean=',brawFormat(mean(metaResult$best$PDFk))),
+                            paste0('sd=',brawFormat(sd(metaResult$best$PDFk))),
+                            paste0('\U03A3n=',brawFormat(mean(metaResult$best$ns)))
+           )
+    )
+    g<-addG(g,dataLegend(data.frame(names=names,colours=c(NA,NA,NA))))
   } else {
     switch(showType,
            "metaSmax;metaSmax"={
@@ -280,6 +288,10 @@ showMetaMultiple<-function(metaResult=braw.res$metaMultiple,showType=NULL,dimens
              g<-drawMeta(metaResult=metaResult,showType=showType,g=NULL)
            },
            "metaK;metaPRplus"={
+             braw.env$plotArea<-c(0,0,1,1)
+             g<-drawMeta(metaResult=metaResult,whichMeta=metaResult$metaAnalysis$modelPDF,showType=showType,g=NULL)
+           },
+           "metaK;metaSmax"={
              braw.env$plotArea<-c(0,0,1,1)
              g<-drawMeta(metaResult=metaResult,whichMeta=metaResult$metaAnalysis$modelPDF,showType=showType,g=NULL)
            },

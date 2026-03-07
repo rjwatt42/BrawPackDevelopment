@@ -60,6 +60,11 @@ doMetaMultiple<-function(nsims=100,metaMultiple=braw.res$metaMultiple,metaAnalys
   evidence$sigOnly<-(evidence$sigOnly || metaAnalysis$sourceBias)
   evidence$shortHand<-shortHand
   
+  if (!is.null(metaMultiple)) {
+    if (!identical(metaAnalysis,metaMultiple$metaAnalysis))
+      metaMultiple<-NULL
+  }
+  
   for (i in 1:nsims) {
     localHypothesis<-hypothesis
     if (hypothesis$effect$world$On && is.element(metaAnalysis$analysisType,c("fixed","random")))
@@ -68,13 +73,14 @@ doMetaMultiple<-function(nsims=100,metaMultiple=braw.res$metaMultiple,metaAnalys
       localHypothesis$effect$world$On<-FALSE
     }
     studies<-multipleAnalysis(metaAnalysis$nstudies,localHypothesis,design,evidence)
+    if (metaAnalysis$sourceAbs) studies$rIV<-abs(studies$rIV)
     metaMultiple<-runMetaAnalysis(metaAnalysis,studies,hypothesis,metaMultiple)
   }
   metaMultiple$hypothesis<-hypothesis
   metaMultiple$design<-design
   metaMultiple$evidence<-evidence
   setBrawRes("metaMultiple",metaMultiple)
-  metaMultiple
+  return(metaMultiple)
 }
 
 getTrimFill<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
@@ -318,7 +324,7 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   )
   
   # if (dist=="random" && metaAnalysis$analysisVar=="sd") PDFspread<-sign(PDFspread)*sqrt(abs(PDFspread))
-  return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,Svals=Svals,Spts=Spts))
+  return(list(PDF=dist,PDFk=PDFk,pRplus=pRplus,sigOnly=sigOnly,PDFspread=PDFspread,PDFshape=PDFshape,Smax=Smax,ns=sum(ns),Svals=Svals,Spts=Spts))
 }
 
 mergeMAResult<-function(multiple,single) {
@@ -329,10 +335,12 @@ mergeMAResult<-function(multiple,single) {
   single$PDFspread<-c(multiple$PDFspread,single$PDFspread)
   single$PDFshape<-c(multiple$PDFshape,single$PDFshape)
   single$Smax<-c(multiple$Smax,single$Smax)
+  single$ns<-c(multiple$ns,single$ns)
   return(single)
 }
 
 runMetaAnalysis<-function(metaAnalysis,studies,hypothesis,metaResult){
+  if (metaAnalysis$sourceAbs) studies$rIV<-abs(studies$rIV)
   if (!metaAnalysis$analyseBias && metaAnalysis$sourceBias) {
     p<-rn2p(studies$rIV,studies$nval)
     studies$rIV<-studies$rIV[p<0.05]

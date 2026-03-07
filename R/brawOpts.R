@@ -289,6 +289,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
 
           braw.env$Plabel<-paste0("p(",braw.env$nonNull,")")
           braw.env$Llabel<-paste0("mean(",braw.env$nonNull,")")
+          braw.env$Llabel<-'z[\U03BB]'
 
           braw.env$nonNullSig<-     paste0(braw.env$nonNull,"~sig")
           braw.env$nonNullPositive<-paste0(braw.env$nonNull,'(+sig)')

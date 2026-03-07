@@ -944,7 +944,8 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location
   dx=0.03*fontsize/braw.env$plotArea[3] # because rangeX() below
   if (nchar(title)>0) tn<-1.2 else tn<-0
   nrows<-tn+length(data$names)+1
-  ncols<-max(c(strNChar(title)*1.5,strNChar(data$names)+1))+2
+  if (all(is.na(data$colours))) xoff=0 else xoff=2
+  ncols<-max(c(strNChar(title)*1.5,strNChar(data$names)+1))+xoff
   # ncols<-max(strwidth(parse(text=mathPrepText(c(title,data$names)))))/strwidth("e")+2
   switch(location,
          "right"={xL<-1-ncols*dx},
@@ -960,7 +961,7 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location
                        colour="#000000",linewidth=0.5))
   )
   if (tn>0)
-    g<-c(g,list(axisText(data=data.frame(x=rangeX(xL+2*dx),y=rangeY(1-dy*tn)),label=title,colour=titleCol,size=fontsize,fontface="bold"))
+    g<-c(g,list(axisText(data=data.frame(x=rangeX(xL+1.5*dx),y=rangeY(1-dy*tn)),label=title,colour=titleCol,size=fontsize,fontface="bold"))
     )
   
   if (length(shape)<length(data$names)) shape<-rep(shape,length(data$names))
@@ -971,7 +972,7 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location
                           fill=data$colours[i],shape=shape[i]))
       )
     g<-c(g,
-         list(axisText(data=data.frame(x=rangeX(xL+3.5*dx),y=rangeY(1-dy*(i+tn))),
+         list(axisText(data=data.frame(x=rangeX(xL+(xoff+1.5)*dx),y=rangeY(1-dy*(i+tn))),
                        label=data$names[i],vjust=0.5,size=fontsize))
     )
   }
@@ -1026,6 +1027,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
 
 #' @export
 dataGraph<-function(data,fill='white',
+                    legend=NULL,
                          xlim=NULL,ylim=NULL,
                          xlabel=NULL,ylabel=NULL,
                          xticks=NULL,yticks=NULL,
@@ -1046,8 +1048,17 @@ dataGraph<-function(data,fill='white',
                orientation="horz",top=top) 
   if (!is.null(title)) g<-addG(g,plotTitle(title))
   }
-  g<-addG(g,dataPath(data,linewidth=0.5))
-  g<-addG(g,dataPoint(data,fill=fill))
+  if (is.matrix(data$y)) {
+    for (i in 1:nrow(data$y)) {
+      d<-data.frame(x=data$x[i,],y=data$y[i,])
+      g<-addG(g,dataPath(d,linewidth=0.5))
+      g<-addG(g,dataPoint(d,fill=data$fill[i]))
+    }
+    if (!is.null(legend)) g<-addG(g,dataLegend(data.frame(names=legend$names,colours=data$fill),title=legend$legendTitle))
+  } else {
+    g<-addG(g,dataPath(data,linewidth=0.5))
+    g<-addG(g,dataPoint(data,fill=fill))
+  }
   return(g)
 }
 
