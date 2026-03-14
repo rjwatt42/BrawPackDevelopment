@@ -13,7 +13,7 @@ SingleSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1) {
   } else {
     d0<-1
   }
-  return(list(pdf=d1,sig_pdf=d0))
+  return(list(pdf=d1,sig_compensate=d0))
 }
 
 
@@ -30,7 +30,7 @@ UniformSamplingPDF<-function(z,lambda,sigma,spread=0,shape=0,bias=0,df1=1) {
   } else {
     d0<-1
   }
-  return(list(pdf=d1,sig_pdf=d0))
+  return(list(pdf=d1,sig_compensate=d0))
 }
 
 
@@ -45,7 +45,7 @@ GaussSamplingPDF<-function(z,lambda,sigma,offset=0,spread=0,shape=NA,bias=0,df1=
   } else {
     d0<-1
   }
-  return(list(pdf=d1,sig_pdf=d0))
+  return(list(pdf=d1,sig_compensate=d0))
 }
 GaussSamplingCDF<-function(zcrit,lambda,sigma,offset=0) {
   sigma<-sqrt(lambda^2+sigma^2)
@@ -94,7 +94,7 @@ ExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=NA,bias=0,df1=1) {
   } else {
     d0<-1
   }
-  return(list(pdf=d1,sig_pdf=d0))
+  return(list(pdf=d1,sig_compensate=d0))
 }
 ExpSamplingCDF<-function(zcrit,lambda,sigma) {
   z <- zcrit
@@ -135,15 +135,21 @@ removeNonSig<-function(zi,zpd,sigma,df1) {
   zcritUnique<-unique(zcrit)
   for (i in 1:length(zcritUnique)) {
     use<-which(zcrit==zcritUnique[i])
-    zi1<-seq(-braw.env$dist_range,-zcritUnique[i],braw.env$dist_zi)
-    zi1<-c(zi1,-zcritUnique[i])
+    zi1<-seq(-braw.env$dist_range*2,-zcritUnique[i],braw.env$dist_zi)
+    # zi1<-c(zi1,-zcritUnique[i])
+    zi2<-seq(-braw.env$dist_range*2,0,braw.env$dist_zi)
     
     d0<-zi1*0
     for (j in 1:length(zi1)) {
       zs<-zpd*dnorm(zi,zi1[j],sigma[use[1]])
       d0[j]<-sum(zs)*braw.env$dist_zi
     }
-    areas<-(d0[1:(length(zi1)-1)]+d0[2:length(zi1)])/2*diff(zi1)
+    d02<-zi2*0
+    for (j in 1:length(zi2)) {
+      zs<-zpd*dnorm(zi,zi2[j],sigma[use[1]])
+      d02[j]<-sum(zs)*braw.env$dist_zi
+    }
+    areas<-(d0[1:(length(zi1)-1)]+d0[2:length(zi1)])/2
     d2[use]<-sum(areas)*2
   }
   return(d2)
@@ -161,20 +167,23 @@ GammaSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
     # zd<-zd/(sum(zd)*(z[2]-z[1]))
     return(zd)
   }
-  zi<-seq(-braw.env$dist_range,braw.env$dist_range,braw.env$dist_zi)
+  zi<-seq(-braw.env$dist_range*2,braw.env$dist_range*2,braw.env$dist_zi)
   if (lambda==0 || shape==0) zpd<-as.numeric(zi==0)+0.1
   else zpd<-dgamma(abs(zi),shape=shape,scale=lambda/shape)
   # because the distribution is reflected about zero
-  zpd<-zpd/2
+  zpd<-zpd/2*braw.env$dist_zi
   
   d1<-convolveWith(zi,zpd,z,sqrt(sigma2))
-
+  zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))
+  d2<-d1
+  d2[abs(z)<zcrit]<-0
+    
   if (bias) {
-    d2<-removeNonSig(zi,zpd,sigma,df1)
+    sig_compensate<-removeNonSig(zi,zpd,sigma,df1)
   } else {
-    d2<-1
+    sig_compensate<-1
   }
-  return(list(pdf=d1,sig_pdf=d2))
+  return(list(pdf=d1,sig_compensate=sig_compensate,pop=zpd,pdf_sig=d2,z=z,zi=zi))
   
 }
 
@@ -216,7 +225,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
   } else {
     d2<-1
   }
-  return(list(pdf=d1,sig_pdf=d2))
+  return(list(pdf=d1,sig_compensate=d2))
 }
 
 
@@ -243,7 +252,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
       } else
         mainPDF<-SingleSamplingPDF(z,lambda[i],sigma,spread=0,bias=bias,df1=df1)
         # now normalize for the non-sig
-        likelihoods<-mainPDF$pdf/mainPDF$sig_pdf
+        likelihoods<-mainPDF$pdf/mainPDF$sig_compensate
         # likelihoods[(likelihoods<1e-300)]<- 1e-300
         res[i,j]<-sum(log(likelihoods[likelihoods>=1e-300]),na.rm=TRUE)+(-1000*sum(likelihoods<1e-300))
         if (res[i,j]==max(res,na.rm=TRUE)) lksHold<-likelihoods
@@ -263,7 +272,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
         } else
           mainPDF<-SingleSamplingPDF(z,lambda[i],sigma,spread=spread[j],bias=bias,df1=df1)
         # now normalize for the non-sig
-        likelihoods<-mainPDF$pdf/mainPDF$sig_pdf
+        likelihoods<-mainPDF$pdf/mainPDF$sig_compensate
         likelihoods[(likelihoods<1e-300)]<- 1e-300
         res[i,j]<-sum(log(likelihoods),na.rm=TRUE)
         if (res[i,j]==max(res,na.rm=TRUE)) lksHold<-likelihoods
@@ -282,7 +291,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
     } else
       nullPDF<-SingleSamplingPDF(z,0,sigma=sigma,spread=0,bias=bias,df1=df1)
   } else {
-    nullPDF<-list(pdf=0,sig_pdf=1)
+    nullPDF<-list(pdf=0,sig_compensate=1)
     zcrit<-0
   } 
   res<-matrix(-Inf,nrow=length(location),ncol=length(pRpluss))
@@ -318,7 +327,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
       # make the whole source first
       likelihoods<-mainPDF$pdf*pRplus+nullPDF$pdf*(1-pRplus)
       # now normalize for the non-sig
-      likelihoods<-likelihoods/(mainPDF$sig_pdf*pRplus+nullPDF$sig_pdf*(1-pRplus))
+      likelihoods<-likelihoods/(mainPDF$sig_compensate*pRplus+nullPDF$sig_compensate*(1-pRplus))
       likelihoods[(likelihoods<1e-300)]<- 1e-300
       res[i,j]<-sum(log(likelihoods),na.rm=TRUE)
       if (res[i,j]==max(res,na.rm=TRUE)) lksHold<-log(likelihoods)

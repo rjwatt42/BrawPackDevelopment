@@ -1035,8 +1035,8 @@ dataGraph<-function(data,fill='white',
                     g=NULL
                     ) {
   if (is.null(g)) {
-  if (is.null(xlim)) xlim<-c(min(data$x),max(data$x))+c(-1,1)*(max(data$x)-min(data$x))*0.1
-  if (is.null(ylim)) ylim<-c(min(data$y),max(data$y))+c(-1,1)*(max(data$y)-min(data$y))*0.1
+  if (is.null(xlim)) xlim<-c(min(data$x,na.rm=TRUE),max(data$x,na.rm=TRUE))+c(-1,1)*(max(data$x,na.rm=TRUE)-min(data$x,na.rm=TRUE))*0.1
+  if (is.null(ylim)) ylim<-c(min(data$y,na.rm=TRUE),max(data$y,na.rm=TRUE))+c(-1,1)*(max(data$y,na.rm=TRUE)-min(data$y,na.rm=TRUE))*0.1
   if (is.null(xticks)) xticks<-axisTicks(xlim,log=FALSE)
   if (is.null(yticks)) yticks<-axisTicks(ylim,log=FALSE)
   if (is.null(xlabel)) xlabel<-"x"
@@ -1057,6 +1057,7 @@ dataGraph<-function(data,fill='white',
     if (!is.null(legend)) g<-addG(g,dataLegend(data.frame(names=legend$names,colours=data$fill),title=legend$legendTitle))
   } else {
     g<-addG(g,dataPath(data,linewidth=0.5))
+    if (!is.na(fill))
     g<-addG(g,dataPoint(data,fill=fill))
   }
   return(g)

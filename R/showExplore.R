@@ -66,7 +66,8 @@ trimExploreResult<-function(result,nullresult) {
 #'                        effectType="unique",whichEffect="All",
 #'                        quantileShow=0.5,fixedYlim=TRUE,showHist=TRUE)
 #' @export
-showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension="1D",showTheory=FALSE,
+showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension="1D",
+                      showTheory=FALSE,theoryLineCol="black",
                       effectType="unique",whichEffect="All",quantileShow=0.5,
                       fixedYlim=braw.env$fixedYlim,showHist=FALSE,fixNulls=TRUE){
 
@@ -895,6 +896,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
         if (diff(ylim)==0) ylim<-ylim+c(-1,1)*ylim/10
         else               ylim<-ylim+c(-1,1)*diff(ylim)/10
       }
+    }
       # general start
       if (effectType==effectTypes[1]) {
       g<-startPlot(xlim,ylim,
@@ -909,17 +911,19 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
       }
       
       # theory plots
+    if (is.na(theoryLineCol)) theoryLineCol<-darken(col,1,-0.15)
+    if (is.null(theoryUpper)) linewidth<-0.5 else linewidth<-1
       if (!is.null(theoryVals)) {
         theory<-data.frame(x=newvals, y=theoryVals)
-        g<-addG(g,dataLine(theory,colour=darken(col,1,-0.15),linewidth=1))
+        g<-addG(g,dataLine(theory,colour=theoryLineCol,linewidth=linewidth))
       }
       if (!is.null(theoryUpper)) {
         theory<-data.frame(x=newvals, y=theoryUpper)
-        g<-addG(g,dataLine(theory,colour=darken(col,1,-0.15),linewidth=0.5))
+        g<-addG(g,dataLine(theory,colour=theoryLineCol,linewidth=0.5))
       }
       if (!is.null(theoryLower)) {
         theory<-data.frame(x=newvals, y=theoryLower)
-        g<-addG(g,dataLine(theory,colour=darken(col,1,-0.15),linewidth=0.5))
+        g<-addG(g,dataLine(theory,colour=theoryLineCol,linewidth=0.5))
       }
       if (!is.null(theoryVals1)) {
         theory<-data.frame(x=c(newvals,rev(newvals)), y=1-c(theoryVals1,theoryVals1*0))
@@ -934,6 +938,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
         g<-addG(g,dataLine(theory,colour="#000000",linewidth=0.5))
       }
       
+    if (!is.null(exploreResult$result)) {
       # plot results
       if (!is.element(showType[si],c("NHST","SEM"))) {
         # draw the basic line and point data

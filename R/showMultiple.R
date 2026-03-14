@@ -16,7 +16,7 @@
 #'                        effectType="direct",showTheory=TRUE)
 #' @export
 showMultiple<-function(multipleResult=braw.res$multiple,showType="Basic",
-                       dimension="1D",orientation="vert",
+                       dimension="1D",orientation=braw.env$graphOrientation,
                        whichEffect="All",effectType="all",
                        showTheory=braw.env$showTheory,showData=TRUE,showLegend=TRUE,
                        showYaxis=TRUE,

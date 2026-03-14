@@ -16,11 +16,20 @@
 #'                              minVal=10,maxVal=250,xlog=FALSE)
 #' @export
 makeExplore<-function(exploreType="n",exploreNPoints=11,
-                      vals=NULL,minVal=NA,maxVal=NA,xlog=FALSE
+                      vals=NULL,minVal=NA,maxVal=NA,xlog=NA
 ) {
   if (exploreType=="alpha") exploreType<-"Alpha"
   if (exploreType=="pRplus") exploreType<-"p(R+)"
   if (exploreType=="meanRplus") exploreType<-"mean(R+)"
+  
+  if (any(is.na(c(minVal,maxVal,exploreNPoints)))) {
+    range<-getExploreRange(list(exploreType=exploreType))
+    if (is.na(minVal))  minVal<-range$minVal
+    if (is.na(maxVal))  maxVal<-range$maxVal
+    if (is.na(exploreNPoints))  exploreNPoints<-range$np
+    if (is.na(xlog))  xlog<-range$logScale
+  }
+  if (is.na(xlog)) xlog<-FALSE
   
   explore<-list(exploreType=exploreType,
                 exploreNPoints=exploreNPoints,
@@ -28,13 +37,6 @@ makeExplore<-function(exploreType="n",exploreNPoints=11,
   )
   if (!is.null(vals)) explore$minVal<-vals
   
-  if (any(is.na(explore$minVal))) {
-    range<-getExploreRange(explore)
-    explore$minVal<-range$minVal
-    explore$maxVal<-range$maxVal
-    explore$exploreNPoints<-range$np
-    explore$xlog<-range$logScale
-  }
   return(explore)
 }
 

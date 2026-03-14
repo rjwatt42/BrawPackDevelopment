@@ -523,16 +523,20 @@ makeFiddle<-function(y,yd,orientation="horz"){
     if (1==1) {
       y_vals<-seq(min(y),max(y),length.out=501)
       x_vals<-seq(0,1,length.out=501)
-      store<-matrix(0,length(y_vals),length(x_vals))
+      ysc<-3
+      store<-matrix(0,length(y_vals),length(x_vals)*2)
       for (i in 1:length(y)) {
         usey<-which.min(abs(y[i]-y_vals))
         usex<-min(which(store[usey,]==0))
         x_pos[i]<-x_vals[usex]
         if (x_pos[i]>0) x_pos[i]<-x_pos[i]+runif(1,-1,1)*diff(x_vals[1:2])*1.5
-        np<-5
+        np<-ceiling(sqrt(length(y)))/2
         for (ix in -np:np) 
-          for (iy in -np:np) {
-            if ((ix^2+iy^2)<np^2 && (ix+usex)>0 && (ix+usex)<501 && (iy+usey)>0 && (iy+usey)<501) 
+          for (iy in -(np*ysc):(np*ysc)) {
+            if ((ix^2+(iy/ysc)^2)<np^2 && 
+                (ix+usex)>0 && (ix+usex)<501 && 
+                (iy+usey)>0 && (iy+usey)<501
+                ) 
               store[iy+usey,ix+usex]<-1
           }
       }
@@ -946,7 +950,7 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
     # else
     if (!sequence) {
       use<-c(which(pts$sig & pts$notNull),which(!pts$sig & pts$notNull),which(!pts$sig & !pts$notNull),which(pts$sig & !pts$notNull))
-    pts<-pts[use,]
+      pts<-pts[use,]
     }
     xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
     
@@ -962,10 +966,8 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
     # if (max(abs(xr))>0) xr<-xr*hgain/max(abs(xr))
     if (!is.na(histGain)) {
       xr<-xr*histGain
-      # if (!sequence && max(xr)<0.5 && length(xr)>10) xr<-xr/max(abs(xr))*0.5
     }
-    # else xr<-xr/max(abs(xr))*0.25
-    if (max(xr)>0.5) xr<-xr/max(abs(xr))*0.5
+    if (max(xr)>0.8) xr<-xr/max(abs(xr))*0.8
     xr<-xr*min(1,length(xr)/100)
     xr<-xr+hoff
     
@@ -1496,10 +1498,14 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                         labelNSig=labelNSig,labelSig=labelSig,distGain=distGain)
                    )
       }
+      if (evidence$sigOnly) {
+        theory$theoryDens_sig<-theory$theoryDens_sig/max(theory$theoryDens_sig)
+        theory$theoryDens_all<-theory$theoryDens_sig
+      }
       theoryVals<-theory$theoryVals
       theoryDens_all<-theory$theoryDens_all
       theoryDens_sig<-theory$theoryDens_sig
-
+      
       if (theoryFirst)
       g<-theoryPlot(g,theory,orientation,baseColour,theoryAlpha,xoff[i])
 

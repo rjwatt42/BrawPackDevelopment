@@ -40,7 +40,7 @@ newBrawDev<-function(fontScale=1,height=1000,aspect=1) {
 #' @export
 BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,10),
                    reportHTML=FALSE, graphicsType="ggplot", reportFontSize=0.85, 
-                   colBlind=FALSE,
+                   colBlind=FALSE,graphOrientation="vert",
                    newDev=FALSE,height=400,aspect=1.3,autoShow=FALSE,autoPrint=FALSE,timeLimit=Inf,fullGraphSize=1,
                    npointsMax=1000,
                    maxBins=251,
@@ -249,6 +249,8 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$fullOutput<-fullOutput
           braw.env$reportCounts<-FALSE
 
+          braw.env$graphOrientation<-graphOrientation
+          
           braw.env$timeLimit<-timeLimit # seconds
           
           ##################################
@@ -347,7 +349,7 @@ setBrawDef("possible",makePossible(targetSample=0.3))
 
 #' @export
 setBrawOpts<-function(BW=NULL,graphC=NULL,fontScale=NULL,reportFontSize=NULL,
-                      graphicsType=NULL,fullGraphSize=NULL,
+                      graphicsType=NULL,fullGraphSize=NULL,graphOrientation=NULL,
                       reportHTML=NULL, fullOutput=NULL, 
                       npointsMax=NULL,timeLimit=NULL,
                       autoShow=NULL,autoPrint=NULL
@@ -368,6 +370,7 @@ setBrawOpts<-function(BW=NULL,graphC=NULL,fontScale=NULL,reportFontSize=NULL,
   if(!is.null(autoShow)) setBrawEnv("autoShow",autoShow)
   if(!is.null(autoPrint)) setBrawEnv("autoPrint",autoPrint)
   if(!is.null(fullGraphSize)) setBrawEnv("fullGraphSize",fullGraphSize)
+  if(!is.null(graphOrientation)) setBrawEnv("graphOrientation",graphOrientation)
   if(!is.null(npointsMax)) setBrawEnv("npointsMax",npointsMax)
   
 }
