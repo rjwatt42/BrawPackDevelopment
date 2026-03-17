@@ -46,10 +46,25 @@ pathmodel$links<-list(
   # b=list(e=rp,f=rp),
   # a=list(e=rp)
 )
-
 Stheta<-path2Stheta(pathmodel)
 
 pathdata<-path2Sample(pathmodel,np=10000000)
 Stheta1<-pathData2Stheta(pathdata,digits=2)
+
+
+######################
+
+path<-paste(
+  "t~x",
+  "s~v+w",
+  "r~u+v",
+  "q~u",
+  "p~s",
+  "o~r+s",
+  "n~s",
+  "m~q",
+  sep="\n")
+semResult <- lavaan::sem(path, pathdata)
+
 
 

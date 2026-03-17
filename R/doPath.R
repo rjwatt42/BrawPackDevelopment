@@ -10,6 +10,7 @@ get_Stheta<-function(L,B,phi,psy) {
   term3<-t(inv(term1))
   
   SYYtheta<-(solve((term1),(term2)))%*%term3
+  SYYtheta<-inv(term1)%*%term2%*%term3
   SXXtheta<-phi
   SYXtheta<-phi%*%t(L)%*%term3
   Stheta<-rbind(cbind(SYYtheta, zeros(P,Q)),cbind(SYXtheta, SXXtheta))
@@ -25,7 +26,8 @@ Stheta2Cor<-function(Stheta,P,Q,exo_names,endo_names) {
   colnames(Stheta)<-c(exo_names,endo_names)
   rownames(Stheta)<-c(exo_names,endo_names)
   
-  # Stheta<-Stheta/t(replicate(P+Q,diag(Stheta)))
+  variances<-replicate(P+Q,diag(Stheta))
+  # Stheta<-Stheta/sqrt(t(variances)*variances)
   # Stheta<-tril(Stheta,-1)
   return(Stheta)  
 }
@@ -90,10 +92,11 @@ path2Stheta<-function(pathmodel) {
   }
   
   phi<-diag(1,Q,Q)
-  psy<-diag(1,P,P)*0
+  psy<-(1-rowSums(cbind(Bdesign,Ldesign)^2))
+  psy<-diag(psy,P,P)
   
   Stheta<-get_Stheta(Ldesign,Bdesign,phi,psy)
-  # Stheta<-Stheta2Cor(Stheta,P,Q,exo_names,endo_names)
+  Stheta<-Stheta2Cor(Stheta,P,Q,exo_names,endo_names)
   
 }
 
