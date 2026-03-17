@@ -9,12 +9,6 @@ plotSEMModel<-function(pathmodel) {
   digits<-2
   r<-pathmodel$ES_table
   
-  switch(pathmodel$depth,
-         '1'= depth<-1,
-         '2'= depth<-2,
-         '3'= depth<-length(stages)
-  )
-
   xlim<-c(-1,1)*15
   ylim<-c(-1,1)*10
   braw.env$plotArea<-c(0,0,1,1)
@@ -61,7 +55,7 @@ plotSEMModel<-function(pathmodel) {
   cnames<-colnames(pathmodel$ES_table)
   for (i1 in 1:ncol(pathmodel$ES_table))
     for (i2 in 1:nrow(pathmodel$ES_table))
-      if (!is.na(r[i2,i1])) {
+      if (!is.na(r[i2,i1])&&(r[i2,i1]!=0)) {
         use1<-which(names==cnames[i1])
         use2<-which(names==rnames[i2])
         yStart<-ys[use1]
@@ -106,7 +100,7 @@ plotSEMModel<-function(pathmodel) {
   if (!is.null(ar)) {
     for (ai in order(abs(ar))) {
       g<-addG(g,drawArrow(c(ax[ai],ay[ai]),aLen[ai],direction=rdir[ai]+90,
-                          width=aWid[ai],ends="last",
+                          width=aWid[ai]/2,ends="last",
                           col=rfg[ai],fill=rcol[ai],finAngle=60))
       
     }
@@ -126,12 +120,14 @@ plotSEMModel<-function(pathmodel) {
     if (is.element(names[ni],colnames(pathmodel$Bdesign)) && all(pathmodel$Bdesign[,names[ni]]==0)) fill<-"#FFAAAA"
     if (!is.element(names[ni],rownames(pathmodel$Bdesign)) || all(pathmodel$Ldesign[names[ni],]==0)) fill<-"#CCFF44"
     g<-addG(g,dataLabel(data.frame(x=xs[ni],y=ys[ni]),label=names[ni],
-                        size=fontSize,hjust=0.5,vjust=0.5,fontface="bold",fill=fill))
+                        size=fontSize*3,hjust=0.5,vjust=0.5,fontface="bold",fill=fill))
   }
 
   # now summary result
+  if (!is.null(pathmodel$result)) {
   label<-paste0("r[model]=",brawFormat(sqrt(pathmodel$result$Rsquared),3),"  AIC=",brawFormat(pathmodel$result$AIC,1))
   g<-addG(g,dataLabel(data.frame(x=xlim[2]-diff(xlim)/30,y=ylim[1]+diff(ylim)/30),label,hjust=1,size=fontSize*0.85))
+  }
   return(g)
 
 }

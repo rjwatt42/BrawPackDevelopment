@@ -62,6 +62,38 @@ path2Sample<-function(pathmodel,np=100000) {
   return(data)
 }
 
+path2ES_table<-function(pathmodel) {
+  endo_names<-names(pathmodel$links)
+  exo_names<-setdiff(pathmodel$variables,endo_names)
+  
+  P<-length(endo_names)
+  Q<-length(exo_names)
+  
+  endogenous<-1:P
+  Bdesign<-zeros(P,P); rownames(Bdesign)<-endo_names; colnames(Bdesign)<-endo_names
+  
+  if (Q>0)  {
+    exogenous<-P+(1:Q) 
+    Ldesign<-zeros(P,Q); rownames(Ldesign)<-endo_names; colnames(Ldesign)<-exo_names
+  } else {
+    exogenous<-c()
+    Ldesign<-c()
+  }
+  
+  for (i in 1:P) {
+    links<-pathmodel$links[[i]]
+    row<-endo_names[i]
+    cols<-names(links)
+    use<-is.element(cols,endo_names)
+    if (any(use))
+      Bdesign[row,cols[use]]<-unlist(links[use])
+    if (any(!use))
+      Ldesign[row,cols[!use]]<-unlist(links[!use])
+  }
+  
+  return(cbind(Ldesign,Bdesign))
+}
+
 path2Stheta<-function(pathmodel) {
   endo_names<-names(pathmodel$links)
   exo_names<-setdiff(pathmodel$variables,endo_names)

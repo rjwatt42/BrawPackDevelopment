@@ -1,0 +1,66 @@
+
+# network structure
+nrows=16
+ncols=8
+rangeLink=2
+probLink=0.01
+strengthLink=0.44
+
+ncount=10000
+ns=100
+
+
+rs_show=0
+for (ni in 1:ncount) {
+  
+  # make a network
+  fullLinks=matrix(0,nrows*ncols,nrows*ncols)
+  t=1
+  for (j in 1:nrows) {
+    for (i in 1:ncols) {
+      if (j>1) {
+        links=runif(rangeLink*2+1)<=probLink
+        if (i<(rangeLink+1))     links[1:(rangeLink-i+1)]=FALSE
+        if (i>(ncols-rangeLink)) links[(ncols-i+rangeLink*2):length(links)]=FALSE
+
+        for (k in -rangeLink:rangeLink) {
+        if (links[k+rangeLink+1]) fullLinks[t+k,t-ncols]=1
+        }
+      }
+      
+      t=t+1
+    }
+  }
+
+  pathmodel$variables<-paste0("v",1:(nrows*ncols))
+  
+  testData=matrix(0,ns,ncols*nrows)
+  for (t in seq(ncols*nrows,1,-1)) {
+    use=which(fullLinks[,t]==1)
+    if (length(use)==0) {
+      testData[,t]=rnorm(ns)
+    } else {
+      usedVar=length(use)*(strengthLink^2)
+      if (usedVar>1) usedVar=1
+      z=0
+      for (ui in 1:length(use)) 
+        z=z+testData[,use[ui]]*strengthLink
+      testData[,t]=z+
+                sqrt(1-usedVar)*rnorm(ns)
+    }
+  }
+  
+  rs=abs(cor(testData))
+  rs_show=c(rs_show, rs[upper.tri((rs))])
+
+  zs=atan(rs_show)
+  hist(zs)
+  
+  # metaData<-list(result=list(rIV=rs_show,nval=ns))
+  # metaAnal<-list(meta_pdf="All",meta_psigAnal=TRUE,meta_nullAnal=TRUE)
+  # an<-runMetaAnalysis(metaAnal,metaData)
+  # showAnalysis(an,"")
+  
+}
+
+
