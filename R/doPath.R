@@ -18,16 +18,10 @@ get_Stheta<-function(L,B,phi,psy) {
   return(Stheta)
 }
 
-Stheta2Cor<-function(Stheta,P,Q,exo_names,endo_names) {
+Stheta2Cor<-function(Stheta) {
   
-  use<-c(P+(1:Q),1:P)
-  Stheta<-Stheta[use,]
-  Stheta<-Stheta[,use]
-  colnames(Stheta)<-c(exo_names,endo_names)
-  rownames(Stheta)<-c(exo_names,endo_names)
-  
-  variances<-replicate(P+Q,diag(Stheta))
-  # Stheta<-Stheta/sqrt(t(variances)*variances)
+  variances<-replicate(nrow(Stheta),diag(Stheta))
+  Stheta<-Stheta/sqrt(t(variances)*variances)
   # Stheta<-tril(Stheta,-1)
   return(Stheta)  
 }
@@ -128,8 +122,13 @@ path2Stheta<-function(pathmodel) {
   psy<-diag(psy,P,P)
   
   Stheta<-get_Stheta(Ldesign,Bdesign,phi,psy)
-  Stheta<-Stheta2Cor(Stheta,P,Q,exo_names,endo_names)
   
+  use<-c(P+(1:Q),1:P)
+  Stheta<-Stheta[use,]
+  Stheta<-Stheta[,use]
+  colnames(Stheta)<-c(exo_names,endo_names)
+  rownames(Stheta)<-c(exo_names,endo_names)
+  return(Stheta)
 }
 
 pathData2Stheta<-function(data,digits=NA) {

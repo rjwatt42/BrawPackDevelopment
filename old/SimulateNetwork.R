@@ -1,66 +1,104 @@
+########################
 
 # network structure
 nrows=16
 ncols=8
-rangeLink=2
-probLink=0.01
-strengthLink=0.44
+rangeLink=4
+probLink=0.5
+strengthLink=0.2
+randomLink=strengthLink*0.1
+randomSign<-TRUE
 
-ncount=10000
-ns=100
+# graph
+ncount<-100
+nbins=500
+logXscale<-TRUE
+logYscale<-FALSE
 
+pathmodel<-list(variables=c(),
+                stages=NULL,
+                links=NULL)
 
-rs_show=0
+pathmodel$variables<-paste0("v",1:(nrows*ncols))
+for (i in 1:nrows) {
+  thisStage<-pathmodel$variables[(i-1)*ncols+1:ncols]
+  pathmodel$stages<-c(pathmodel$stages,list(thisStage))
+}
+
+# rs_show=0
+Stotal<-c()
+if (logXscale) {
+  Shist<-0
+  Sbins<-seq(-10,0,length.out=nbins)
+} else {
+  Shist<-0
+  Sbins<-seq(0,0.1,length.out=nbins)
+}
 for (ni in 1:ncount) {
-  
+#   
   # make a network
   fullLinks=matrix(0,nrows*ncols,nrows*ncols)
-  t=1
   for (j in 1:nrows) {
     for (i in 1:ncols) {
       if (j>1) {
-        links=runif(rangeLink*2+1)<=probLink
-        if (i<(rangeLink+1))     links[1:(rangeLink-i+1)]=FALSE
-        if (i>(ncols-rangeLink)) links[(ncols-i+rangeLink*2):length(links)]=FALSE
-
-        for (k in -rangeLink:rangeLink) {
-        if (links[k+rangeLink+1]) fullLinks[t+k,t-ncols]=1
-        }
+        use<-i+(-rangeLink:rangeLink)
+        use<-use[use>=1 & use<=ncols]
+        links=runif(length(use))<=probLink
+        dest<-i+(j-1)*ncols
+        sources<-use[links]+(j-2)*ncols
+        effects<-strengthLink+rnorm(length(sources))*randomLink
+        if (randomSign) effects<-effects*sign(runif(length(sources),-1,1))
+        fullLinks[dest,sources]<-effects
       }
-      
-      t=t+1
     }
   }
 
-  pathmodel$variables<-paste0("v",1:(nrows*ncols))
-  
-  testData=matrix(0,ns,ncols*nrows)
-  for (t in seq(ncols*nrows,1,-1)) {
-    use=which(fullLinks[,t]==1)
-    if (length(use)==0) {
-      testData[,t]=rnorm(ns)
-    } else {
-      usedVar=length(use)*(strengthLink^2)
-      if (usedVar>1) usedVar=1
-      z=0
-      for (ui in 1:length(use)) 
-        z=z+testData[,use[ui]]*strengthLink
-      testData[,t]=z+
-                sqrt(1-usedVar)*rnorm(ns)
+  links<-NULL
+  for (j in 1:(nrows*ncols)) {
+    use<-which(fullLinks[j,]!=0)
+    sources<-pathmodel$variables[use]
+    if (!isempty(sources)) {
+      n<-names(links)
+      theList<-fullLinks[j,use]
+      names(theList)<-sources
+      links<-c(links,list(theList))
+      names(links)<-c(n,pathmodel$variables[j])
     }
   }
+  pathmodel$links<-links
   
-  rs=abs(cor(testData))
-  rs_show=c(rs_show, rs[upper.tri((rs))])
+  Stheta<-path2Stheta(pathmodel)
+  Stheta<-Stheta2Cor(Stheta)
+  
+  # pathmodel$ES_table<-path2ES_table(pathmodel)
+  # plotSEMModel(pathmodel)
+  
+  Stheta<-Stheta+diag(NA,ncols*nrows,ncols*nrows)
+  
+  if (logXscale) {
+    use<-atanh(abs(Stheta))>10^min(Sbins) & !is.na(Stheta)
+    Shist<-Shist+hist(log10(atanh(abs(Stheta[use]))),breaks=Sbins,plot=FALSE)$counts
+  } else {
+    use<-atanh(abs(Stheta))<max(Sbins) & !is.na(Stheta)
+    Shist<-Shist+hist((atanh(abs(Stheta[use]))),breaks=Sbins,plot=FALSE)$counts
+  }
+  # Stotal<-c(Stotal,Stheta)
+}
+# Stotal<-abs(Stotal)
+# Stotal<-Stotal[Stotal!=0 & !is.na(Stotal)]
+# hist(log10(atanh(Stotal)),breaks = seq(log10(min(atanh(Stotal))),0,length.out=100))
 
-  zs=atan(rs_show)
-  hist(zs)
-  
-  # metaData<-list(result=list(rIV=rs_show,nval=ns))
-  # metaAnal<-list(meta_pdf="All",meta_psigAnal=TRUE,meta_nullAnal=TRUE)
-  # an<-runMetaAnalysis(metaAnal,metaData)
-  # showAnalysis(an,"")
-  
+x<-Sbins[1:(length(Shist))]
+xlabel<-"z[s]"
+if (logXscale) xlabel<-"log(z[s])"
+y<-Shist/sum(Shist*diff(Sbins[1:2]))
+ylabel<-"PDF"
+if (logYscale) {
+  y[y==0]<-NA
+  y<-log10(y)
+  ylabel<-'log(PDF)'
 }
 
+dataGraph(data.frame(x=x,y=y),
+          xlabel=xlabel,ylabel=ylabel,poly=TRUE)
 

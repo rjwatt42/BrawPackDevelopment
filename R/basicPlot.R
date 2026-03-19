@@ -1026,7 +1026,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
 }
 
 #' @export
-dataGraph<-function(data,fill='white',
+dataGraph<-function(data,fill='white',poly=FALSE,
                     legend=NULL,
                          xlim=NULL,ylim=NULL,
                          xlabel=NULL,ylabel=NULL,
@@ -1056,9 +1056,19 @@ dataGraph<-function(data,fill='white',
     }
     if (!is.null(legend)) g<-addG(g,dataLegend(data.frame(names=legend$names,colours=data$fill),title=legend$legendTitle))
   } else {
-    g<-addG(g,dataPath(data,linewidth=0.5))
-    if (!is.na(fill))
-    g<-addG(g,dataPoint(data,fill=fill))
+    if (poly) {
+      x<-data$x
+      y<-data$y
+      n<-length(x)
+      miny<-min(y,na.rm=TRUE)
+      y[is.na(y)]<-miny
+      data<-data.frame(x=x[c(1,1:n,n)],y=c(miny,y,miny))
+      g<-addG(g,dataPolygon(data,fill=fill))
+      } else {
+        g<-addG(g,dataPath(data,linewidth=0.5))
+        if (!is.na(fill))
+          g<-addG(g,dataPoint(data,fill=fill))
+      }
   }
   return(g)
 }
