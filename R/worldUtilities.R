@@ -46,8 +46,12 @@ nDistrRand<-function(nSamples,design=braw.def$design){
 
 zdens2rdens<-function(zdens,rvals){
   rdens<-zdens/(1-rvals^2)
-  if (ndims(zdens)==1) return(rdens/sum(rdens)*sum(zdens))
-  else  return(rdens/rowSums(rdens)*rowSums(zdens))
+  zvals<-atanh(rvals)
+  if (ndims(rdens)==1) {
+    return(rdens*sum(zdens*c(0,diff(zvals)))/sum(rdens*c(0,diff(rvals))))
+  } else {
+    return(rdens*rowSums(zdens*c(0,diff(zvals)))/rowSums(rdens*c(0,diff(rvals))))
+  }
 }
 
 rdens2zdens<-function(rdens,rvals){
@@ -56,7 +60,7 @@ rdens2zdens<-function(rdens,rvals){
   if (ndims(rdens)==1) {
     return(zdens*sum(rdens*c(0,diff(rvals)))/sum(zdens*c(0,diff(zvals))))
   } else {
-    return(zdens*rowSums(rdens*c(0,diff(rvals)))/sum(rowSums*c(0,diff(zvals))))
+    return(zdens*rowSums(rdens*c(0,diff(rvals)))/rowSums(zdens*c(0,diff(zvals))))
   }
 }
 
