@@ -52,14 +52,11 @@ zdens2rdens<-function(zdens,rvals){
 
 rdens2zdens<-function(rdens,rvals){
   zdens<-rdens*(1-rvals^2)
+  zvals<-atanh(rvals)
   if (ndims(rdens)==1) {
-    gain<-sum(zdens)
-    if (gain==0) gain<-1
-    return(zdens/gain*sum(rdens))
+    return(zdens*sum(rdens*c(0,diff(rvals)))/sum(zdens*c(0,diff(zvals))))
   } else {
-    gain<-rowSums(zdens)
-    gain[(gain==0)]<-1
-    return(zdens/gain*rowSums(rdens))
+    return(zdens*rowSums(rdens*c(0,diff(rvals)))/sum(rowSums*c(0,diff(zvals))))
   }
 }
 
