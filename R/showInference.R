@@ -59,7 +59,7 @@ getNulls<-function(analysisOld,evidence,useSig=FALSE,useNSig=FALSE) {
 #'               whichEffect="Main 1",
 #'               showTheory=TRUE)
 #' @export
-showInference<-function(analysis=braw.res$result,showType="Basic",dimension="1D",orientation="vert",
+showInference<-function(analysis=braw.res$result,showType="Basic",dimension="1D",orientation=braw.env$graphOrientation,
                         whichEffect="All",effectType="all",showTheory=braw.env$showTheory,showData=TRUE,showLegend=FALSE,sequence=FALSE,
                         showYaxis=TRUE
 ) {

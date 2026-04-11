@@ -46,7 +46,8 @@ theoryPlot<-function(g,theory,orientation,baseColour,theoryAlpha,xoff,lineOnly=F
   
   return(g)
 }
-makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,logScale,ylim,labelNSig,labelSig,distGain) {
+makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
+                             whichEffect=0,logScale=0,ylim=0,labelNSig=0,labelSig=0,distGain=0) {
   effect<-hypothesis$effect
   
   effectTheory<-effect
@@ -188,10 +189,12 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
              theoryDens_sig<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
              theoryDens_all<-rdens2zdens(theoryDens_all,rvals)
              theoryDens_sig<-rdens2zdens(theoryDens_sig,rvals)
+             theoryDens_all<-theoryDens_all/sum(theoryDens_all)
              theoryVals<-atanh(rvals)
              use<-abs(zvals)<=braw.env$z_range
              theoryVals<-theoryVals[use]
              theoryDens_all<-theoryDens_all[use]
+
              theoryDens_sig<-theoryDens_sig[use]
            }
     )
@@ -400,17 +403,17 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,whichEffect,log
     if (!labelSig) theoryDens_all<-theoryDens_sig
   }
   
-  if (!all(is.na(theoryDens_all))) {
+  if (!all(is.na(theoryDens_all)) && distGain>0) {
     theoryDens_all[is.na(theoryDens_all)]<-0
     theoryGain<-1/max(theoryDens_all)*distGain
     if (is.infinite(theoryGain)) theoryGain<-0
     theoryDens_all<-theoryDens_all*theoryGain
-    
+
     theoryDens_sig<-theoryDens_sig*theoryGain
     theoryDens_sig[is.na(theoryDens_sig)]<-0
-    
+
   }
-  
+
   return(list(theoryVals=theoryVals,theoryDens_all=theoryDens_all,theoryDens_sig=theoryDens_sig))
 }
 

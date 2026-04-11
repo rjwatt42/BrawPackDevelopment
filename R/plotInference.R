@@ -28,7 +28,7 @@ trimanalysis<-function(analysis) {
   analysis
 }
 
-plotInference<-function(analysis,otheranalysis=NULL,disp="rs",orientation="vert",
+plotInference<-function(analysis,otheranalysis=NULL,disp="rs",orientation=braw.env$graphOrientation,
                         whichEffect="Main 1",effectType="all",
                         showTheory=braw.env$showTheory,showData=TRUE,showLegend=FALSE,
                         showYaxis=TRUE,
