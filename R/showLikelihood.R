@@ -19,7 +19,7 @@ showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
            else range<-atanh(seq(-0.9,0.9,length.out=201))
            xlabel<-"r[p]"
            if (braw.env$RZ=="z") xlabel<-sub("r","z",xlabel)
-           dens<-getLogLikelihood(atanh(rs),n,1,"Single",location=range,bias=0)
+           dens<-getLogLikelihood(atanh(rs),n,1,"Single",scale=range,bias=0)
            if (!is.null(prior)) 
              dens<-dens+log(zPopulationDist(range,prior))
            if (braw.env$RZ=="r") {
@@ -35,7 +35,7 @@ showLikelihood<-function(result=braw.res$result,showType="mean(R+)",
       }
       xlabel<-sub("[+]","[+]",showType)
       if (braw.env$RZ=="z") xlabel<-sub("R","Z",xlabel)
-      dens<-getLogLikelihood(atanh(rs),n,1,world$PDF,location=range,bias=evidence$sigOnly)
+      dens<-getLogLikelihood(atanh(rs),n,1,world$PDF,scale=range,bias=evidence$sigOnly)
     }
   )
   dens[is.infinite(dens)]<-NA

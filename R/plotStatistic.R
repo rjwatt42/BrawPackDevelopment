@@ -189,6 +189,7 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
              theoryDens_sig<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
              theoryDens_all<-rdens2zdens(theoryDens_all,rvals)
              theoryDens_sig<-rdens2zdens(theoryDens_sig,rvals)
+             theoryDens_sig<-theoryDens_sig/sum(theoryDens_all)
              theoryDens_all<-theoryDens_all/sum(theoryDens_all)
              theoryVals<-atanh(rvals)
              use<-abs(zvals)<=braw.env$z_range

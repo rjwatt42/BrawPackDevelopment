@@ -182,7 +182,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (showSval) {
     b<-getLogLikelihood(atanh(metaResult$result$rIV),metaResult$result$nval,rep(1,length(metaResult$result$nval)),
                         distribution=metaResult$best$PDF,
-                        location=metaResult$best$PDFk,spread=metaResult$best$pRplus,
+                        scale=metaResult$best$PDFk,spread=metaResult$best$pRplus,
                         bias=metaResult$metaAnalysis$analyseBias,returnVals = TRUE)
     b<-((b-min(b))/(max(b)-min(b)))[1:length(d1)]
     fill1<-hsv(0.9*floor(b*10)/10)

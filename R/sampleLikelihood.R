@@ -229,7 +229,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
 }
 
 
-getLogLikelihood<-function(z,n,df1,distribution,location,
+getLogLikelihood<-function(z,n,df1,distribution,scale,
                            prplus=1,spread=0,shape=1,bias=0,doAbs=FALSE,
                            returnVals=FALSE) {
   if (is.null(spread)) spread<-0
@@ -241,9 +241,9 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
   zcrit<-atanh(p2r(braw.env$alphaSig,n,df1))
 
   if (distribution=="fixed") {
-    res<-matrix(-Inf,nrow=length(location),ncol=length(spread))
+    res<-matrix(-Inf,nrow=length(scale),ncol=length(spread))
     lksHold<-c()
-    lambda<-location
+    lambda<-scale
     for (i in 1:length(lambda)) {
       j<-1
       if (doAbs) {
@@ -261,9 +261,9 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
     return(res)
   } 
   if (distribution=="random") {
-    res<-matrix(-Inf,nrow=length(location),ncol=length(spread))
+    res<-matrix(-Inf,nrow=length(scale),ncol=length(spread))
     lksHold<-c()
-    lambda<-location
+    lambda<-scale
     for (i in 1:length(lambda)) {
       for (j in 1:length(spread)) {
         if (doAbs) {
@@ -294,7 +294,7 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
     nullPDF<-list(pdf=0,sig_compensate=1)
     zcrit<-0
   } 
-  res<-matrix(-Inf,nrow=length(location),ncol=length(pRpluss))
+  res<-matrix(-Inf,nrow=length(scale),ncol=length(pRpluss))
   switch(distribution,
          "Uniform"={
            PDF<-UniformSamplingPDF
@@ -315,8 +315,8 @@ getLogLikelihood<-function(z,n,df1,distribution,location,
            PDF<-GenExpSamplingPDF
          }
   )
-  for (i in 1:length(location)) {
-    lambda<-location[i]
+  for (i in 1:length(scale)) {
+    lambda<-scale[i]
     if (doAbs) {
       mainPDF<-PDF(abs(z),lambda,sigma,spread=spread,shape=shape,bias=bias,df1=df1)
       mainPDF$pdf<-mainPDF$pdf+PDF(-abs(z),lambda,sigma,spread=spread,shape=shape,bias=bias,df1=df1)$pdf
