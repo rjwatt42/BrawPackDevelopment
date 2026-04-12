@@ -1,20 +1,22 @@
 #' @export
 showHTML<-function(data,new=FALSE) {
+  dir <- tempfile()
+  dir.create(dir)
   if (is.character(data)) {
     if (new) {
       for (i in 1:100) {
-      htmlFile <- file.path(".", paste0("index",i,".html"))
+      htmlFile <- file.path(dir, paste0("index",i,".html"))
       if (!file.exists(htmlFile)) break;
       }
     } else
-      htmlFile <- file.path(".", "index.html")
+    htmlFile <- file.path(dir, "index.html")
     writeLines(data, con = htmlFile)
     rstudioapi::viewer(htmlFile)
   } else {
     assign("graphHTML",TRUE,braw.env)
     show<-data()
     
-    htmlFile <- file.path(".", "index.html")
+    htmlFile <- file.path(dir, "index.html")
     writeLines(show, con = htmlFile)
     rstudioapi::viewer(htmlFile)
     
