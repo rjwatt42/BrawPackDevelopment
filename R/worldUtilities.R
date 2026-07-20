@@ -48,9 +48,9 @@ zdens2rdens<-function(zdens,rvals){
   rdens<-zdens/(1-rvals^2)
   zvals<-atanh(rvals)
   if (ndims(rdens)==1) {
-    return(rdens*sum(zdens*c(0,diff(zvals)))/sum(rdens*c(0,diff(rvals))))
+    return(rdens*sum(zdens*c(0,diff(zvals)),na.rm=TRUE)/sum(rdens*c(0,diff(rvals)),na.rm=TRUE))
   } else {
-    return(rdens*rowSums(zdens*c(0,diff(zvals)))/rowSums(rdens*c(0,diff(rvals))))
+    return(rdens*rowSums(zdens*c(0,diff(zvals)),na.rm=TRUE)/rowSums(rdens*c(0,diff(rvals)),na.rm=TRUE))
   }
 }
 
@@ -274,7 +274,7 @@ rPopulationDist<-function(rvals,world) {
   if (world$PDFsample) {
     rs<-world$PDFsampleRs
     n<-world$PDFsampleN
-    rdens1<-rSamplingDistr(rs,rvals,n,sigOnly=world$PDFsamplebias)
+    rdens1<-rSamplingDistr(rvals,rs,n,sigOnly=world$PDFsamplebias)
   } else rdens1<-1
   k<-world$PDFk
   mu<-world$PDFoffset
@@ -300,7 +300,7 @@ zPopulationDist<-function(zvals,world) {
   if (world$PDFsample) {
     zs<-atanh(world$PDFsampleRs)
     n<-world$PDFsampleN
-    zdens1<-zSamplingDistr(zs,zvals,n,sigOnly=world$PDFsamplebias)
+    zdens1<-zSamplingDistr(zvals,zs,n,sigOnly=world$PDFsamplebias)
   } else zdens1<-1
   k<-world$PDFk
   mu<-world$PDFoffset

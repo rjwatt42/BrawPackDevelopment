@@ -31,9 +31,10 @@ doMetaAnalysis<-function(metaSingle=braw.res$metaSingle,metaAnalysis=braw.def$me
   if (!is.null(metaAnalysis$studies)) {
     studies<-metaAnalysis$studies
   } else {
-  if (is.null(metaSingle) || !keepStudies)
+  if (is.null(metaSingle) || !keepStudies) {
     studies<-multipleAnalysis(metaAnalysis$nstudies,localHypothesis,design,evidence)
-  else
+    setBrawRes("multiple",studies)
+  } else
     studies<-metaSingle$result
   }
   metaSingle<-runMetaAnalysis(metaAnalysis,studies,hypothesis,NULL)
@@ -118,15 +119,17 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   # PDFk is kvals
   # pRplus is normally nullvals
   
-  defaultnpoints<-11
+  if (is.element(dist,c("Gamma"))) minIterations<-5
+  else minIterations<-3
+  
+    defaultnpoints<-11
   np1points<-defaultnpoints
   np2points<-defaultnpoints
   np3points<-defaultnpoints
   np4points<-defaultnpoints
   np5points<-defaultnpoints
   
-  niterations<-4
-  minIterations<-3
+  niterations<-5
   # reInc1<-(np1points-1)/2/3
   # reInc2<-(np2points-1)/2/3
   reInc1<-2
@@ -145,11 +148,13 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   
   if (metaAnalysis$analyseBias) {
     param3Use<-seq(0,1,length.out=np2points)
-  } else param3Use<-metaAnalysis$assumeBias
+  } else {
+    param3Use<-metaAnalysis$assumeBias
+  }
   
   param4Use<-0
   param5Use<-0
-
+  
   switch(dist,
          "fixed"={
            if (sourceAbs) param1Use<-seq(0,1,length.out=np1points)*4
@@ -182,6 +187,12 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
          }
   )
   
+  np1points<-length(param1Use)
+  np2points<-length(param2Use)
+  np3points<-length(param3Use)
+  np4points<-length(param4Use)
+  np5points<-length(param5Use)
+  
   prior<-metaAnalysis$analysisPrior
   prior_z<-seq(min(param1Use),max(param1Use),length.out=101)
   zcrit<-atanh(p2r(braw.env$alphaSig,ns,1))
@@ -208,8 +219,42 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
   
   # scale refers to lambda for world metaA
   # spread refers to nulls for world metaA
-  llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5],doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-
+  llfun1<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5],doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+  llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5],doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+  np<-1:5
+  if (is.element(dist,c("fixed","random"))) {
+    if (length(param3Use)==1 ) {
+      llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=param3Use,spread=x[3],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-c(1,2,4)
+    }
+    if (length(param3Use)==1 && length(param2Use)==1) {
+      llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=param2Use,bias=param3Use,spread=x[2],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-c(1,4)
+    }
+    if (length(param3Use)==1 && length(param2Use)==1 && length(param4Use)==1) {
+      llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-c(1)
+    }
+  }  else {
+    if (length(param5Use)==1 ) {
+      llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-1:4
+    }
+    if (length(param4Use)==1 && length(param5Use)==1 ) {
+      llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-1:3
+    }
+    if (length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
+      llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-1:2
+    }
+    if (length(param2Use)==1 && length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
+      llfun0<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
+      np<-1
+    }
+  }
+  
+  # if (braw.env$verbose) print(c(length(param1Use),length(param2Use),length(param3Use),length(param4Use),length(param5Use)))
   S<-array(0,c(length(param1Use),length(param2Use),length(param3Use),length(param4Use),length(param5Use)))
   for (re in 1:niterations) {
     # get an approx result
@@ -218,70 +263,80 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
         for (p3 in 1:length(param3Use))
           for (p4 in 1:length(param4Use))
             for (p5 in 1:length(param5Use))
-              S[p1,p2,p3,p4,p5]<-llfun(c(param1Use[p1],param2Use[p2],param3Use[p3],param4Use[p4],param5Use[p5]))
+              S[p1,p2,p3,p4,p5]<-llfun1(c(param1Use[p1],param2Use[p2],param3Use[p3],param4Use[p4],param5Use[p5]))
 
-    Smax<- -min(S,na.rm=TRUE)
-    use<-which(S==-Smax, arr.ind = TRUE)
-    PDFk<-param1Use[use[1,1]]
-    lb1<-param1Use[max(1,use[1,1]-reInc1)]
-    ub1<-param1Use[min(length(param1Use),use[1,1]+reInc1)]
-    pRplus<-param2Use[use[1,2]]
-    lb2<-param2Use[max(1,use[1,2]-reInc2)]
-    ub2<-param2Use[min(length(param2Use),use[1,2]+reInc2)]
-    sigOnly<-param3Use[use[1,3]]
-    lb3<-param3Use[max(1,use[1,3]-reInc3)]
-    ub3<-param3Use[min(length(param3Use),use[1,3]+reInc3)]
-    PDFspread<-param4Use[use[1,4]]
-    lb4<-param4Use[max(1,use[1,4]-reInc4)]
-    ub4<-param4Use[min(length(param4Use),use[1,4]+reInc4)]
-    PDFshape<-param5Use[use[1,5]]
-    lb5<-param5Use[max(1,use[1,5]-reInc5)]
-    ub5<-param5Use[min(length(param5Use),use[1,5]+reInc5)]
+    S<- -S
+    Smax<- max(S,na.rm=TRUE)
+    useM<-which(S==Smax, arr.ind = TRUE)
+    Smin<- min(S,na.rm=TRUE)
     
+    Srange<-(Smax-Smin)/10
+    useR<-which(S>Smax-Srange,arr.ind=TRUE)
+    PDFk<-param1Use[useM[1,1]]
+    useS<-S[,useM[2],useM[3],useM[4],useM[5]]
+    useR<-which(useS>=(max(useS)-(max(useS)-min(useS))/2))
+    lb1<-param1Use[min(useR)]
+    ub1<-param1Use[max(useR)]
+    if (lb1==ub1) {
+      lb1<-param1Use[max(1,min(useR)-1)]
+      ub1<-param1Use[min(np1points,max(useR)+1)]
+    }
+    pRplus<-param2Use[useM[1,2]]
+    useS<-S[useM[1],,useM[3],useM[4],useM[5]]
+    useR<-which(useS>=(max(useS)-(max(useS)-min(useS))/2))
+    lb2<-param3Use[min(useR)]
+    ub2<-param3Use[max(useR)]
+    if (lb2==ub2) {
+      lb2<-param2Use[max(1,min(useR)-1)]
+      ub2<-param2Use[min(np2points,max(useR)+1)]
+    }
+    # lb2<-param2Use[max(1,use[1,2]-reInc2)]
+    # ub2<-param2Use[min(length(param2Use),use[1,2]+reInc2)]
+    sigOnly<-param3Use[useM[1,3]]
+    useS<-S[useM[1],useM[2],,useM[4],useM[5]]
+    useR<-which(useS>=(max(useS)-(max(useS)-min(useS))/2))
+    lb3<-param3Use[min(useR)]
+    ub3<-param3Use[max(useR)]
+    if (lb3==ub3) {
+      lb3<-param3Use[max(1,min(useR)-1)]
+      ub3<-param3Use[min(np3points,max(useR)+1)]
+    }
+    # lb3<-param3Use[max(1,use[1,3]-reInc3)]
+    # ub3<-param3Use[min(length(param3Use),use[1,3]+reInc3)]
+    PDFspread<-param4Use[useM[1,4]]
+    useS<-S[useM[1],useM[2],useM[3],,useM[5]]
+    useR<-which(useS>=(max(useS)-(max(useS)-min(useS))/2))
+    lb4<-param4Use[min(useR)]
+    ub4<-param4Use[max(useR)]
+    if (lb4==ub4) {
+      lb4<-param4Use[max(1,min(useR)-1)]
+      ub4<-param4Use[min(np4points,max(useR)+1)]
+    }
+    # lb4<-param4Use[max(1,use[1,4]-reInc4)]
+    # ub4<-param4Use[min(length(param4Use),use[1,4]+reInc4)]
+    PDFshape<-param5Use[useM[1,5]]
+    useS<-S[useM[1],useM[2],useM[3],useM[4],]
+    useR<-which(useS>=(max(useS)-(max(useS)-min(useS))/2))
+    lb5<-param5Use[min(useR)]
+    ub5<-param5Use[max(useR)]
+    if (lb5==ub5) {
+      lb5<-param5Use[max(1,min(useR)-1)]
+      ub5<-param5Use[min(np5points,max(useR)+1)]
+    }
+    # lb5<-param5Use[max(1,use[1,5]-reInc5)]
+    # ub5<-param5Use[min(length(param5Use),use[1,5]+reInc5)]
+    # if (braw.env$verbose) print(c(re,lb1,PDFk,ub1,NULL,lb5,PDFshape,ub5))
     # after 2 iterations, can we do a search?
-    if (re>=minIterations) {
+    if (re>=minIterations && minIterations<niterations) {
       params<-c(PDFk,pRplus,sigOnly,PDFspread,PDFshape)
       ub<-c(ub1,ub2,ub3,ub4,ub5)
       lb<-c(lb1,lb2,lb3,lb4,lb5)
-      llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=x[5],doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-      np<-1:5
-      if (is.element(dist,c("fixed","random"))) {
-        if (length(param3Use)==1 ) {
-          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=param3Use,spread=x[3],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-          np<-c(1,2,4)
-        }
-        if (length(param3Use)==1 && length(param2Use)==1) {
-          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=param2Use,bias=param3Use,spread=x[2],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-          np<-c(1,4)
-        }
-        if (length(param3Use)==1 && length(param2Use)==1 && length(param4Use)==1) {
-          llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-          np<-c(1)
-        }
-      }  else {
-      if (length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=x[4],shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-        np<-1:4
-      }
-      if (length(param4Use)==1 && length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=x[3],spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-        np<-1:3
-      }
-      if (length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=x[2],bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-        np<-1:2
-      }
-      if (length(param2Use)==1 && length(param3Use)==1 && length(param4Use)==1 && length(param5Use)==1 ) {
-        llfun<-function(x) { -(getLogLikelihood(zs,ns,df1,dist,scale=x[1],prplus=param2Use,bias=param3Use,spread=param4Use,shape=param5Use,doAbs=sourceAbs)+approx(prior_z,priorDens,x[1])$y)}
-        np<-1
-      }
-    }
       
     if (length(np)==1) {
-      result<-optimize(llfun,interval=c(lb[np],ub[np]))$minimum
+      result<-optimize(llfun0,interval=c(lb[np],ub[np]))$minimum
     } else{
       result<-tryCatch( {
-        fminsearch(llfun,params[np],method='Hooke-Jeeves',lower=lb[np],upper=ub[np])$xmin
+        fminsearch(llfun0,params[np],method='Hooke-Jeeves',lower=lb[np],upper=ub[np])$xmin
         # fmincon(params[np],llfun,ub=ub[np],lb=lb[np])
       }, 
       error = function(error_message){
@@ -290,7 +345,17 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
         }
       )
     }
-      if (!is.null(result)) break
+      if (!is.null(result)) {
+        for (i in 1:length(np)) 
+          switch(np[i],
+                 PDFk<-result[i],
+                 pRplus<-result[i], 
+                 sigOnly<-result[i], 
+                 PDFspread<-result[i], 
+                 PDFshape<-result[i], 
+          )
+        break
+      }
     }
     param1Use<-seq(lb1,ub1,length.out=np1points)
     if (length(param2Use)>1) param2Use<-seq(lb2,ub2,length.out=np2points)
@@ -299,18 +364,6 @@ getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis,hypothesis) {
     if (length(param5Use)>1) param5Use<-seq(lb5,ub5,length.out=np5points)
   }
 
-  if (!is.null(result)) {
-    vals<-result
-    # vals<-result$par
-    for (i in 1:length(np)) 
-      switch(np[i],
-             PDFk<-vals[i],
-             pRplus<-vals[i], 
-             sigOnly<-vals[i], 
-             PDFspread<-vals[i], 
-             PDFshape<-vals[i], 
-      )
-  }
   Smax<-getLogLikelihood(zs,ns,df1,dist,
                    scale=PDFk,
                    prplus=pRplus,bias=param3Use,

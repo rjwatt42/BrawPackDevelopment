@@ -1,15 +1,15 @@
 # 
 #' @export
-initHTML<-function(gsize=400,aspect=1.3,fontScale=1.5,xlim=c(0,1),ylim=c(0,1)) {
+initHTML<-function(gsize=400,aspect=1.3,fontScale=1.5) {
   braw.env <- new.env(parent = emptyenv())
   braw.env <<- list(graphicsType='HTML',
                    addHistory=FALSE,
                    plotSize=c(aspect,1)*gsize,
                    labelSize=gsize/100*fontScale,
                    dotSize=gsize/100*fontScale*1.25,
-                   plotArea=c(0,0,1,1)
+                   plotArea=c(0,0,1,1),
+                   plotColours=list(graphC="#FFFFFF",graphBack="#999999")
   )
-  braw.env$plotLimits<<-plotLimits(xlim,ylim,returnValue=TRUE)
 }
 
 addGraphElement<-function(element) {
@@ -281,6 +281,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
                     backC=braw.env$plotColours$graphBack,orientation="horz",fontScale=1,
                     unitGap=0.4,
                     g=NULL) {
+
   sz<-braw.env$fullGraphSize
   # if (all(braw.env$plotArea==c(0,0,1,1))) {
   #   braw.env$plotSize<-c(1.5,1)*300*sz
@@ -316,21 +317,30 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   labelGapy<-labelGapy*braw.env$plotArea[3]
   
   if (!is.null(xticks)) {
+    if (is.character(xticks) && xticks[1]=="auto")
+      xticks<-list(breaks=axisTicks(usr=xlim, log=FALSE, axp = NULL, nint = 5))
+    if (is.null(xticks$logScale)) xticks$logScale<-FALSE
     if (is.null(xticks$breaks))
-      xticks$breaks<-axisTicks(usr=xlim, log=xticks$logScale, axp = NULL, nint = 5)
+      xticks$breaks=axisTicks(usr=xlim, log=FALSE, axp = NULL, nint = 5)
     if (is.null(xticks$labels))
       xticks$labels<-as.character(xticks$breaks)
     if (!is.character(xticks$labels)) xticks$labels<-brawFormat(xticks$labels,digits=-2)
+    if (is.null(xticks$angle))
+      xticks$angle<-0
   }
-  
   if (!is.null(yticks)) {
+    if (is.character(yticks) && yticks[1]=="auto")
+      yticks<-list(breaks=axisTicks(usr=ylim, log=FALSE, axp = NULL, nint = 5))
+    if (is.null(yticks$logScale)) yticks$logScale<-FALSE
     if (is.null(yticks$breaks))
       yticks$breaks<-axisTicks(usr=ylim, log=yticks$logScale, axp = NULL, nint = 5)
     if (is.null(yticks$labels))
       yticks$labels<-as.character(yticks$breaks)
     if (!is.character(yticks$labels)) yticks$labels<-brawFormat(yticks$labels,digits=-2)
+    if (is.null(yticks$angle))
+      yticks$angle<-0
   }
-  
+
   if (!is.null(xticks) && !is.null(xticks$labels))
     maxtickx<-max(strNChar(xticks$labels))
   else maxtickx<-0
@@ -1026,7 +1036,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
 }
 
 #' @export
-dataGraph<-function(data,fill='white',poly=FALSE,
+dataGraph<-function(data,fill='white',colour="black",poly=FALSE,
                     legend=NULL,
                          xlim=NULL,ylim=NULL,
                          xlabel=NULL,ylabel=NULL,
@@ -1051,8 +1061,10 @@ dataGraph<-function(data,fill='white',poly=FALSE,
   if (is.matrix(data$y)) {
     for (i in 1:nrow(data$y)) {
       d<-data.frame(x=data$x[i,],y=data$y[i,])
-      g<-addG(g,dataPath(d,linewidth=0.5))
-      g<-addG(g,dataPoint(d,fill=data$fill[i]))
+      if (!is.na(colour))
+        g<-addG(g,dataPath(d,linewidth=0.5))
+      if (!is.na(fill))
+        g<-addG(g,dataPoint(d,fill=data$fill[i]))
     }
     if (!is.null(legend)) g<-addG(g,dataLegend(data.frame(names=legend$names,colours=data$fill),title=legend$legendTitle))
   } else {
@@ -1065,7 +1077,8 @@ dataGraph<-function(data,fill='white',poly=FALSE,
       data<-data.frame(x=x[c(1,1:n,n)],y=c(miny,y,miny))
       g<-addG(g,dataPolygon(data,fill=fill))
       } else {
-        g<-addG(g,dataPath(data,linewidth=0.5))
+        if (!is.na(colour))
+          g<-addG(g,dataPath(data,linewidth=0.5))
         if (!is.na(fill))
           g<-addG(g,dataPoint(data,fill=fill))
       }

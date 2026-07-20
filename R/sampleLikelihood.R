@@ -178,12 +178,14 @@ GammaSamplingPDF<-function(z,lambda,sigma,spread=0,shape=1,bias=0,df1=1) {
   d2<-d1
   d2[abs(z)<zcrit]<-0
     
-  if (bias) {
-    sig_compensate<-removeNonSig(zi,zpd,sigma,df1)
+  if (bias>0) {
+    zcrit<-atanh(p2r(braw.env$alphaSig,1/sigma^2+3,df1))
+    d1[abs(z)<zcrit]<-d1[abs(z)<zcrit]*(1-bias)
+    d0<-removeNonSig(zi,zpd,sigma,df1)
   } else {
-    sig_compensate<-1
+    d0<-1
   }
-  return(list(pdf=d1,sig_compensate=sig_compensate,pop=zpd,pdf_sig=d2,z=z,zi=zi))
+  return(list(pdf=d1,sig_compensate=d0,pop=zpd,pdf_sig=d2,z=z,zi=zi))
   
 }
 

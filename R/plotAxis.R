@@ -5,7 +5,7 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
   explicitLog<-FALSE
   base_hue_r<-0.1
   base_hue_p<-0.15
-  base_hue_w<-0.65
+  base_hue_w<-0.6
   hue_diff<-0.03
   
   logScale<-(is.element(showType,c("p","pe","po","e1p","e2p")) && braw.env$pPlotScale=="log10") ||

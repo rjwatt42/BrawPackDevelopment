@@ -13,7 +13,7 @@ theoryPlot<-function(g,theory,orientation,baseColour,theoryAlpha,xoff,lineOnly=F
          "vert"={
            theory_all<-data.frame(y=c(theoryVals,rev(theoryVals)),x=c(theoryDens_all,-rev(theoryDens_all))+xoff)
          })
-  if (is.null(theoryDens_sig)) baseColour<-"white"
+  # if (is.null(theoryDens_sig)) baseColour<-braw.env$baseColour
   if (!lineOnly)
     g<-addG(g,dataPolygon(data=theory_all,colour=NA,fill=baseColour,alpha=theoryAlpha))
   g<-addG(g,dataPath(data=theory_all,colour="#000000",linewidth=0.2))
@@ -512,7 +512,7 @@ makeFiddle<-function(y,yd,orientation="horz"){
   rX<-function(x) x*xG
   
   dotSize<-min(4,braw.env$dotSize*(200/length(y))^2)
-  dotSize<-0.5
+  # dotSize<-0.5
   # dotSize<-braw.env$dS
   rr<-8*ceiling(dotSize/4*yG/25/diff(y_vals[c(1,2)]))
   rr<-min(rr,floor(length(y_vals)/2))
@@ -525,21 +525,23 @@ makeFiddle<-function(y,yd,orientation="horz"){
   x_pos<-y*0
   if (orientation=="horz")
     if (1==1) {
-      y_vals<-seq(min(y),max(y),length.out=501)
-      x_vals<-seq(0,1,length.out=501)
+      ny=501
+      nx=2001
+      y_vals<-seq(min(y),max(y),length.out=ny)
+      x_vals<-seq(0,1,length.out=nx)
       ysc<-3
-      store<-matrix(0,length(y_vals),length(x_vals)*2)
+      store<-matrix(0,length(y_vals),length(x_vals))
       for (i in 1:length(y)) {
         usey<-which.min(abs(y[i]-y_vals))
         usex<-min(which(store[usey,]==0))
         x_pos[i]<-x_vals[usex]
         if (x_pos[i]>0) x_pos[i]<-x_pos[i]+runif(1,-1,1)*diff(x_vals[1:2])*1.5
-        np<-ceiling(sqrt(length(y)))/2
+        np<-max(10,ceiling(sqrt(length(y)))/4)
         for (ix in -np:np) 
           for (iy in -(np*ysc):(np*ysc)) {
             if ((ix^2+(iy/ysc)^2)<np^2 && 
-                (ix+usex)>0 && (ix+usex)<501 && 
-                (iy+usey)>0 && (iy+usey)<501
+                (ix+usex)>0 && (ix+usex)<nx && 
+                (iy+usey)>0 && (iy+usey)<ny
                 ) 
               store[iy+usey,ix+usex]<-1
           }
@@ -1173,7 +1175,10 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                  showYaxis=TRUE,
                  g=NULL){
 
-  baseColour<-braw.env$plotColours$infer_nsigC
+  if (braw.env$useSignificanceCols)
+    baseColour<-braw.env$plotColours$infer_nsigC
+  else 
+    baseColour<-plotAxis(showType,analysis$hypothesis)$cols[1]
   theoryFirst<-FALSE
   npct<-0
   showSig<-TRUE
@@ -1506,6 +1511,8 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
         theory$theoryDens_sig<-theory$theoryDens_sig/max(theory$theoryDens_sig)
         theory$theoryDens_all<-theory$theoryDens_sig
       }
+      if (!braw.env$useSignificanceCols) theory$theoryDens_sig<-NULL
+      
       theoryVals<-theory$theoryVals
       theoryDens_all<-theory$theoryDens_all
       theoryDens_sig<-theory$theoryDens_sig

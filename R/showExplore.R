@@ -227,7 +227,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
   else effectTypes<-effectType
   
 # prepare the x-axis  
-  if (is.character(vals[1]) || length(vals)<=10 || (length(vals)>=25 && exploreResult$count>500/length(vals))) {
+  if (is.character(vals[1]) || length(vals)<=5 || (length(vals)>=25 && exploreResult$count>500/length(vals))) {
     if (is.character(vals[1])) {
       vals<-1:length(vals)
       xlim<-c(0,length(vals)+1)

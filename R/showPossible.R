@@ -263,7 +263,7 @@ showPossible <- function(possibleResult=NULL,
   colDistS=darken(braw.env$plotColours$infer_sigC,off=-0.15)
   highTransparency=0.25
   lowTransparency=0.75
-  # theoryAlpha=0.8
+  theoryAlpha=0.8
   
   sampDensGain=0.65
   sampDensGain<-1

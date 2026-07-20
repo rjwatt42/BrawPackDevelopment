@@ -31,6 +31,7 @@ pathmodel$stages<-list(
   c("e","f","g","h"),
   c("a","b","c","d")
 )
+nstages<-length(pathmodel$stages)
 
 rp=0.3
 pathmodel$links<-list(

@@ -44,6 +44,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
                    newDev=FALSE,height=400,aspect=1.3,autoShow=FALSE,autoPrint=FALSE,timeLimit=Inf,fullGraphSize=1,
                    npointsMax=1000,
                    maxBins=251,
+                   verbose=FALSE,
                    fullOutput=0) {
   braw.env <- new.env(parent = emptyenv())
   braw.def <- new.env(parent = emptyenv())
@@ -247,6 +248,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$showTheory<-TRUE
           
           braw.env$fullOutput<-fullOutput
+          braw.env$verbose<-verbose
           braw.env$reportCounts<-FALSE
 
           braw.env$graphOrientation<-graphOrientation
@@ -432,7 +434,7 @@ setColours<-function(type,graphC=braw.env$plotColours$graphC) {
                     infer_sigNull=sigNullCol,infer_nsigNull=nsCol,infer_isigNull=isigNullCol,infer_nsdNull="#CCDDCC",
                     psig="#FFAA00",alpha="#44FF22",
                     fdr="#227700",fmr="#BB5555",
-                    powerPopulation="#0049FF",powerSample="#88BDFF")
+                    powerPopulation="#226BFF",powerSample="#88BDFF")
   
   if (type=="BW") {
     plotColours<-list(graphC="#FFFFFF",graphBack="#999999",

@@ -419,6 +419,32 @@ setDesign<-function(sN=braw.def$design$sN, sMethod=braw.def$design$sMethod, sMet
   setBrawDef("design",e)
 }
 
+#' switch Replication on
+#' @export
+setReplication<-function(On=braw.def$design$Replication$On,Repeats=braw.def$design$Replication$Repeats,Keep=braw.def$design$Replication$Keep,RepAlpha=braw.def$design$Replication$RepAlpha,
+                         PowerOn=braw.def$design$Replication$PowerOn,Power=braw.def$design$Replication$Power,Tails=braw.def$design$Replication$Tails,PowerPrior=braw.def$design$Replication$PowerPrior,
+                         UseLikelihood=braw.def$design$Replication$UseLikelihood,
+                         replicateAll=braw.def$design$Replication$replicateAll,
+                         forceSigOriginal=braw.def$design$Replication$forceSigOriginal,forceSign=braw.def$design$Replication$forceSign,
+                         maxN=braw.def$design$Replication$maxN,
+                         BudgetType=braw.def$design$Replication$BudgetType,Budget=braw.def$design$Replication$Budget,
+                         RepNoStudies=braw.def$design$Replication$RepNoStudies
+) {
+    replication<-list(On=On,Repeats=Repeats,Keep=Keep,RepAlpha=RepAlpha,
+                      PowerOn=PowerOn,Power=Power,Tails=Tails,PowerPrior=PowerPrior,
+                      UseLikelihood=UseLikelihood,
+                      replicateAll=replicateAll,
+                      forceSigOriginal=forceSigOriginal,forceSign=forceSign,
+                      maxN=maxN,
+                      BudgetType=BudgetType,Budget=Budget
+    )
+    
+    e<-braw.def$design
+    e$Replication<-replication
+    setBrawDef("design",e)
+}
+
+
 #' set default evidence
 #' @export
 setEvidence<-function(shortHand=braw.def$evidence$shortHand,sigOnly=braw.def$evidence$sigOnly,absOnly=braw.def$evidence$absOnly,
@@ -438,6 +464,29 @@ setEvidence<-function(shortHand=braw.def$evidence$shortHand,sigOnly=braw.def$evi
                   prior=prior,
                   metaAnalysis=metaAnalysis)
   setBrawDef("evidence",e)
+}
+
+#' set default world
+#' @export
+setPrior<-function(On=braw.def$evidence$prior$On,
+                   PDF=braw.def$evidence$prior$PDF,RZ=braw.def$evidence$prior$RZ,
+                   PDFk=braw.def$evidence$prior$PDFk,PDFshape=braw.def$evidence$prior$PDFshape,PDFspread=braw.def$evidence$prior$PDFspread,
+                   PDFoffset=braw.def$evidence$prior$PDFoffset,pRplus=braw.def$evidence$prior$pRplus,
+                   PDFsample=braw.def$evidence$prior$PDFsample,PDFsampleRs=braw.def$evidence$prior$PDFsampleRs,PDFsampleN=braw.def$evidence$prior$PDFsampleN,PDFsamplebias=braw.def$evidence$prior$PDFsamplebias,
+                   worldAbs=braw.def$evidence$prior$worldAbs) {
+  if (is.character(On)) e<-getWorld(On)
+  else {
+    if (is.list(On)) e<-On
+    else
+      e<-makeWorld(On=On,
+                   PDF=PDF,RZ=RZ,
+                   PDFk=PDFk,PDFshape=PDFshape,PDFspread=PDFspread,PDFoffset=PDFoffset,pRplus=pRplus,
+                   PDFsample=PDFsample,PDFsampleRs=PDFsampleRs,PDFsampleN=PDFsampleN,PDFsamplebias=PDFsamplebias,
+                   worldAbs=worldAbs)
+  }
+  h<-braw.def$evidence
+  h$prior<-e
+  setBrawDef("evidence",h)
 }
 
 ##################################################################################  

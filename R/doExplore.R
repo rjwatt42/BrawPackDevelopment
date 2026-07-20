@@ -971,7 +971,8 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
             nullresult<-storeExploreResult(nullresult,res_null,ri,vi)
           }
         }
-      }
+        if (braw.env$verbose) print(c(ni,vi))
+      } # end of vi loop
       exploreResult$doingMetaAnalysis<-doingMetaAnalysis
       if (doingNull) {
         exploreResult$nullcount<-exploreResult$nullcount+1
@@ -981,7 +982,7 @@ runExplore <- function(nsims,exploreResult,doingNull=FALSE,doingMetaAnalysis=FAL
         exploreResult$count<-exploreResult$count+1
       }
       setBrawRes("explore",exploreResult)
-    }
+    } # end of ni loop
     if (autoShow) print(showExplore(exploreResult,showType=showType))
   }
   
