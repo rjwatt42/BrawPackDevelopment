@@ -94,7 +94,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   xlim<-x$lim
   if (xRange!="full") {
     xlim[1]<-0
-    x$ticks<-seq(0,1,0.1)
+    x$ticks<-x$ticks[x$ticks>=0]
   }
   disp1<-x$label
   
