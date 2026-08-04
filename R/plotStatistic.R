@@ -1339,7 +1339,10 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
              xticks<-NULL
            } else {
              xlabel<-makeLabel(ylabel)
-             xticks<-makeTicks(logScale=yaxis$logScale)
+             if (yaxis$logScale) 
+               xticks<-makeTicks(breaks=yaxis$ticks,labels=10^yaxis$ticks,logScale=FALSE)
+             else
+               xticks<-makeTicks(breaks=yaxis$ticks,labels=yaxis$ticks,logScale=FALSE)
            }
            ylabel<-NULL
            yticks<-NULL
@@ -1367,7 +1370,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
   
   if (!is.null(hypothesis$IV2) && whichEffect=="All" && effectType=="all") 
     xticks<-makeTicks(breaks=xoff,c("direct","unique","total"))
-
+  
   g<-startPlot(xlim,ylim,
                xticks=xticks,xlabel=xlabel,xmax=xmax,
                yticks=yticks,ylabel=ylabel,ymax=ymax,

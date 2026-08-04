@@ -989,8 +989,8 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location
   return(g)
 }
 
-dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),linewidth=0.25,linetype="solid") {
-  data<-reRangeXY(data)
+dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.1),linewidth=0.25,linetype="solid") {
+
   # because the x & y values may have been truncated to ylim
   usex<-c(diff(data$x)>0,TRUE) 
   usey<-c(diff(data$y)>0,TRUE) & rowSums(is.na(data$z))==0
@@ -1005,7 +1005,8 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
   data$z<-rbind(data$z[1,]*0,data$z,data$z[ny,]*0)
   data$z<-cbind(data$z[,1]*0,data$z,data$z[,nx]*0)
   # then proceed
-  c<-contourLines(data$y,data$x,data$z/max(data$z),levels=breaks)
+  # data$z[data$z==0]<-NA
+  c<-contourLines(data$y,data$x,data$z/max(data$z,na.rm=TRUE),levels=breaks)
   ny<-length(data$y)
   nx<-length(data$x)
   c1<-contourLines(c(data$y[1]-diff(data$y[1:2]),data$y,data$y[ny]+diff(data$y[1:2])),
@@ -1016,7 +1017,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
     for (i in 1:length(c)) {
       if (length(c[[i]]$x)>4) {
       cdata<-data.frame(x=c[[i]]$y,y=c[[i]]$x)
-      ct<-c(ct,list(axisPath(cdata,colour=colour,linewidth=linewidth,linetype=linetype)))
+      ct<-c(ct,list(dataPath(cdata,colour=colour,linewidth=linewidth,linetype=linetype)))
       }
     }
   } else {
@@ -1024,7 +1025,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.2),line
       if (length(c[[i]]$x)>4) {
         cdata<-data.frame(x=c[[i]]$y,y=c[[i]]$x)
         fill1<-darken(desat(fill,i/length(c)),off=i/length(c))
-      ct<-c(ct,list(axisPolygon(cdata,colour=colour,fill=fill1,alpha=0.4,linewidth=linewidth)))
+      ct<-c(ct,list(dataPolygon(cdata,colour=colour,fill=fill1,alpha=0.4,linewidth=linewidth)))
       }
     }
   }

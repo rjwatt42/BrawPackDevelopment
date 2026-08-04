@@ -193,6 +193,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$graph_precision<-2
           
           braw.env$RZ<-"r"
+          braw.env$showAbs<-FALSE
           
           braw.env$r_range<-0.95
           braw.env$z_range<-2

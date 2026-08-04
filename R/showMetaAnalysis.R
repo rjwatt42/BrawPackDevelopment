@@ -89,7 +89,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
          "z"={d1<-atanh(d1)},
          "d"={d1<-2*d1/sqrt(1-d1^2)}
   )
-  d1n<-(abs(metaResult$result$rpIV)<=evidence$minRp & hypothesis$effect$world$On)
+  
+  if (is.null(metaResult$result$rpIV)) d1n<-TRUE
+   else d1n<-(abs(metaResult$result$rpIV)<=evidence$minRp & hypothesis$effect$world$On)
   x<-plotAxis("rs",hypothesis)
   xlim<-x$lim
   if (xRange!="full") {
@@ -195,8 +197,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (nrow(ptsNull)>0)
     g<-addG(g,dataPoint(data=ptsNull,shape=braw.env$plotShapes$study, colour = col2, fill = fill2, alpha=alphaUse, size = dotSize))
   } else {
-    rBins<-seq(-1,1,length.out=101)
-    nBins<-seq(log10(5),log10(500),length.out=101)
+    nbins<-51
+    rBins<-seq(-1,1,length.out=nbins)
+    nBins<-seq(log10(5),log10(500),length.out=nbins)
     z<-matrix(0,length(nBins)-1,length(rBins)-1)
     for (ir in 1:(length(rBins)-1)) {
       for (inv in 1:(length(nBins)-1)) {
@@ -210,6 +213,12 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                                           y=nBins[1:(length(nBins)-1)],
                                           z=z),
                           fill=fill))
+    if (metaAnalysis$sourceBias) {
+      # blank out the non-sig 
+      nu<-seq(log10(braw.env$minN),log10(braw.env$maxN),length.out=101)
+      zu<-wn2z(0.5,10^nu)
+      g<-addG(g,dataPolygon(data.frame(x=c(zu,0,0,zu[1]),y=c(nu,max(nu),min(nu),nu[1])),fill="#999",colour=NA))
+    }
   }
   }
   

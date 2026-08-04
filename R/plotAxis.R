@@ -36,6 +36,11 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
            rmins<-seq(-5,5,0.5)
          }
   )
+  if (braw.env$showAbs) {
+    rlims[1]<-0
+    rticks<-seq(0,max(rticks),diff(rticks[1:2])/2)
+  }
+  
   plabel<-"p"
   polabel<-"p[o]"
   switch(braw.env$pPlotScale,
@@ -80,7 +85,7 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
   switch(braw.env$nPlotScale,
          "log10"={
            nlim<-log10(c(5,2000))
-           nticks<-seq(1,3,1)
+           nticks<-log10(c(10,20,50,100,200,500,1000))
            nmins<-log10(c(seq(5,10),seq(1,10)*10,seq(1,10)*100))
            if (explicitLog) {
              nlabel<-"log[10](n)"
@@ -111,9 +116,13 @@ plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
             ylim<-rlims
             yticks<-rticks
             ymins<-rmins
-            ylabel<-rslab
+            ylabel<-zslab
             use_cols<-c(hsv(base_hue_r,1,1),hsv(base_hue_r+hue_diff,1,1),hsv(base_hue_r+hue_diff*2,1,1))
             ylines<-c(0,atanh(effect$rIV))
+            if (braw.env$showAbs) {
+              ylim[1]<-0
+              yticks<-yticks[yticks>0]
+            }
           },
           "rse"={
             ylim<-rlims
