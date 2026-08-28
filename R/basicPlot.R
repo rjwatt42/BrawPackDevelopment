@@ -180,10 +180,19 @@ rangeX<-function(x) {
 }
 reRangeXY<-function(data) {
   if (!is.null(braw.env$plotLimits)){
+    if (braw.env$graphExceedLimit!="remove") {
     data$x[data$x<braw.env$plotLimits$xlim[1]]<-braw.env$plotLimits$xlim[1]
     data$x[data$x>braw.env$plotLimits$xlim[2]]<-braw.env$plotLimits$xlim[2]
     data$y[data$y<braw.env$plotLimits$ylim[1]]<-braw.env$plotLimits$ylim[1]
     data$y[data$y>braw.env$plotLimits$ylim[2]]<-braw.env$plotLimits$ylim[2]
+    } else {
+      usex<-data$x>=braw.env$plotLimits$xlim[1] & data$x<=braw.env$plotLimits$xlim[2]
+      usey<-data$y>=braw.env$plotLimits$ylim[1] & data$y<=braw.env$plotLimits$ylim[2]
+      use<-(usex) & (usey)
+      data<-data[use,]
+      # data$x<-data$x[use]
+      # data$y<-data$y[use]
+    }
   }
   data<-reOrientXY(data)
   data$x<-reRangeX(data$x)
@@ -311,7 +320,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   # if (braw.env$graphicsType!="HTML") 
     unitGap<-unitGap*1.7
   labelGapx<-labelGapy<-unitGap
-  if (containsSubscript(xlabel$label) || containsSuperscript(xlabel$label)) labelGapx<-labelGapx*1.6
+  if (containsSubscript(xlabel$label) || containsSuperscript(xlabel$label)) labelGapx<-labelGapx*3.2
   if (containsSubscript(ylabel$label) || containsSuperscript(ylabel$label)) labelGapy<-labelGapy*1.6
   labelGapx<-labelGapx*braw.env$plotArea[4]
   labelGapy<-labelGapy*braw.env$plotArea[3]
@@ -432,6 +441,7 @@ plotTitle<-function(label,position="left",size=0.75,fontface="bold") {
 xAxisLabel<-function(label,size=0.75) {
   if (braw.env$plotArea[3]<0.5) size<-size*0.7
   voff<-0+braw.env$plotLimits$gap[2]*0.25
+  if (containsSubscript(label)) voff<-voff*1.6
   
   axis<-data.frame(x=reRangeX(mean(braw.env$plotLimits$xlim)),y=rangeY(voff))
   switch(braw.env$plotLimits$orientation,
@@ -1037,7 +1047,7 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.1),line
 }
 
 #' @export
-dataGraph<-function(data,fill='white',colour="black",poly=FALSE,
+dataGraph<-function(data,fill='white',colour="black",poly=FALSE,polyBaseline=NA,
                     legend=NULL,
                          xlim=NULL,ylim=NULL,
                          xlabel=NULL,ylabel=NULL,
@@ -1073,10 +1083,11 @@ dataGraph<-function(data,fill='white',colour="black",poly=FALSE,
       x<-data$x
       y<-data$y
       n<-length(x)
-      miny<-min(y,na.rm=TRUE)
-      y[is.na(y)]<-miny
-      data<-data.frame(x=x[c(1,1:n,n)],y=c(miny,y,miny))
-      g<-addG(g,dataPolygon(data,fill=fill))
+      if (is.na(polyBaseline))  polyBaseline<-polyBaseline(y,na.rm=TRUE)
+      
+      y[is.na(y)]<-polyBaseline
+      data<-data.frame(x=x[c(1,1:n,n)],y=c(polyBaseline,y,polyBaseline))
+      g<-addG(g,dataPolygon(data,fill=fill,colour=colour))
       } else {
         if (!is.na(colour))
           g<-addG(g,dataPath(data,linewidth=0.5))

@@ -1,4 +1,5 @@
 
+#' @export
 dwdz<-function(z,n,t=2,alpha=NA) {
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (t==1) {
@@ -13,6 +14,7 @@ dwdz<-function(z,n,t=2,alpha=NA) {
   return(dwdz)
 }
 
+#' @export
 zn2w<-function(z,n,t=2,alpha=NA){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   z<-abs(z)
@@ -31,6 +33,7 @@ zn2w<-function(z,n,t=2,alpha=NA){
   w  
 }
 
+#' @export
 rn2w<-function(r,n,t=2,alpha=NA){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (!is.numeric(r)) {
@@ -51,6 +54,7 @@ rn2w<-function(r,n,t=2,alpha=NA){
   zn2w(z,n,t,alpha)
 }
 
+#' @export
 wn2z<-function(w,n,t=2,alpha=NA){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (t==1) {
@@ -67,6 +71,7 @@ wn2z<-function(w,n,t=2,alpha=NA){
   z
 }
 
+#' @export
 wn2r<-function(w,n,t=2,alpha=NA){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (t==1) {
@@ -85,6 +90,32 @@ wn2r<-function(w,n,t=2,alpha=NA){
   tanh(z)
 }
 
+#' @export
+zw2n<-function(z,w,t=2,alpha=NA,doRound=TRUE){
+  if (is.na(alpha)) alpha<-braw.env$alphaSig
+  if (!is.numeric(z)) {
+    n_poss<-10^seq(log10(5),log10(5000),length.out=21)
+    e<-abs(zn2w(z,n_poss,t)-w)
+    use<-c(-1,1)+which.min(e)
+    gs<-function(n,z,w,t) {abs(zn2w(z,n,t)-w)}
+    n<-optimize(gs,n_poss[use],z=z,w=w,t=t,maximum=FALSE)$minimum
+    return(n)
+  }
+  z<-abs(z)
+  if (t==1) {
+    # one-tailed
+    nnear<-((qnorm(w)-qnorm(alpha))/z)^2+3
+  } else {
+    # two tailed
+    nnear<-((qnorm(w)-qnorm(alpha/2))/z)^2+3
+  }
+  if (doRound) nnear<-round(nnear)  
+  nnear[nnear>1000000]<-1000000
+  nnear[nnear<5]<-5
+  nnear
+}
+
+#' @export
 rw2n<-function(r,w,t=2,alpha=NA,doRound=TRUE){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (!is.numeric(r)) {
@@ -115,6 +146,7 @@ rw2n<-function(r,w,t=2,alpha=NA,doRound=TRUE){
   nnear
 }
 
+#' @export
 rn2p<-function(r,n,t=2) {
   if (any(abs(r)>1)) {
     print("rn2p exception")
@@ -128,6 +160,7 @@ rn2p<-function(r,n,t=2) {
   return(p*t)
 }
 
+#' @export
 rp2n<-function(r,p,t=2) {
   if (any(abs(r)>1)) {
     print("rn2p exception")

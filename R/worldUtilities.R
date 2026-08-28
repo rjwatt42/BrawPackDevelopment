@@ -1,6 +1,7 @@
 
 # below we use (npops-1)/6 as an integer
 
+#' @export
 nDistrDens<-function(nvals,design) {
   switch(design$sNRandDist,
          "Gamma"={
@@ -21,6 +22,7 @@ nDistrDens<-function(nvals,design) {
   )
 }
 
+#' @export
 nDistrRand<-function(nSamples,design=braw.def$design){
   switch(design$sNRandDist,
          "Gamma"={
@@ -44,6 +46,7 @@ nDistrRand<-function(nSamples,design=braw.def$design){
   braw.env$minN+rgamma(nSamples,shape=design$sN/design$sNRandSD,scale=design$sNRandSD)
 }
 
+#' @export
 zdens2rdens<-function(zdens,rvals){
   rdens<-zdens/(1-rvals^2)
   zvals<-atanh(rvals)
@@ -54,6 +57,7 @@ zdens2rdens<-function(zdens,rvals){
   }
 }
 
+#' @export
 rdens2zdens<-function(rdens,rvals){
   zdens<-rdens*(1-rvals^2)
   zvals<-atanh(rvals)
@@ -64,10 +68,12 @@ rdens2zdens<-function(rdens,rvals){
   }
 }
 
+#' @export
 rdens2ddens<-function(rdens,dvals) {
   rdens*(4/(dvals^2+4)/sqrt(dvals^2+4))
 }
 
+#' @export
 zSamplingDistr<-function(zvals,Z,n,sigOnly=0){
   s=1/sqrt(n-3)
   zdens<-1/s/sqrt(2*pi)*exp(-0.5*((zvals-Z)/s)^2)
@@ -85,6 +91,7 @@ zSamplingDistr<-function(zvals,Z,n,sigOnly=0){
   return(zdens)
 }
 
+#' @export
 rSamplingDistr<-function(rvals,R,n,sigOnly=0){
   # map to Fisher-z
   zvals<-atanh(rvals)
@@ -93,6 +100,7 @@ rSamplingDistr<-function(rvals,R,n,sigOnly=0){
   zdens2rdens(zdens,rvals)
 }
 
+#' @export
 pSamplingDistr<-function(pvals,R,n) {
     Z<-atanh(R)*sqrt(n-3)
     z<-qnorm(pvals/2)
@@ -104,16 +112,34 @@ pSamplingDistr<-function(pvals,R,n) {
     dens*gain
 }
 
+#' @export
 wSamplingDistr<-function(wvals,R,n,alpha=braw.env$alphaSig) {
   # we need to do it this way, alas
-    z<-seq(0,10,0.05)
-    wz<-pnorm(qnorm(alpha/2),z)+pnorm(qnorm(alpha/2),-z)
-    Z <- atanh(R)*sqrt(n-3)
-    dwdz<-sqrt(n-3)/(2*pi)*(exp(-0.5*(z+qnorm(alpha/2))^2)-exp(-0.5*(z-qnorm(alpha/2))^2))
-    densW<-(exp(-0.5*(z-Z)^2)+exp(-0.5*(z+Z)^2))/dwdz
-    approx(wz,densW,wvals)$y
+  z<-seq(0,10,0.05)
+  qa<-qnorm(alpha/2)
+  wz<-pnorm(qa,z)+pnorm(qa,-z)
+  Z <- atanh(R)*sqrt(n-3)
+  dwdz<-sqrt(n-3)/(2*pi)*(exp(-0.5*(z+qa)^2)-exp(-0.5*(z-qa)^2))
+  densW<-(exp(-0.5*(z-Z)^2)+exp(-0.5*(z+Z)^2))/dwdz
+  approx(wz,densW,wvals)$y
 }
 
+#' @export
+wSamplingDistrZ<-function(wvals,Z,n,alpha=braw.env$alphaSig) {
+  # we need to do it this way, alas
+  z<-seq(0,10,0.05)
+  qa<-qnorm(alpha/2)
+  wz<-pnorm(qa,z)+pnorm(qa,-z)
+  # use<-which(wz<=max(wvals,na.rm=TRUE)+0.1 & wz>=min(wvals,na.rm=TRUE)-0.1)
+  # if (length(use)==1) use<-use+c(-1,0,1);
+  # z<-z[use]; wz<-wz[use]
+  dwdz<-sqrt(n-3)/(2*pi)*(exp(-0.5*(z+qa)^2)-exp(-0.5*(z-qa)^2))
+  Z <- Z*sqrt(n-3)
+  densW<-(exp(-0.5*(z-Z)^2)+exp(-0.5*(z+Z)^2))/dwdz
+  approx(wz,densW,wvals)$y
+}
+
+#' @export
 rSamp2Pop<-function(r_s,n,world=NULL) {
   if (is.null(world)) {world<-list(PDF="Uniform",RZ="r",PDFk<-0)}
   k<-world$PDFk
@@ -142,6 +168,7 @@ rSamp2Pop<-function(r_s,n,world=NULL) {
   tanh(mlEst)
 }
   
+#' @export
 getRList<-function(world,addNulls=FALSE,HQ=FALSE) {
   if (HQ) npops=50*6+1
   else    npops=20*6+1 # 2*3*4*5+1
@@ -192,6 +219,7 @@ getRList<-function(world,addNulls=FALSE,HQ=FALSE) {
   list(pRho=pRho,pRhogain=pRhogain)  
 }
 
+#' @export
 getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=0,HQ=FALSE) {
   if (HQ) npt<-braw.env$nNpoints else npt=21
   nmax<-5
@@ -227,6 +255,7 @@ getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=0,HQ=FALSE) {
   list(nvals=nvals,ndens=ng,ndensSig=nsig)
 }
 
+#' @export
 getNList<-function(design,world,HQ=FALSE) {
     if (!design$sNRand) {
       return(list(nvals=design$sN,ndens=1,ndensSig=1))
@@ -234,6 +263,7 @@ getNList<-function(design,world,HQ=FALSE) {
     return(getNDist(design,world=NULL,logScale=FALSE,sigOnly=0,HQ=HQ))
 }
 
+#' @export
 rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
   k<-world$PDFk
   mu<-world$PDFoffset
@@ -270,6 +300,7 @@ rRandomValue<-function(world=braw.def$hypothesis$effect$world,ns) {
   return(list(old=popsOld,use=pops))
 }
 
+#' @export
 rPopulationDist<-function(rvals,world) {
   if (world$PDFsample) {
     rs<-world$PDFsampleRs
@@ -296,6 +327,7 @@ rPopulationDist<-function(rvals,world) {
   return(rdens*rdens1)
 }
 
+#' @export
 zPopulationDist<-function(zvals,world) {
   if (world$PDFsample) {
     zs<-atanh(world$PDFsampleRs)
@@ -322,6 +354,7 @@ zPopulationDist<-function(zvals,world) {
   return(zdens*zdens1)
 }
 
+#' @export
 fullPSig<-function(world,design,HQ=FALSE,alpha=braw.env$alphaSig) {
 
   # distribution of population effect sizes
@@ -355,6 +388,7 @@ fullPSig<-function(world,design,HQ=FALSE,alpha=braw.env$alphaSig) {
   return(pSig)
 }
 
+#' @export
 fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly=0,sigOnlyCompensate=FALSE,HQ=FALSE,separate=FALSE,quantiles=NULL) {
   # sampling distribution from specified populations (pRho)
   if (is.null(vals)) 
@@ -445,9 +479,9 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
                   a<-addition[1]
                   addition<-addition/dwz*(1-rp^2)
                   addition[1]<-a
+                  }
                   use<-which(diff(wp)!=0)
                   addition<-approx(wp[c(1,use+1)],addition[c(1,use+1)],vals)$y
-                  }
                 }
         )
         if (logScale) addition<-addition*vals

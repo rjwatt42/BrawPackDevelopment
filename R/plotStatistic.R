@@ -105,6 +105,8 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
                rvals<-c(-rev(rvals),0,rvals)
              } else 
                rvals<-seq(-1,1,length.out=npt)*0.99
+             rcrit<-wn2r(0.5,design$sN)
+             rvals<-c(rvals[rvals<rcrit],rcrit,rvals[rvals>rcrit])
              switch(showType,
                     "sig"={
                       theoryDens_all<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
@@ -183,6 +185,8 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
            },
            "z"={
              zvals<-seq(-1,1,length.out=npt*2)*braw.env$z_range*2
+             zcrit<-wn2z(0.5,design$sN)
+             zvals<-c(zvals[zvals<zcrit],zcrit,zvals[zvals>zcrit])
              rvals<-tanh(zvals)
              # rvals<-seq(-1,1,length.out=npt)*0.99
              theoryDens_all<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=0,HQ=braw.env$showTheoryHQ)

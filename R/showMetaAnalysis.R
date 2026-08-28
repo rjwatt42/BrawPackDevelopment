@@ -62,9 +62,10 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' @examples
 #' showMetaSingle(metaResult=doMetaAnalysis(),showType="n",showTheory=FALSE)
 #' @export
-showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
+showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
                          showData=TRUE,showTheory=TRUE,limitNumber=0,
                          xRange="full",fixedYlim=braw.env$fixedYlim,
+                         nbins=c(51,51),nDens=FALSE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
@@ -83,24 +84,31 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   evidence<-metaResult$evidence
   # setBrawEnv("RZ","z")
   
+  if (showType[1]=="rs") {
   d1<-metaResult$result$rIV
   switch(braw.env$RZ,
          "r"={},
          "z"={d1<-atanh(d1)},
          "d"={d1<-2*d1/sqrt(1-d1^2)}
   )
-  
+  } 
+  if (showType[1]=="p") {
+    d1<-metaResult$result$pIV
+  }
   if (is.null(metaResult$result$rpIV)) d1n<-TRUE
    else d1n<-(abs(metaResult$result$rpIV)<=evidence$minRp & hypothesis$effect$world$On)
-  x<-plotAxis("rs",hypothesis)
+  x<-plotAxis(showType[1],hypothesis)
   xlim<-x$lim
-  if (xRange!="full") {
+  if (showType[1]=="rs" && xRange=="abs") {
     xlim[1]<-0
     x$ticks<-x$ticks[x$ticks>=0]
   }
+  if (showType[1]=="p") {
+    x$ticks<-10^x$ticks
+  }
   disp1<-x$label
   
-  if (showType=="n") {
+  if (showType[2]=="n") {
     d2<-metaResult$result$nval
     y<-plotAxis("n",hypothesis)
     disp2<-y$label
@@ -136,13 +144,17 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   useNull<-(d2>ylim[1]) & (d2<ylim[2]) & d1n
   ptsNull<-data.frame(x=d1[useNull],y=d2[useNull])
   
+  if (x$logScale) {
+    ptsAll$x<-log10(ptsAll$x)
+    ptsNull$x<-log10(ptsNull$x)
+  }
   if (y$logScale) {
     ptsAll$y<-log10(ptsAll$y)
     ptsNull$y<-log10(ptsNull$y)
   }
   assign("plotArea",c(0,0,1,1),braw.env)
   g<-startPlot(xlim,log10(ylim),
-               xticks=makeTicks(x$ticks),xlabel=makeLabel(disp1),
+               xticks=makeTicks(x$ticks,logScale=x$logScale),xlabel=makeLabel(disp1),
                yticks=yticks,
                ylabel=makeLabel(disp2),
                top=1.5,g=NULL)
@@ -162,7 +174,8 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
            "z"={rv<-atanh(rv)},
            "d"={rv<-2*rv/sqrt(1-rv^2)}
     )
-    if (showType!="n") nv<-sqrt(nv)
+    if (showType[1]=="p") rv<-log10(rv*0+0.05)
+    if (showType[2]!="n") nv<-sqrt(nv)
     else {if (braw.env$nPlotScale=="log10") {nv<-log10(nv)}}
     use<-(nv<ylim[2] & nv>ylim[1])
     g<-addG(g,dataLine(data.frame(x=rv[use],y=nv[use]),
@@ -175,7 +188,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   
   # show individual studies
   if (showData) {
-  if (length(d1)<=10000) {
+  if (length(d1)<=1000) {
   colgain<-1-min(1,sqrt(max(0,(length(d1)-50))/200))
   alphaUse<-max(0.5,1/(max(1,sqrt(length(d1)/4))))
   dotSize<-braw.env$dotSize*min(1,alphaUse)
@@ -197,15 +210,27 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
   if (nrow(ptsNull)>0)
     g<-addG(g,dataPoint(data=ptsNull,shape=braw.env$plotShapes$study, colour = col2, fill = fill2, alpha=alphaUse, size = dotSize))
   } else {
-    nbins<-51
-    rBins<-seq(-1,1,length.out=nbins)
-    nBins<-seq(log10(5),log10(500),length.out=nbins)
+    nBins<-seq(log10(5),log10(500),length.out=nbins[2])
+    ns<-metaResult$result$nval
+    if (showType[1]=="rs") {
+      rs<-metaResult$result$rIV
+      rBins<-seq(-1,1,length.out=nbins[1])
+      if (braw.env$RZ=="z") {
+        rBins<-rBins*braw.env$z_range
+        rs<-atanh(rs)
+      }
+    } else {
+      rs<-log10(metaResult$result$pIV)
+      rBins<-seq(xlim[1],xlim[2],length.out=nbins[1])
+    }
     z<-matrix(0,length(nBins)-1,length(rBins)-1)
     for (ir in 1:(length(rBins)-1)) {
       for (inv in 1:(length(nBins)-1)) {
-        z[inv,ir]<-sum(metaResult$result$nval>10^nBins[inv] & metaResult$result$nval<=10^nBins[inv+1] &
-                         metaResult$result$rIV>rBins[ir] & metaResult$result$rIV<=rBins[ir+1] ,
-                       na.rm=TRUE)
+        val<-sum(ns>10^nBins[inv] & ns<=10^nBins[inv+1] &
+                   rs>rBins[ir] & rs<=rBins[ir+1] ,
+                 na.rm=TRUE)
+        if (nDens) val<-val/sum(ns>10^nBins[inv] & ns<=10^nBins[inv+1])
+        z[inv,ir]<-val
       }
     }
     if (is.null(fill)) fill<-braw.env$plotColours$metaAnalysis
@@ -215,9 +240,10 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType="n",
                           fill=fill))
     if (metaAnalysis$sourceBias) {
       # blank out the non-sig 
-      nu<-seq(log10(braw.env$minN),log10(braw.env$maxN),length.out=101)
-      zu<-wn2z(0.5,10^nu)
-      g<-addG(g,dataPolygon(data.frame(x=c(zu,0,0,zu[1]),y=c(nu,max(nu),min(nu),nu[1])),fill="#999",colour=NA))
+      nu<-seq(log10(3),log10(braw.env$maxN),length.out=101)
+      if (braw.env$RZ=="z") ru<-wn2z(0.5,10^nu)
+      else ru<-tanh(wn2z(0.5,10^nu))
+      g<-addG(g,dataPolygon(data.frame(x=c(ru,0,0,ru[1]),y=c(nu,max(nu),min(nu),nu[1])),fill="#999",colour=NA))
     }
   }
   }
