@@ -1,3 +1,5 @@
+# 
+#' @export
 metaSciInstructions <- function(HelpType="0") {
 
   oldEvidence<-braw.def$evidence
