@@ -47,7 +47,7 @@ plotParParPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha,g){
   radius<-qnorm(seq(0.55,0.95,0.1))*1.5
   for (ir in 1:length(radius)) {
     pts<-data.frame(x=x*radius[ir]*IV$sd+IV$mu,y=y*radius[ir]*DV$sd+DV$mu)
-    g<-addG(g,dataPolygon(data=pts,fill = braw.env$plotColours$sampleC, colour="red", alpha=alpha/(length(radius)-2)))
+    g<-addG(g,dataPolygon(data=pts,fill = braw.env$plotColours$sampleC, colour=NA, alpha=alpha/(length(radius)-2)))
   }
   return(g)
 }

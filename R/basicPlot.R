@@ -877,9 +877,9 @@ axisPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,
   drawPolygon(data,colour,fill,alpha,linewidth,linetype)
 }
 drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,linetype="solid") {
+  if (!is.na(colour) && colour=="none") colour=NA
   switch(braw.env$graphicsType,
          "ggplot"={
-           if (!is.na(colour) && colour=="none") colour=NA
            if (!is.null(data$ids)) {
              g<-geom_polygon(data=data,aes(x=x,y=y,group=ids,alpha=alpha*value),colour = colour, fill = fill,linewidth=linewidth,linetype=linetype)
            } else {
@@ -892,8 +892,7 @@ drawPolygon<-function(data,colour="#000000",fill="white",alpha=1,linewidth=0.25,
          },
          "HTML"={
            opacity<-1
-           if (!is.na(colour) && colour=="none") colour=NA
-           if (is.na(colour)) colour<-fill
+           if (is.na(colour)) linewidth<-0
            x<-svgX(data$x)
            y<-svgY(data$y)
            ls<-''
