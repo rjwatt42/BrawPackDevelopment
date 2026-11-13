@@ -275,6 +275,12 @@ containsSubscript<-function(label) any(grepl('\\[([^ ]*)\\]',label))
 containsSuperscript<-function(label) any(grepl('[\\^].',label))
 
 makeTicks<-function(breaks=NULL,labels=NULL,logScale=FALSE,angle=0,lim=NULL) {
+  if (is.character(breaks)) {
+    use<-plotAxis(breaks)
+    labels<-breaks<-use$ticks
+    if (use$logScale) labels<-10^labels
+    logScale<-FALSE
+  } else
   if (!is.null(lim)) {
     use<-breaks>=lim[1] & breaks<=lim[2]
     breaks<-breaks[use]
@@ -722,15 +728,18 @@ drawText<-function(data,label, hjust=0, vjust=0, colour="#000000",fill="white",s
   return(g)
 }
 
-dataPath<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0.25,alpha=1) {
+dataPath<-function(data,arrow=NULL,colour="#000000",fill=NA,linetype="solid",linewidth=0.25,alpha=1) {
   data<-reRangeXY(data)
-  axisPath(data,arrow=arrow,colour=colour,linetype=linetype,linewidth=linewidth,alpha=alpha)
+  g<-axisPath(data,arrow=arrow,colour=colour,fill=fill,linetype=linetype,linewidth=linewidth,alpha=alpha)
+  if (!is.na(fill))
+    g<-addG(g,axisPoint(data,fill=fill))
+  return(g)
 }
-axisPath<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0.25,alpha=1) {
+axisPath<-function(data,arrow=NULL,colour="#000000",fill=NA,linetype="solid",linewidth=0.25,alpha=1) {
   addGraphElement(list(type="Path",args=list(data,arrow,colour,linetype,linewidth,alpha)))
-  drawPath(data,arrow,colour,linetype,linewidth,alpha)
+  drawPath(data,arrow,colour,fill=fill,linetype,linewidth,alpha)
 }
-drawPath<-function(data,arrow=NULL,colour="#000000",linetype="solid",linewidth=0.25,alpha=1) {
+drawPath<-function(data,arrow=NULL,colour="#000000",fill=NA,linetype="solid",linewidth=0.25,alpha=1) {
   switch(braw.env$graphicsType,
          "ggplot"={
            if (!is.null(arrow)) arrow<-grid::arrow(angle=20,length=unit(0.4,"cm"))
@@ -958,41 +967,43 @@ strNChar<-function(str) {
   nother<-nother-(is.mathLabel(str) & grepl("=",str))*1
   return(nother+nsub*0.6)
 }
-dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location="right") {
+dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location=c("right","top")) {
   fontsize=0.6*fontsize*braw.env$fontSize
   dy=0.06*fontsize/braw.env$plotArea[4]
   dx=0.03*fontsize/braw.env$plotArea[3] # because rangeX() below
-  if (nchar(title)>0) tn<-1.2 else tn<-0
+  if (!is.null(title) && !is.na(title) && nchar(title)>0) tn<-1.2 else tn<-0
   nrows<-tn+length(data$names)+1
   if (all(is.na(data$colours))) xoff=0 else xoff=2
   ncols<-max(c(strNChar(title)*1.5,strNChar(data$names)+1))+xoff
   # ncols<-max(strwidth(parse(text=mathPrepText(c(title,data$names)))))/strwidth("e")+2
-  switch(location,
-         "right"={xL<-1-ncols*dx},
-         "left"={xL<-0}
-  )
+  if (any(location=="right")) {xL<-1-ncols*dx} else {xL<-0}
+  if (any(location=="top")) {yL<-1-nrows*dy} else {yL<-0.2}
+  # switch(location,
+  #        "right"={xL<-1-ncols*dx},
+  #        "left"={xL<-0}
+  # )
   
-  g<-list(axisPolygon(data=data.frame(x=rangeX(c(xL,xL+ncols*dx,xL+ncols*dx,xL,xL)),
-                                      y=rangeY(c(1-nrows*dy,1-nrows*dy,1,1,1-nrows*dy))),
-                      fill="white",colour="white",linewidth=0.5)
+  g<-list(axisPolygon(data=data.frame(x=rangeX(xL+c(0,ncols*dx,ncols*dx,0,0)),
+                                      y=rangeY(yL+c(0,0,nrows*dy,nrows*dy,0))),
+                      fill="white",colour="#000000",linewidth=0.5)
   )
-  g<-c(g,list(axisPath(data=data.frame(x=rangeX(c(xL,xL+ncols*dx,xL+ncols*dx,xL,xL)),
-                                       y=rangeY(c(1-nrows*dy,1-nrows*dy,1,1,1-nrows*dy))),
-                       colour="#000000",linewidth=0.5))
-  )
+  # g<-c(g,list(axisPath(data=data.frame(x=rangeX(c(xL,xL+ncols*dx,xL+ncols*dx,xL,xL)),
+  #                                      y=rangeY(c(1-nrows*dy,1-nrows*dy,1,1,1-nrows*dy))),
+  #                      colour="#000000",linewidth=0.5))
+  # )
   if (tn>0)
-    g<-c(g,list(axisText(data=data.frame(x=rangeX(xL+1.5*dx),y=rangeY(1-dy*tn)),label=title,colour=titleCol,size=fontsize,fontface="bold"))
+    g<-c(g,list(axisText(data=data.frame(x=rangeX(xL+1.5*dx),y=rangeY(yL+nrows*dy-dy*tn)),label=title,colour=titleCol,size=fontsize,fontface="bold"))
     )
   
   if (length(shape)<length(data$names)) shape<-rep(shape,length(data$names))
   for (i in 1:length(data$names)) {
     if (!is.na(data$colours[i]))
       g<-c(g,
-           list(axisPoint(data=data.frame(x=rangeX(xL+dx*1.5),y=rangeY(1-dy*(i+tn-0.05))),
+           list(axisPoint(data=data.frame(x=rangeX(xL+dx*1.5),y=rangeY(yL+nrows*dy-dy*(i+tn-0.05))),
                           fill=data$colours[i],shape=shape[i]))
       )
     g<-c(g,
-         list(axisText(data=data.frame(x=rangeX(xL+(xoff+1.5)*dx),y=rangeY(1-dy*(i+tn))),
+         list(axisText(data=data.frame(x=rangeX(xL+(xoff+1.5)*dx),y=rangeY(yL+nrows*dy-dy*(i+tn))),
                        label=data$names[i],vjust=0.5,size=fontsize))
     )
   }
@@ -1019,9 +1030,11 @@ dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.1),line
   c<-contourLines(data$y,data$x,data$z/max(data$z,na.rm=TRUE),levels=breaks)
   ny<-length(data$y)
   nx<-length(data$x)
+  off<-min(data$z,na.rm=TRUE)-1
+  print(off)
   c1<-contourLines(c(data$y[1]-diff(data$y[1:2]),data$y,data$y[ny]+diff(data$y[1:2])),
                    c(data$x[1]-diff(data$x[1:2]),data$x,data$x[nx]+diff(data$x[1:2])),
-                   cbind(0,rbind(0,data$z,0),0),levels=breaks)
+                   cbind(off,rbind(off,data$z,off),off),levels=breaks)
   ct<-list()
   if (is.na(fill)) {
     for (i in 1:length(c)) {
@@ -1071,13 +1084,28 @@ dataGraph<-function(data,fill='white',colour="black",poly=FALSE,polyBaseline=NA,
   }
   if (is.matrix(data$y)) {
     for (i in 1:nrow(data$y)) {
-      d<-data.frame(x=data$x[i,],y=data$y[i,])
-      if (!is.na(colour))
-        g<-addG(g,dataPath(d,linewidth=0.5))
-      if (!is.na(fill))
+      if (is.matrix(data$x)) x<-data$x[i,]
+      else x<-data$x
+      d<-data.frame(x=x,y=data$y[i,])
+      if (!is.null(data$colour))
+        g<-addG(g,dataPath(d,colour=data$colour[i],linewidth=0.5))
+      else {
+        if (!is.na(colour))
+          g<-addG(g,dataPath(d,colour=colour,linewidth=0.5))
+      }
+      if (!is.null(data$fill))
         g<-addG(g,dataPoint(d,fill=data$fill[i]))
+      else {
+        if (!is.na(fill))
+          g<-addG(g,dataPath(d,fill=fill,linewidth=0.5))
+      }
     }
-    if (!is.null(legend)) g<-addG(g,dataLegend(data.frame(names=legend$names,colours=data$fill),title=legend$legendTitle))
+    if (!is.null(data$names))
+      g<-addG(g,dataLegend(data.frame(names=data$names,colours=data$fill),title=data$title,location=c("right","bottom")))
+    else {
+      if (!is.null(legend)) 
+        g<-addG(g,dataLegend(data.frame(names=legend$names,colours=data$fill),title=legend$title,location=c("right","bottom")))
+    }
   } else {
     if (poly) {
       x<-data$x
@@ -1090,9 +1118,9 @@ dataGraph<-function(data,fill='white',colour="black",poly=FALSE,polyBaseline=NA,
       g<-addG(g,dataPolygon(data,fill=fill,colour=colour))
       } else {
         if (!is.na(colour))
-          g<-addG(g,dataPath(data,linewidth=0.5))
+          g<-addG(g,dataPath(data,colour=colour,linewidth=0.5))
         if (!is.na(fill))
-          g<-addG(g,dataPoint(data,fill=fill))
+          g<-addG(g,dataPoint(data,colour=colour,fill=fill))
       }
   }
   return(g)

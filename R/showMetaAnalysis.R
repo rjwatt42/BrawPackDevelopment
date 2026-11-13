@@ -62,10 +62,10 @@ worldLabel<-function(metaResult,whichMeta=NULL,modelPDF=NULL) {
 #' @examples
 #' showMetaSingle(metaResult=doMetaAnalysis(),showType="n",showTheory=FALSE)
 #' @export
-showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
+showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),doTranspose=FALSE,
                          showData=TRUE,showTheory=TRUE,limitNumber=0,
                          xRange="full",fixedYlim=braw.env$fixedYlim,
-                         nbins=c(51,51),nDens=FALSE,
+                         nbins=c(51,51),nDens=FALSE,logDensity=FALSE,
                          fill=NULL,alpha=NULL) {
   if (is.null(metaResult)) metaResult<-doMetaAnalysis()
   
@@ -94,6 +94,9 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
   } 
   if (showType[1]=="p") {
     d1<-metaResult$result$pIV
+  }
+  if (showType[1]=="wp") {
+    d1<-metaResult$result$wpIV
   }
   if (is.null(metaResult$result$rpIV)) d1n<-TRUE
    else d1n<-(abs(metaResult$result$rpIV)<=evidence$minRp & hypothesis$effect$world$On)
@@ -129,7 +132,7 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
   } else {
     disp2<-"1/se"
     ylim<-sqrt(c(braw.env$minN,braw.env$maxN))
-    ytick<-seq(ceil(sqrt(braw.env$minN)),floor(sqrt(braw.env$maxN)),1)
+    yticks<-seq(ceil(sqrt(braw.env$minN)),floor(sqrt(braw.env$maxN)),1)
     yticks<-makeTicks(yticks)
     d2<-sqrt(metaResult$result$nval)
   }
@@ -152,12 +155,23 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
     ptsAll$y<-log10(ptsAll$y)
     ptsNull$y<-log10(ptsNull$y)
   }
+
   assign("plotArea",c(0,0,1,1),braw.env)
-  g<-startPlot(xlim,log10(ylim),
-               xticks=makeTicks(x$ticks,logScale=x$logScale),xlabel=makeLabel(disp1),
-               yticks=yticks,
-               ylabel=makeLabel(disp2),
-               top=1.5,g=NULL)
+  if (doTranspose) 
+    g<-startPlot(log10(ylim),xlim,
+                 yticks=makeTicks(x$ticks,logScale=x$logScale),
+                 ylabel=makeLabel(disp1),
+                 xticks=yticks,
+                 xlabel=makeLabel(disp2),
+                 top=1.5,g=NULL)
+  else
+    g<-startPlot(xlim,log10(ylim),
+                 xticks=makeTicks(x$ticks,logScale=x$logScale),
+                 xlabel=makeLabel(disp1),
+                 yticks=yticks,
+                 ylabel=makeLabel(disp2),
+                 top=1.5,g=NULL)
+  
   if (showTheory) 
     g<-addG(g,plotTitle(paste0("Method=",metaResult$metaAnalysis$method),size=0.75))
   
@@ -219,8 +233,13 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
         rBins<-rBins*braw.env$z_range
         rs<-atanh(rs)
       }
-    } else {
+    } 
+    if (showType[1]=="p") {
       rs<-log10(metaResult$result$pIV)
+      rBins<-seq(xlim[1],xlim[2],length.out=nbins[1])
+    }
+    if (showType[1]=="wp") {
+      rs<-metaResult$result$wpIV
       rBins<-seq(xlim[1],xlim[2],length.out=nbins[1])
     }
     z<-matrix(0,length(nBins)-1,length(rBins)-1)
@@ -233,11 +252,20 @@ showMetaSingle<-function(metaResult=braw.res$metaSingle,showType=c("rs","n"),
         z[inv,ir]<-val
       }
     }
+    if (logDensity) z<-(z^0.5)
+    z[is.na(z)]<-min(z,na.rm=TRUE)/2
     if (is.null(fill)) fill<-braw.env$plotColours$metaAnalysis
-    g<-addG(g,dataContour(data=list(x=rBins[1:(length(rBins)-1)],
-                                          y=nBins[1:(length(nBins)-1)],
-                                          z=z),
+    if (doTranspose) 
+      g<-addG(g,dataContour(data=list(x=(nBins[2:(length(nBins))]+nBins[1:(length(nBins)-1)])/2,
+                                    y=(rBins[2:(length(rBins))]+rBins[1:(length(rBins)-1)])/2,
+                                          z=t(z)),
                           fill=fill))
+    else
+      g<-addG(g,dataContour(data=list(y=(nBins[2:(length(nBins))]+nBins[1:(length(nBins)-1)])/2,
+                                      x=(rBins[2:(length(rBins))]+rBins[1:(length(rBins)-1)])/2,
+                                      z=z),
+                            fill=fill))
+    
     if (metaAnalysis$sourceBias) {
       # blank out the non-sig 
       nu<-seq(log10(3),log10(braw.env$maxN),length.out=101)

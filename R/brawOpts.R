@@ -401,7 +401,12 @@ setBrawDef<-function(which,value) {
 }
 
 #' @export
-setHTML<-function() {
+setHTML<-function(gsize=400,aspect=1.3,fontScale=1.5) {
+  
+  setBrawEnv("plotSize",c(aspect,1)*gsize)
+  setBrawEnv("dotSize",gsize/100*fontScale*1.25)
+  setBrawEnv("labelSize",gsize/100*fontScale)
+  
   setBrawEnv("graphicsType","HTML")
   setBrawEnv("reportHTML",TRUE)
 }

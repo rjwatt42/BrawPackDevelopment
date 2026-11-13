@@ -9,7 +9,7 @@ brawFormat<-function(numbers,digits=braw.env$report_precision,na.rm=FALSE) {
   
   if (digits<0) {
     digits<-(-digits)-max(floor(log10(abs(numbers))))
-    if (digits<0) digits<-0
+    if (digits<1) digits<-1
   }
   if (all(abs(numbers-round(numbers))<10^(-digits))) {
     r<-sprintf(round(numbers),fmt="%d")

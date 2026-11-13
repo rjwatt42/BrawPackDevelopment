@@ -25,7 +25,7 @@ zn2w<-function(z,n,t=2,alpha=NA){
     } else {
       # two-tailed
       pw1<- pnorm(qnorm(alpha/2)+z*sqrt(n-3))
-      pw2<-pnorm(qnorm(alpha/2)-z*sqrt(n-3))
+      pw2<- pnorm(qnorm(alpha/2)-z*sqrt(n-3))
       w<-pw1+pw2
     }
   w[z==0]<-alpha
@@ -54,8 +54,10 @@ rn2w<-function(r,n,t=2,alpha=NA){
   zn2w(z,n,t,alpha)
 }
 
+gs<-function(z,n,w) {abs(zn2w(z,n)-w)}
+
 #' @export
-wn2z<-function(w,n,t=2,alpha=NA){
+wn2z<-function(w,n,t=2,alpha=NA,doOpt=TRUE){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (t==1) {
     # one-tailed
@@ -67,9 +69,20 @@ wn2z<-function(w,n,t=2,alpha=NA){
       w[w>1]<-1
     }
     z<-(qnorm(w)-qnorm(alpha/2))/sqrt(n-3)
+    if (doOpt)    z<-optim(z,gs,NULL,n,w,method="Brent",lower=0,upper=1)$par
   }
   z
 }
+
+# check approx vs optim for wn2z
+# n=42
+# w<-seq(0.05,0.95,length.out=10)
+# for (i in 1:10) {
+#   z1<-wn2z(w[i],n,doOpt=FALSE)
+#   z2<-wn2z(w[i],n,doOpt=TRUE)
+#   print(c(z1,z2,z1-z2))
+# }
+# 
 
 #' @export
 wn2r<-function(w,n,t=2,alpha=NA){
@@ -91,7 +104,8 @@ wn2r<-function(w,n,t=2,alpha=NA){
 }
 
 #' @export
-zw2n<-function(z,w,t=2,alpha=NA,doRound=TRUE){
+zw2n<-function(z,w,t=2,alpha=NA,doRound=TRUE,longHandPower=FALSE,
+               doMeanLikelihood=FALSE,nOrig=42,prior=NA){
   if (is.na(alpha)) alpha<-braw.env$alphaSig
   if (!is.numeric(z)) {
     n_poss<-10^seq(log10(5),log10(5000),length.out=21)
@@ -109,10 +123,35 @@ zw2n<-function(z,w,t=2,alpha=NA,doRound=TRUE){
     # two tailed
     nnear<-((qnorm(w)-qnorm(alpha/2))/z)^2+3
   }
-  if (doRound) nnear<-round(nnear)  
-  nnear[nnear>1000000]<-1000000
-  nnear[nnear<5]<-5
-  nnear
+  if (longHandPower && nnear>10 && abs(z)>0.000001) {
+    if (doMeanLikelihood)  { 
+      zi<-seq(-10,10,0.01)
+      za<-zSamplingDistr(zi,z,nOrig)
+      gs<-function(nn) {w-sum(zn2w(zi,nn)*za)/sum(za)}
+    } else  gs<-function(nn) {w-zn2w(z,nn)}
+    # nr<-optim(nr,gs,method="Brent",lower=nr/2,upper=nr*2)$par
+    nrOld<-nnear
+    nInc<-2
+    useN<-c(floor(nnear/2),nnear*2)
+    ni<-2
+    while (nInc>1) {
+      n1<-useN[ni-1]
+      n2<-useN[ni]
+      nInc<-max(1,round((n2-n1)/4))
+      useN<-seq(n1,n2,nInc)
+      for (ni in 1:length(useN)) {
+        res<-gs(useN[ni])
+        if (ni>1 && sign(res)!=sign(resOld)) break
+        resOld<-res
+      }
+    }
+    nr<-useN[ni]
+  } else nr<-nnear
+
+  if (doRound) nr<-round(nr)  
+  nr[nr>1000000]<-1000000
+  nr[nr<5]<-5
+  nr
 }
 
 #' @export

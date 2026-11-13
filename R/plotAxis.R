@@ -1,4 +1,4 @@
-plotAxis<-function(showType,hypothesis,design=NULL,result=NULL) {
+plotAxis<-function(showType,hypothesis=braw.def$hypothesis,design=NULL,result=NULL) {
   fixedAxis=TRUE
   
   effect<-hypothesis$effect
