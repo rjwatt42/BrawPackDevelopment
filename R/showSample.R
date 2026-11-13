@@ -14,7 +14,7 @@ plotSample<-function(IV,DV,effect,ivplot,dvplot,fill=braw.env$plotColours$sample
   x<-ivplot
   y<-dvplot
   pts<-data.frame(x=x,y=y)
-  fill<-darken(fill,-0.2)
+  fill<-darken(fill,-0.05)
   g<-addG(g,dataPoint(data=pts,shape=braw.env$plotShapes$data, colour = "#000000", fill = fill, size = dotSize*shrinkDots))
   if (braw.env$showMedians) {
     if (sample$type=="Categorical") {yuse<-0.5} else {yuse<-median(y)}
