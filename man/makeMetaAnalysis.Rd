@@ -7,6 +7,7 @@
 makeMetaAnalysis(
   On = FALSE,
   nstudies = 10,
+  studies = NULL,
   analysisType = "random",
   analysisVar = "sd",
   modelPDF = "All",
@@ -15,6 +16,7 @@ makeMetaAnalysis(
   sourceNulls = 0,
   analyseNulls = FALSE,
   sourceBias = 0,
+  assumeBias = FALSE,
   analyseBias = FALSE,
   sourceAbs = FALSE
 )

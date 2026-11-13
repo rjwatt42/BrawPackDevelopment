@@ -10,7 +10,7 @@ makeExplore(
   vals = NULL,
   minVal = NA,
   maxVal = NA,
-  xlog = FALSE
+  xlog = NA
 )
 }
 \arguments{

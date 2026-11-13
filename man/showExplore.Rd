@@ -9,6 +9,7 @@ showExplore(
   showType = "Basic",
   dimension = "1D",
   showTheory = FALSE,
+  theoryLineCol = "black",
   effectType = "unique",
   whichEffect = "All",
   quantileShow = 0.5,

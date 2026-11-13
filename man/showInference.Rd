@@ -8,7 +8,7 @@ showInference(
   analysis = braw.res$result,
   showType = "Basic",
   dimension = "1D",
-  orientation = "vert",
+  orientation = braw.env$graphOrientation,
   whichEffect = "All",
   effectType = "all",
   showTheory = braw.env$showTheory,

@@ -6,12 +6,16 @@
 \usage{
 showMetaSingle(
   metaResult = braw.res$metaSingle,
-  showType = "n",
+  showType = c("rs", "n"),
+  doTranspose = FALSE,
   showData = TRUE,
   showTheory = TRUE,
   limitNumber = 0,
   xRange = "full",
   fixedYlim = braw.env$fixedYlim,
+  nbins = c(51, 51),
+  nDens = FALSE,
+  logDensity = FALSE,
   fill = NULL,
   alpha = NULL
 )

@@ -10,7 +10,7 @@ showPossible(
   cutaway = FALSE,
   walls = "both",
   showP = 0,
-  doTextResult = TRUE,
+  doTextResult = "Sample",
   showSig = FALSE,
   view = "3D",
   axisScale = 1,

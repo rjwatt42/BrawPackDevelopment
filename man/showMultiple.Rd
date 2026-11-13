@@ -8,7 +8,7 @@ showMultiple(
   multipleResult = braw.res$multiple,
   showType = "Basic",
   dimension = "1D",
-  orientation = "vert",
+  orientation = braw.env$graphOrientation,
   whichEffect = "All",
   effectType = "all",
   showTheory = braw.env$showTheory,
