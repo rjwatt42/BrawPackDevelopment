@@ -266,7 +266,8 @@ doMetaScience<-function(metaScience,showType="rse",
     investgD<-showDescription()
     investgS1<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
     investgS2<-showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory)
-    investgS<-generate_tab("",tabs=c("r_s","p"),tabContents=c(investgS1,investgS2))
+    investgS<-generate_tab("show:",tabs=c("r_s","p"),tabContents=c(investgS1,investgS2),
+                           plainTabs=TRUE)
     if (is.element(steppartMetaSci,c("2B")))
       investgR<-reportMultiple(showType="NHST",compact=TRUE)
     else     investgR<-reportInference(compact=TRUE)
