@@ -153,7 +153,6 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     # openCode,
   # '</script>'
   )
-  
   style<-paste0(
     '<style>',
     # Style the tab 
@@ -164,7 +163,6 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     'background-color: inherit;',
     'border-bottom: solid ',colours[3],' 1px;',
     'width: ',width+2,'px;',
-    'margin: none;',
     '}',
     
     # Style the buttons inside the tab 

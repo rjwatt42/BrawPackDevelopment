@@ -54,7 +54,6 @@ rn2w<-function(r,n,t=2,alpha=NA){
   zn2w(z,n,t,alpha)
 }
 
-gs<-function(z,n,w) {abs(zn2w(z,n)-w)}
 
 #' @export
 wn2z<-function(w,n,t=2,alpha=NA,doOpt=TRUE){
@@ -69,7 +68,11 @@ wn2z<-function(w,n,t=2,alpha=NA,doOpt=TRUE){
       w[w>1]<-1
     }
     z<-(qnorm(w)-qnorm(alpha/2))/sqrt(n-3)
-    if (doOpt)    z<-optim(z,gs,NULL,n,w,method="Brent",lower=0,upper=1)$par
+    gs<-function(z,n,w) {return(abs(zn2w(z,n)-w))}
+    if (doOpt)  {
+      for (zi in 1:length(z))
+        z[zi]<-optim(z[zi],gs,NULL,n,w[zi],method="Brent",lower=0,upper=1)$par
+    }  
   }
   z
 }

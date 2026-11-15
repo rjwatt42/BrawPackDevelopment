@@ -91,10 +91,11 @@ showHistory<-function(back=-1) {
 #' @examples 
 #' svgB0x(height=200)
 #' @export
-svgBox<-function(height=NULL,aspect=1.3,fontScale=braw.env$fontSize) {
+svgBox<-function(height=NULL,aspect=1.3,fontScale=braw.env$fontSize,margin=10) {
   if (is.null(height) && is.null(aspect)) return(braw.env$plotSize)
   if (is.null(height)) height<-braw.env$plotSize[2]
   setBrawEnv("plotSize",c(aspect,1)*height)
+  setBrawEnv("plotMargin",margin)
   dotSize<-braw.env$dotSize/braw.env$labelSize
   setBrawEnv("labelSize",height/100*fontScale)
   setBrawEnv("dotSize",dotSize*braw.env$labelSize)
@@ -102,11 +103,11 @@ svgBox<-function(height=NULL,aspect=1.3,fontScale=braw.env$fontSize) {
 svgBoxX<-function() {return(braw.env$plotSize[1])}
 svgBoxY<-function() {return(braw.env$plotSize[2])}
 svgX<-function(x) {
-  margin<-10
+  margin<-braw.env$plotMargin
   return(x*(svgBoxX()-2*margin)+margin)
   }
 svgY<-function(y) {
-  margin<-10
+  margin<-braw.env$plotMargin
   return((1-y)*(svgBoxY()-2*margin)+margin)
   }
 # svgX<-function(x) {return(x*(svgBoxX()))}
@@ -225,7 +226,7 @@ reSizeFont<-function(size) {
 plotLimits<-function(xlim,ylim,orientation="horz",gaps=c(1,1,0,0),fontScale=1,returnValue=FALSE) {
   gain<-4/braw.env$plotSize[c(1,2,1,2)]
   gaps<-gaps*fontScale*gain
-  
+
   switch(orientation,
          "horz"={plotLimits<-list(xlim=xlim,ylim=ylim,xsc=xlim,ysc=ylim,
                                            orientation=orientation,gap=gaps,fontScale=fontScale,
@@ -326,7 +327,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   # if (braw.env$graphicsType!="HTML") 
     unitGap<-unitGap*1.7
   labelGapx<-labelGapy<-unitGap
-  if (containsSubscript(xlabel$label) || containsSuperscript(xlabel$label)) labelGapx<-labelGapx*3.2
+  # if (containsSubscript(xlabel$label) || containsSuperscript(xlabel$label)) labelGapx<-labelGapx*3.2
   if (containsSubscript(ylabel$label) || containsSuperscript(ylabel$label)) labelGapy<-labelGapy*1.6
   labelGapx<-labelGapx*braw.env$plotArea[4]
   labelGapy<-labelGapy*braw.env$plotArea[3]
@@ -368,7 +369,7 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   tickSize<-5/max(7,maxtick)
 
   bottomGap<-labelGapx+(3+0.25)*unitGap
-  if (top>0) topGap<-top*unitGap*3.125 else topGap<-minGap
+  if (top>0) topGap<-top*unitGap*3.125 else topGap<-minGap*0
   leftGap<-labelGapy+(maxticky+0.25)*unitGap
   rightGap<-minGap
   
@@ -391,6 +392,9 @@ startPlot<-function(xlim=c(0,1),ylim=c(0,1),gaps=NULL,box="both",top=0,
   if (is.null(g)) g<-nullPlot()
   addGraphElement(list(type="Start",args=braw.env$plotLimits))
   
+  # g<-addG(g,axisPolygon(data=data.frame(x=c(0,1,1,0)*braw.env$plotSize[1],
+  #                                       y=c(0,0,1,1)*braw.env$plotSize[2]),
+  #                       fill="red", colour="red"))
   if (!(is.character(backC) && backC=="transparent")) {
     back<-data.frame(x=xlim[c(1,2,2,1)],y=ylim[c(1,1,2,2)])
     # g<-addG(g,axisPath(data=data.frame(x=c(0,1,1,0,0),y=c(0,0,1,1,0)),colour="red"))

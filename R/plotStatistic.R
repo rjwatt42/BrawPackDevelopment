@@ -1188,7 +1188,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
   showSig<-TRUE
   labelSig<-TRUE
   labelNSig<-TRUE
-  top<-1
+  if (orientation=="horz") top<-0 else top<-1
   if (is.element(showType,c("e1d","e2d"))) top<-1.5
   if (is.element(showType,c("rse","sig","ns","nonnulls","nulls","rss"))) top<-1.5
 

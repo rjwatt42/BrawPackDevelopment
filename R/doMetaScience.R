@@ -242,7 +242,7 @@ doMetaScience<-function(metaScience,showType="rse",
   
   
   # display the results
-  svgBox(height=350,aspect=1.5,fontScale=1.2)
+  svgBox(height=350,aspect=1.5,fontScale=1.2,margin=10)
   setBrawEnv("graphicsType","HTML")
   
   # if (stepMetaSci=="0") setBrawEnv("fullOutput",0)
@@ -264,10 +264,19 @@ doMetaScience<-function(metaScience,showType="rse",
   # if (stepMetaSci=="5") showTheory=FALSE
   if (single) {
     investgD<-showDescription()
-    investgS1<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
-    investgS2<-showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory)
-    investgS<-generate_tab("show:",tabs=c("rₛ","p","wₛ","wₚ"),tabContents=c(investgS1,investgS2),
-                           width=300,height=300,titleWidth=45,plainTabs=TRUE,open=1)
+    svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
+    # setBrawEnv("plotSize",350*c(1.5,1))
+    # investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
+    investgS<-generate_tab("show:",
+                           tabs=c("rs","p","ws","wp"),
+                           tabContents=c(
+                             showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),
+                             showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),
+                             showInference(showType="ws",orientation="horz",dimension=1,showTheory=showTheory),
+                             showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory)
+                           ),
+                           width=350*1.5+10,
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1)
     if (is.element(steppartMetaSci,c("2B")))
       investgR<-reportMultiple(showType="NHST",compact=TRUE)
     else     investgR<-reportInference(compact=TRUE)
@@ -275,7 +284,16 @@ doMetaScience<-function(metaScience,showType="rse",
       open<-2                   
     else open<-1
   } else {
-    investgS<-showMultiple(showType=showType,dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
+    # investgS<-showMultiple(showType=showType,dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
+    investgS<-generate_tab("show:",
+                           tabs=c("rs","p","ws","wp"),
+                           tabContents=c(
+                             showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),
+                             showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),
+                             showMultiple(showType="ws",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),
+                             showMultiple(showType="wp",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
+                           ),
+                           topMargin=0,titleWidth=100,plainTabs=TRUE,open=1)
     if (stepMetaSci=="5") {
         investgR<-reportMultiple(showType=showType,compact=TRUE,whichEffect = "Main 1",effectType="direct")
       } else {
