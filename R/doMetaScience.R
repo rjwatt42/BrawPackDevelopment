@@ -26,7 +26,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
                           sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
                           sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,
                           differenceSource="Interaction",range=NULL,rangeWidth=0,
-                          rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE)
+                          rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE,FALSE)
                         ) {
 
   if (is.null(doingMetaScience)) doingMetaScience<-"0A"
@@ -175,7 +175,8 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
 }
 
 #' @export
-doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHistory=TRUE,showHelp=TRUE,
+doMetaScience<-function(metaScience,showType="rse",
+                        nreps=200,alt4B=FALSE,showOutput=TRUE,doHistory=TRUE,showHelp=TRUE,
                         world="Psych50",rp=0.3,pRplus=0.5,metaPublicationBias=FALSE,
                         sN=NULL,
                         sMethod="Convenience",sMethodSeverity=0.1,sBudget=100,sSplits=5,
@@ -263,7 +264,7 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
   # if (stepMetaSci=="5") showTheory=FALSE
   if (single) {
     investgD<-showDescription()
-    investgS<-showInference(showType="rse",orientation="horz",dimension=1,showTheory=showTheory)
+    investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
     if (is.element(steppartMetaSci,c("2B")))
       investgR<-reportMultiple(showType="NHST",compact=TRUE)
     else     investgR<-reportInference(compact=TRUE)
@@ -271,9 +272,9 @@ doMetaScience<-function(metaScience,nreps=200,alt4B=FALSE,showOutput=TRUE,doHist
       open<-2                   
     else open<-1
   } else {
-    investgS<-showMultiple(showType="rse",dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
+    investgS<-showMultiple(showType=showType,dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
     if (stepMetaSci=="5") {
-        investgR<-reportMultiple(showType="rs",compact=TRUE,whichEffect = "Main 1",effectType="direct")
+        investgR<-reportMultiple(showType=showType,compact=TRUE,whichEffect = "Main 1",effectType="direct")
       } else {
         investgR<-reportMultiple(showType="NHST",compact=TRUE)
       }
