@@ -1,3 +1,5 @@
+# 
+#' @export
 basicsInstructions <- function(HelpType="1") {
   
 
