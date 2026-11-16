@@ -517,7 +517,7 @@ tabs<-c("Plan","Data","Inference")
       investgD<-generate_tab("show:",
                              tabs=c("variables","effect"),
                              tabContents=c(
-                               makePanel(showMarginals(style="all"),reportSample())),
+                               makePanel(showMarginals(style="all"),reportSample()),
                                makePanel(showDescription(whichEffect=whichEffect),paste0(reportInference(),reportDescription(plain=TRUE)))
                              ),
                              width=350*1.5+10,
