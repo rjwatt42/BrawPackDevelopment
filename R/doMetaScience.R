@@ -263,7 +263,16 @@ doMetaScience<-function(metaScience,showType="rse",
   
   # if (stepMetaSci=="5") showTheory=FALSE
   if (single) {
-    investgD<-showDescription()
+    # investgD<-showDescription()
+    investgD<-generate_tab("show:",
+                           tabs=c("data","effect"),
+                           tabContents=c(
+                             showMarginals(style="all"),
+                             showDescription()
+                           ),
+                           width=350*1.5+10,
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+    )
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
     # setBrawEnv("plotSize",350*c(1.5,1))
     # investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
