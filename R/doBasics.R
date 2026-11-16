@@ -474,9 +474,8 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   }
   
   if (showNow=="None") {
-    tabs<-c("Plan","Sample","Effect","Inference")
+    tabs<-c("Plan","Data","Inference")
     tabContents<-c(
-      makePanel(nullPlot(),NULL),
       makePanel(nullPlot(),NULL),
       makePanel(nullPlot(),NULL),
       makePanel(nullPlot(),NULL)
