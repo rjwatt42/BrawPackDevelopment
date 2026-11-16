@@ -504,7 +504,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
       investgD<-generate_tab("show:",
                              tabs=c("variables","effect"),
                              tabContents=c(
-                               showMarginals(style="all"),
+                             showMarginals(style="all"),
                              showDescription(whichEffect=whichEffect)
       ),
       width=350*1.5+10,
@@ -513,7 +513,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
 tabs<-c("Plan","Data","Inference")
       tabContents<-c(
         makePanel(showPlan()),
-        makePanel(showMarginals(style=marginalsStyle),NULL),
+        investgD,
         makePanel(nullPlot(),NULL)
       )
     } else {
