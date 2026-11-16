@@ -498,38 +498,30 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   } 
   if (!is.element(showNow,c("None","Plan"))) {
     if (hideReport) {
+      tabs<-c("Plan","Sample","Effect","Inference")
+      tabContents<-c(
+        makePanel(showPlan()),
+        makePanel(showMarginals(style=marginalsStyle),NULL),
+        makePanel(nullPlot(),NULL),
+        makePanel(nullPlot(),NULL)
+      )
+    } else {
       investgD<-generate_tab("show:",
                              tabs=c("variables","effect"),
                              tabContents=c(
-                               showMarginals(style="all"),
-                               showDescription()
+                               makePanel(showMarginals(style="all"),reportSample())),
+                               makePanel(showDescription(whichEffect=whichEffect),paste0(reportInference(),reportDescription(plain=TRUE)))
                              ),
                              width=350*1.5+10,
                              topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
       )
-      investgS<-generate_tab("show:",
-                             tabs=c("rs","p","ws","wp"),
-                             tabContents=c(
-                               showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),
-                               showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),
-                               showInference(showType="ws",orientation="horz",dimension=1,showTheory=showTheory),
-                               showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory)
-                             ),
-                             width=350*1.5+10,
-                             topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1)
-      tabs<-c("Plan","Data","Inference")
-      tabContents<-c(
-        makePanel(showPlan()),
-        investgD,
-        investgS
-      )
-    } else {
       tabs<-c("Plan","Sample","Effect","Schematic")
       tabContents<-c(
         makePanel(showPlan()),
-        makePanel(showMarginals(style=marginalsStyle),reportSample()),
-        makePanel(showDescription(whichEffect=whichEffect),
-                  paste0(reportInference(),reportDescription(plain=TRUE))),
+        investgD,
+        # makePanel(showMarginals(style=marginalsStyle),reportSample()),
+        # makePanel(showDescription(whichEffect=whichEffect),
+        #           paste0(reportInference(),reportDescription(plain=TRUE))),
         schematic
       )
     }
