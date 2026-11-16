@@ -281,7 +281,7 @@ doMetaScience<-function(metaScience,showType="rse",
                              showDescription()
                            ),
                            width=350*1.5+10,
-                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=2
     )
     investgS<-generate_tab("show:",
                            tabs=c("rs","p","ws","wp"),
