@@ -403,7 +403,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
              )
              if (is.null(sN)) sN<-500
              analyse<-"Covariation"
-             showNow<-"SchematicSEM"
+             showNow<-"InferenceSEM"
            }
     )
     
@@ -460,21 +460,21 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     setBrawEnv("graphicsType","HTML")
     # setBrawEnv("fontSize",0.75)
     
-    if ((process=="single" || process=="analysis") && showNow!="SchematicSEM") {
-      schematic<-makePanel(showInference(effectType="direct"),reportInference())
+    if ((process=="single" || process=="analysis") && showNow!="InferenceSEM") {
+      Inference<-makePanel(showInference(effectType="direct"),reportInference())
     } 
     if (process=="multiple") {
-      schematic<-makePanel(showMultiple(effectType="direct"),reportMultiple())
-      showNow<-"Schematic"
+      Inference<-makePanel(showMultiple(effectType="direct"),reportMultiple())
+      showNow<-"Inference"
     }      
-    if (process=="single" && showNow=="SchematicSEM") {
-      schematic<-makePanel(showInference(effectType="direct"),plotSEMModel(braw.res$result$SEM))
-      showNow<-"Schematic"
+    if (process=="single" && showNow=="InferenceSEM") {
+      Inference<-makePanel(showInference(effectType="direct"),plotSEMModel(braw.res$result$SEM))
+      showNow<-"Inference"
     }      
   }
   
   if (showNow=="None") {
-    tabs<-c("Plan","Sample","Effect","Schematic")
+    tabs<-c("Plan","Sample","Effect","Inference")
     tabContents<-c(
       makePanel(nullPlot(),NULL),
       makePanel(nullPlot(),NULL),
@@ -486,7 +486,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   } 
   
   if (showNow=="Plan") {
-    tabs<-c("Plan","Sample","Effect","Schematic")
+    tabs<-c("Plan","Sample","Effect","Inference")
     tabContents<-c(
       makePanel(showPlan()),
       makePanel(nullPlot(),NULL),
@@ -527,14 +527,14 @@ tabs<-c("Plan","Data","Inference")
                              width=350*1.5+10,
                              topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=open
       )
-      tabs<-c("Plan","Data","Schematic")
+      tabs<-c("Plan","Data","Inference")
       tabContents<-c(
         makePanel(showPlan()),
         investgD,
         # makePanel(showMarginals(style=marginalsStyle),reportSample()),
         # makePanel(showDescription(whichEffect=whichEffect),
         #           paste0(reportInference(),reportDescription(plain=TRUE))),
-        schematic
+        Inference
       )
     }
     tabLink=paste0('https://doingpsychstats.wordpress.com/basics-',stepBS,'#',partBS)
@@ -557,7 +557,7 @@ tabs<-c("Plan","Data","Inference")
   open<-0
   if (showNow=="Plan") open<-1
   if (showNow=="Sample" || showNow=="Effect") open<-2
-  if (showNow=="Schematic") open<-3
+  if (showNow=="Inference") open<-3
 
   history<-braw.res$basicsHistory
   if (is.null(history)) {
