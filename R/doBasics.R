@@ -497,6 +497,9 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     tabLinkLabel=NULL
   } 
   if (!is.element(showNow,c("None","Plan"))) {
+    switch(showNow,
+           "Sample"=open<-1,
+           "Effect"=open<-2)
     if (hideReport) {
       investgD<-generate_tab("show:",
                              tabs=c("variables","effect"),
@@ -505,7 +508,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
                              showDescription(whichEffect=whichEffect)
       ),
       width=350*1.5+10,
-      topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+      topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=open
       )
 tabs<-c("Plan","Data","Inference")
       tabContents<-c(
@@ -517,11 +520,11 @@ tabs<-c("Plan","Data","Inference")
       investgD<-generate_tab("show:",
                              tabs=c("variables","effect"),
                              tabContents=c(
-                               makePanel(showMarginals(style="all"),reportSample()),
+                               makePanel(showMarginals(style="all"),reportSample())),
                                makePanel(showDescription(whichEffect=whichEffect),paste0(reportInference(),reportDescription(plain=TRUE)))
                              ),
                              width=350*1.5+10,
-                             topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+                             topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=open
       )
       tabs<-c("Plan","Data","Schematic")
       tabContents<-c(
@@ -549,7 +552,10 @@ tabs<-c("Plan","Data","Inference")
     tabContents<-c(tabContents,brawBasicsHelp(open=c(0,0),indent=100,plainTabs=TRUE))
   }
   
-  open<-which(showNow==tabs)
+  
+  if (showNow=="Plan") open<-1
+  if (showNow=="Sample" || showNow=="Effect") open<-2
+  if (showNow=="Schematic") open<-3
   if (isempty(open)) open<-0
   
   history<-braw.res$basicsHistory
