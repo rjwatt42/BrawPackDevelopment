@@ -498,11 +498,19 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
   } 
   if (!is.element(showNow,c("None","Plan"))) {
     if (hideReport) {
-      tabs<-c("Plan","Sample","Effect","Inference")
+      investgD<-generate_tab("show:",
+                             tabs=c("variables","effect"),
+                             tabContents=c(
+                               showMarginals(style="all"),
+                             showDescription(whichEffect=whichEffect)
+      ),
+      width=350*1.5+10,
+      topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+      )
+tabs<-c("Plan","Data","Inference")
       tabContents<-c(
         makePanel(showPlan()),
         makePanel(showMarginals(style=marginalsStyle),NULL),
-        makePanel(nullPlot(),NULL),
         makePanel(nullPlot(),NULL)
       )
     } else {
@@ -515,7 +523,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
                              width=350*1.5+10,
                              topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
       )
-      tabs<-c("Plan","Sample","Effect","Schematic")
+      tabs<-c("Plan","Data","Schematic")
       tabContents<-c(
         makePanel(showPlan()),
         investgD,
