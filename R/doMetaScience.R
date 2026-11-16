@@ -292,7 +292,7 @@ doMetaScience<-function(metaScience,showType="rse",
                              paste0(showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory),"</svg>")
                            ),
                            width=350*1.5+10,
-                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=2
     )
     if (is.element(steppartMetaSci,c("2B")))
       investgR<-reportMultiple(showType="NHST",compact=TRUE)
