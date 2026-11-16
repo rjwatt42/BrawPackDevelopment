@@ -190,8 +190,15 @@ doMetaScience<-function(metaScience,showType="rse",
   
   pC<-braw.env$plotColours
   setColours("meta")
-  if (is.null(metaScience)) metaScience<-"0A"
-  
+  if (is.null(metaScience)) {
+    tabs<-c("Plan","Data","Inference")
+    tabContents=c(nullPlot(),nullPlot(),nullPlot())
+    open<- -1
+    stepMetaSci<-"0"
+    partMetaSci<-""
+    linkLabel<-""
+  }
+  else {
   if (is.character(metaScience)) 
     metaScience<-prepareMetaScience(metaScience,alt4B=alt4B,
                                     world=world,rp=rp,pRplus=pRplus,metaPublicationBias=metaPublicationBias,
@@ -337,16 +344,20 @@ doMetaScience<-function(metaScience,showType="rse",
     
   linkLabel<-paste0(rootMetaSci)
   
-  history<-braw.res$investgHistory
-  if (is.null(history)) history<-list(content='')
-  if (!doHistory) history$content<-NULL
   
   tabs<-c("Plan","Data","Inference")
   tabContents<-c(showP,show1,show2)
+}
+
   if (showHelp) {
     tabs<-c(tabs,"Help")
     tabContents<-c(tabContents,metaSciInstructions(stepMetaSci))
   }
+  
+  history<-braw.res$investgHistory
+  if (is.null(history)) history<-list(content='')
+  if (!doHistory) history$content<-NULL
+  
   investgResults<-
     generate_tab(
       title="MetaScience:",
