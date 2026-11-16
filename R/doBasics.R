@@ -554,11 +554,11 @@ tabs<-c("Plan","Data","Inference")
   }
   
   
+  open<-0
   if (showNow=="Plan") open<-1
   if (showNow=="Sample" || showNow=="Effect") open<-2
   if (showNow=="Schematic") open<-3
-  if (isempty(open)) open<-0
-  
+
   history<-braw.res$basicsHistory
   if (is.null(history)) {
     if (doHistory) history<-list(content='',place=1)
