@@ -263,9 +263,12 @@ doMetaScience<-function(metaScience,showType="rse",
   
   # if (stepMetaSci=="5") showTheory=FALSE
   if (single) {
+    # setBrawEnv("plotSize",350*c(1.5,1))
+    # investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
     # investgD<-showDescription()
+    svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
     investgD<-generate_tab("show:",
-                           tabs=c("data","effect"),
+                           tabs=c("variables","effect"),
                            tabContents=c(
                              showMarginals(style="all"),
                              showDescription()
@@ -273,9 +276,6 @@ doMetaScience<-function(metaScience,showType="rse",
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
     )
-    svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
-    # setBrawEnv("plotSize",350*c(1.5,1))
-    # investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
     investgS<-generate_tab("show:",
                            tabs=c("rs","p","ws","wp"),
                            tabContents=c(
@@ -285,7 +285,8 @@ doMetaScience<-function(metaScience,showType="rse",
                              showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory)
                            ),
                            width=350*1.5+10,
-                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1)
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+    )
     if (is.element(steppartMetaSci,c("2B")))
       investgR<-reportMultiple(showType="NHST",compact=TRUE)
     else     investgR<-reportInference(compact=TRUE)
@@ -340,7 +341,7 @@ doMetaScience<-function(metaScience,showType="rse",
   if (is.null(history)) history<-list(content='')
   if (!doHistory) history$content<-NULL
   
-  tabs<-c("Plan","Data","Schematic")
+  tabs<-c("Plan","Data","Inference")
   tabContents<-c(showP,show1,show2)
   if (showHelp) {
     tabs<-c(tabs,"Help")
