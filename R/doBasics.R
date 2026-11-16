@@ -497,6 +497,7 @@ doBasics<-function(doingBasics=NULL,showOutput=TRUE,showJamovi=TRUE,showHelp=FAL
     tabLinkLabel=NULL
   } 
   if (!is.element(showNow,c("None","Plan"))) {
+    open<-1
     switch(showNow,
            "Sample"=open<-1,
            "Effect"=open<-2)
