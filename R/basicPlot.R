@@ -260,8 +260,7 @@ drawNullPlot<-function(background=braw.env$plotColours$graphC) {
            else col<-background
            g<-paste0(
              '<svg width=',format(svgBoxX()),' height=',format(svgBoxY()),
-             ' padding:0;',
-             ' style="','background-color: ',col,';','margin: auto;','" ',
+             ' style="','background-color: ',col,';','margin: auto;',' padding:0;','" ',
              ' xmlns="http://www.w3.org/2000/svg">'
            )
          },

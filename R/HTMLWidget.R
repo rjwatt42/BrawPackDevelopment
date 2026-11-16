@@ -157,10 +157,10 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     '<style>',
     # Style the tab 
     '.tab {overflow: hidden;',
-    'margin: 0px 0px 0px 0px;',
-    'padding: 5px 0px 0px 0px;',
+    'margin: 0px;',
+    'padding: 0px 0px 0px 0px;',
     'border: none;',
-    'background-color: inherit;',
+    'background-color: white;',
     'border-bottom: solid ',colours[3],' 1px;',
     'width: ',width+2,'px;',
     '}',
@@ -207,7 +207,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     'display: none;',
     'padding: 0px 0px;',
     'margin: 0px;',
-    'background-color: ','#ffffff',';',
+    'background-color: ','white',';',
     'border: 1px solid ',colours[3],';','border-top: none;',
     'width: ',width,'px;',
     ht,
@@ -217,7 +217,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
     'display: block;',
     'padding: 0px 0px;',
     'margin: 0px;',
-    'background-color: ','#ffffff',';',
+    'background-color: ','white',';',
     'border: 1px solid ',colours[3],';','border-top: none;',
     'width: ',width,'px;',
     ht,
@@ -237,45 +237,46 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
   
   titleID<-paste0(title,block)
   buttons <- paste0(buttons,
-                    '  <button id="tabtitle',titleID,'" class="tablinks" ',
+                    '<button id="tabtitle',titleID,'" class="tablinks" ',
                     '  onclick="',closeTabs(titleID),'"',
                     ' style="background-color:rgba(0,0,0,0);color:black;cursor:default;',
                     'font-weight: 500;font-size:13px;width:',titleWidth,'px;text-align: right;',
-                    'margin:0px;padding: 0px;">',
+                    'margin:0px;padding:0px;">',
                     titleShow,
                     '</button>')
   if (nchar(titleTab)>0)
     panels <- paste0(panels,
-                     '  <div id="',titleID,'" class="tabcontent" style="display:block">',
+                     '<div id="',titleID,'" class="tabcontent" style="display:block;margin:0;padding:0;">',
                      titleTab,
                      '</div>')
   else
     panels <- paste0(panels,
-                     '  <div id="',titleID,'" class="tabcontent" style="display:none;"','width:',width-indent,'px;','>',
+                     '<div id="',titleID,'" class="tabcontent" style="display:none;"','width:',width-indent,'px;margin:0;padding:0;','>',
                      '</div>')
   for (itab in 1:length(tabs)) {
     panelID<-paste0(titleID,'||',tabs[itab])
     if (itab==open) {
       buttons <- paste0(buttons,
-                        '  <button class="tablinks active" onclick="',openTab(panelID),'"',
-                        ' id="',paste0(panelID,"button"),
-                        'margin:0px;padding:0px;">',
+                        '<button class="tablinks active" onclick="',openTab(panelID),'"',
+                        ' id="',paste0(panelID,"button"),'";',
+                        'style="margin:0px;padding:0px;">',
                         tabs[itab],
                         '</button>')
       panels <- paste0(panels,
-                       '  <div id="',panelID,'" class="tabcontent active" style="',tabBorders,';',
-                       'width:',width-indent,'px;','margin-left:',indent,'px;','">',
+                       '<div id="',panelID,'" class="tabcontent active" style="',tabBorders,';',
+                       'width:',width-indent,'px;','padding: 0px;','margin: 0px;','margin-left:',indent,'px;','">',
                        tabContents[itab],
                        '</div>')
     } else {
       buttons <- paste0(buttons,
-                        '  <button class="tablinks" onclick="',openTab(panelID),'"',
-                        ' id="',paste0(panelID,"button"),'">',
+                        '<button class="tablinks" onclick="',openTab(panelID),'"',
+                        ' id="',paste0(panelID,"button"),'";',
+                        'style="margin:0px;padding:0px;">',
                         tabs[itab],
                         '</button>')
       panels <- paste0(panels,
-                       '  <div id="',panelID,'" class="tabcontent" style="',tabBorders,';',
-                       'width:',width-indent,'px;',';margin-left:',indent,'px;','">',
+                       '<div id="',panelID,'" class="tabcontent" style="',tabBorders,';',
+                       'width:',width-indent,'px;','padding: 0px;','margin: 0;',';margin-left:',indent,'px;','">',
                        tabContents[itab],
                        '</div>')
     }
@@ -358,7 +359,6 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
   } else historyButtons<-link
   buttons<-paste0('<div class="tab" style="','width:',width-indent+2,'px;',
                   'padding:0px;margin:0px;','margin-left:',indent,'px;','padding-top:',topMargin,'px;',
-                  # 'border:solid;',
                   '">',buttons,
                   historyButtons,
                   '</div>')
@@ -384,7 +384,7 @@ generate_tab = function(title="Tab",tabs=c("1","2","3"),tabContents=c("a","b","c
   if (!is.null(history)) {
     history<-gsub('class="history"','class="history" style="display:none"',history)
     html_content<-paste0(
-      '<div class="history" ID="Block',format(block),'" >',
+      '<div class="history" ID="Block',format(block),' margin:0;padding:0;','" >',
       html_content,
       '</div>',
       history

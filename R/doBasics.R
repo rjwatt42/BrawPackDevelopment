@@ -113,8 +113,8 @@ randomCat3IV<-function(DV="DV") {
 }
 
 #' @export
-makePanel<-function(g,r=NULL) {
-  paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:10px;">',
+makePanel<-function(g,r=NULL,margin=10) {
+  paste0('<div style="display:inline-block;margin:0px;margin-bottom:',margin,'px;margin-top:',margin,'px;">',
          '<table>',
          '<tr><td>', g, '</td></tr>',
          '<tr><td>', r, '</td></tr>',

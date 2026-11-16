@@ -277,8 +277,8 @@ doMetaScience<-function(metaScience,showType="rse",
     investgD<-generate_tab("show:",
                            tabs=c("variables","effect"),
                            tabContents=c(
-                             showMarginals(style="all"),
-                             showDescription()
+                             paste0(showMarginals(style="all"),"</svg>"),
+                             paste0(showDescription(),"</svg>")
                            ),
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=2
@@ -286,10 +286,10 @@ doMetaScience<-function(metaScience,showType="rse",
     investgS<-generate_tab("show:",
                            tabs=c("rs","p","ws","wp"),
                            tabContents=c(
-                             showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),
-                             showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),
-                             showInference(showType="ws",orientation="horz",dimension=1,showTheory=showTheory),
-                             showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory)
+                             paste0(showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),"</svg"),
+                             paste0(showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),"</svg"),
+                             paste0(showInference(showType="ws",orientation="horz",dimension=1,showTheory=showTheory),"</svg"),
+                             paste0(showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory),"</svg")
                            ),
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
@@ -306,10 +306,10 @@ doMetaScience<-function(metaScience,showType="rse",
     investgS<-generate_tab("show:",
                            tabs=c("rs","p","ws","wp"),
                            tabContents=c(
-                             showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),
-                             showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),
-                             showMultiple(showType="ws",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),
-                             showMultiple(showType="wp",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
+                             paste0(showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg"),
+                             paste0(showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg"),
+                             paste0(showMultiple(showType="ws",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg"),
+                             paste0(showMultiple(showType="wp",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg")
                            ),
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1)
@@ -324,14 +324,14 @@ doMetaScience<-function(metaScience,showType="rse",
   setBrawRes("investgS",investgS)
   setBrawRes("investgR",investgR)
   
-  show1<-paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:10px;">',
+  show1<-paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:0px;">',
                 '<table>',
                 '<tr><td>', braw.res$investgD, '</td></tr>',
                 '<tr><td>', braw.res$investgR, '</td></tr>',
                 '</table>',
                 '</div>'
   )
-  show2<-paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:10px;">',
+  show2<-paste0('<div style="display:inline-block;margin-bottom:10px;margin-top:0px;">',
                 '<table>',
                 '<tr><td>', braw.res$investgS, '</td></tr>',
                 '<tr><td>', braw.res$investgR, '</td></tr>',
