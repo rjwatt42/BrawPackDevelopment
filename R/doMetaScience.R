@@ -274,7 +274,7 @@ doMetaScience<-function(metaScience,showType="rse",
     # investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
     # investgD<-showDescription()
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
-    investgD<-generate_tab("show:",
+    investgD<-generate_tab("showD:",
                            tabs=c("variables","effect"),
                            tabContents=c(
                              paste0(showMarginals(style="all"),"</svg>"),
@@ -283,7 +283,7 @@ doMetaScience<-function(metaScience,showType="rse",
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=2
     )
-    investgS<-generate_tab("show:",
+    investgS<-generate_tab("showS:",
                            tabs=c("rs","p","ws","wp"),
                            tabContents=c(
                              paste0(showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
@@ -303,7 +303,7 @@ doMetaScience<-function(metaScience,showType="rse",
   } else {
     # investgS<-showMultiple(showType=showType,dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
-    investgS<-generate_tab("show:",
+    investgS<-generate_tab("showSM:",
                            tabs=c("rs","p","ws","wp"),
                            tabContents=c(
                              paste0(showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
