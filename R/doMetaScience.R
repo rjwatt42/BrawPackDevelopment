@@ -176,7 +176,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
 
 #' @export
 doMetaScience<-function(metaScience,showType="rse",
-                        nreps=200,alt4B=FALSE,showOutput=TRUE,doHistory=TRUE,showHelp=TRUE,
+                        nreps=200,alt4B=FALSE,showOutput=TRUE,doHistory=FALSE,showHelp=TRUE,
                         world="Psych50",rp=0.3,pRplus=0.5,metaPublicationBias=FALSE,
                         sN=NULL,
                         sMethod="Convenience",sMethodSeverity=0.1,sBudget=100,sSplits=5,
@@ -356,9 +356,15 @@ doMetaScience<-function(metaScience,showType="rse",
     tabContents<-c(tabContents,metaSciInstructions(stepMetaSci))
   }
   
+  if (doHistory) {
   history<-braw.res$investgHistory
   if (is.null(history)) history<-list(content='')
-  if (!doHistory) history$content<-NULL
+  history$content<-investgResults
+  history$place<-length(history$content)
+  setBrawRes("investgHistory",history)
+  } else {
+    history<-list(content=NULL)
+  }
   
   investgResults<-
     generate_tab(
@@ -375,11 +381,6 @@ doMetaScience<-function(metaScience,showType="rse",
       open=open+1
     )
   
-  if (doHistory) {
-    history$content<-investgResults
-    history$place<-length(history$content)
-    setBrawRes("investgHistory",history)
-  }
   if (showOutput) {
     showHTML(investgResults)
     return(invisible(NULL))
