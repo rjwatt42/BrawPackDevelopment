@@ -62,8 +62,8 @@ cheatSample<-function(hypothesis,design,evidence,sample,result) {
       )
     }
     ResultHistory$sequence<-2
-    res$ResultHistory<-ResultHistory
-    return(res)
+    result$ResultHistory<-ResultHistory
+    return(result)
   }
   
   if (isSignificant(braw.env$STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence)) 

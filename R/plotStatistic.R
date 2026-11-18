@@ -49,6 +49,8 @@ theoryPlot<-function(g,theory,orientation,baseColour,theoryAlpha,xoff,lineOnly=F
 makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
                              whichEffect=0,logScale=0,ylim=0,labelNSig=0,labelSig=0,distGain=0) {
   effect<-hypothesis$effect
+  sig_only<-evidence$sigOnly
+  sig_only<-0
   
   effectTheory<-effect
   if (!effectTheory$world$On) {
@@ -172,7 +174,7 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
                         theoryDens_all<-theoryFullAll+theoryDens_ns
                         theoryDens_sig<-theoryFullSig
                       } else {
-                        theoryDens_all<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=evidence$sigOnly,HQ=braw.env$showTheoryHQ)
+                        theoryDens_all<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=sig_only,HQ=braw.env$showTheoryHQ)
                         theoryDens_sig<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=1,HQ=braw.env$showTheoryHQ)
                       }
                     }
@@ -265,24 +267,24 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
          "ws"={
            dw<-0.01
            theoryVals<-seq(braw.env$alphaSig*(1+dw),1/(1+dw),length.out=npt*5)
-           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"ws",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"ws",logScale=logScale,sigOnly=sig_only)
            theoryDens_sig<-theoryDens_all*(theoryVals>=0.5)
          },
          "log(lrs)"={
            theoryVals<-seq(0,braw.env$lrRange,length.out=npt)
-           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrs)",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrs)",logScale=logScale,sigOnly=sig_only)
          },
          "log(lrd)"={
            theoryVals<-seq(-braw.env$lrRange,braw.env$lrRange,length.out=npt)
-           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrd)",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrd)",logScale=logScale,sigOnly=sig_only)
          },
          "e1d"={
            theoryVals<-seq(-braw.env$lrRange,braw.env$lrRange,length.out=npt)
-           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrd)",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrd)",logScale=logScale,sigOnly=sig_only)
          },
          "e2d"={
            theoryVals<-seq(-braw.env$lrRange,braw.env$lrRange,length.out=npt)
-           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrd)",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"log(lrd)",logScale=logScale,sigOnly=sig_only)
          },
          "nw"={
            if (logScale) {
@@ -292,13 +294,14 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
              theoryVals<-5+seq(0,braw.env$max_nw,length.out=npt)
              yvUse<-theoryVals
            }
-           theoryDens_all<-fullRSamplingDist(yvUse,effectTheory$world,design,"nw",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(yvUse,effectTheory$world,design,"nw",logScale=logScale,sigOnly=sig_only)
            theoryDens_all<-abs(theoryDens_all)
          },
          "wp"={
            dw<-0.01
            theoryVals<-seq(braw.env$alphaSig*(1+dw),1/(1+dw),length.out=npt)
-           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"wp",logScale=logScale,sigOnly=evidence$sigOnly)
+           theoryDens_all<-fullRSamplingDist(theoryVals,effectTheory$world,design,"wp",logScale=logScale,sigOnly=sig_only)
+           theoryDens_sig<-theoryDens_all*(theoryVals>=0.5)
          },
          "iv.mn"={
            var<-hypothesis$IV
@@ -1068,6 +1071,8 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
                             size=dotSize))
       }
       g<-addG(g,dataPath(makeData(pts$y1,pts$x,orientation),arrow=TRUE,linewidth=0.75,colour="white"))
+      # g<-addG(g,dataPath(makeData(pts$y1[c(1,3)],pts$x[c(1,3)],orientation),arrow=TRUE,linewidth=0.75,colour="white"))
+      # g<-addG(g,dataPath(makeData(pts$y1[c(2,3)],pts$x[c(2,3)],orientation),arrow=TRUE,linewidth=0.75,colour="white"))
     }
   } else { # more than 250 points
     hists<-simulations_hist(pts,showType,ylim,histGain,histGainrange,orientation)
@@ -1514,7 +1519,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                         labelNSig=labelNSig,labelSig=labelSig,distGain=distGain)
                    )
       }
-      if (evidence$sigOnly) {
+      if (evidence$sigOnly==7) {
         theory$theoryDens_sig<-theory$theoryDens_sig/max(theory$theoryDens_sig)
         theory$theoryDens_all<-theory$theoryDens_sig
       }

@@ -482,6 +482,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
                   }
                   use<-which(diff(wp)!=0)
                   addition<-approx(wp[c(1,use+1)],addition[c(1,use+1)],vals)$y
+                  rp<-seq(0,1,length.out=length(vals))
                 }
         )
         if (logScale) addition<-addition*vals
