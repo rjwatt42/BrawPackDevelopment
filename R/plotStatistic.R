@@ -1873,7 +1873,8 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                 colours<-c(braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_sigC,braw.env$plotColours$infer_nsigC)
               }
       )
-      if (!(sequence==1) && length(labels)>0) g<-addG(g,dataLegend(data.frame(names=labels,colours=colours),title=title,shape=22))
+      if (!(sequence==1) && length(labels)>0) 
+        g<-addG(g,dataLegend(data.frame(names=labels,colours=colours),title=paste0(title,' n=',nr),shape=22))
     }
     }
     

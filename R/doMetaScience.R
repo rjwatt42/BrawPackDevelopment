@@ -18,10 +18,10 @@ combineMS<-function(doing) grepl('c',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm
 combineFirstMS<-function(doing) grepl('cm',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
 
 #' @export
-prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,metaPublicationBias=FALSE,
+prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
                              alt4B=FALSE,
-                          sN=NULL,sMethod="Convenience",sMethodSeverity=0.1,
-                          sBudget=100,sSplits=5,sCheating="Replace",sCheatingProportion=0.05,
+                          sN=NULL,sMethod="Random",sMethodSeverity=0.1,metaPublicationBias=FALSE,
+                          sBudget=100,sSplits=1,sCheating="None",sCheatingProportion=0.05,
                           sReplicationKeep="Cautious",sReplicationPower=0.9,
                           sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
                           sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,
@@ -155,6 +155,24 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
            design$sRangeVary<-rangeVar
            evidence<-makeEvidence(AnalysisTerms=analysisTerms,sigOnly=0)
            if (replicateMS(doingMetaScience))  evidence$sigOnly<-sReplicationSigOriginal
+         },
+         "10"={
+           hypothesis<-makeHypothesis(effect=makeEffect(world=getWorld(world,rp=rp)))
+           if (world!="Plain") hypothesis$effect$world$pRplus<-pRplus
+
+           if (sSplits>1) {
+           n<-round(sBudget/sSplits)
+           design<-makeDesign(sN=n,sMethod=makeSampling(sMethod),sMethodSeverity=sMethodSeverity,
+                              sCheating="Retry",
+                              sCheatingLimit="Budget",sCheatingBudget=sBudget-n,
+                              sCheatingFixedPop=FALSE)
+           } else {
+             design<-makeDesign(sN=sN,sMethod=makeSampling(sMethod),sMethodSeverity=sMethodSeverity,
+                                sCheating=sCheating)
+           }
+           
+           evidence<-makeEvidence(sigOnly=metaPublicationBias)
+           
          }
   )
   if (replicate) {
@@ -179,8 +197,8 @@ doMetaScience<-function(metaScience,showType="rse",
                         nreps=200,alt4B=FALSE,showOutput=TRUE,doHistory=FALSE,showHelp=TRUE,
                         world="Psych50",rp=0.3,pRplus=0.5,metaPublicationBias=FALSE,
                         sN=NULL,
-                        sMethod="Convenience",sMethodSeverity=0.1,sBudget=100,sSplits=5,
-                        sCheating="Replace",sCheatingProportion=0.05,
+                        sMethod="Random",sMethodSeverity=0.1,sBudget=100,sSplits=1,
+                        sCheating="None",sCheatingProportion=0.05,
                         sReplicationKeep="Cautious",sReplicationPower=0.9,
                         sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
                         sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,

@@ -199,7 +199,8 @@ metaSciInstructions <- function(HelpType="0") {
            'This can be shown by including a third variable in the hypothesis, where the different countries favour different values for that variable.',
            '<br>'
            )
-         }
+         },
+         "10"={output<-c()}
          )
   
   if (HelpType!="0") {
@@ -208,7 +209,8 @@ metaSciInstructions <- function(HelpType="0") {
            "2"=HelpNo<-2,
            "3"=HelpNo<-3,
            "4"=HelpNo<-4,
-           "5"=HelpNo<-5
+           "5"=HelpNo<-5,
+           "10"=HelpNo<-10
     )
     extras<-paste0('<br>',
                    'More information ',
