@@ -203,7 +203,8 @@ doMetaScience<-function(metaScience,showType="rse",
                         sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
                         sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,
                         differenceSource="Interaction",range=NULL,rangeWidth=0,
-                        rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE,FALSE)
+                        rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE,FALSE),
+                        showW=FALSE
 ) {
   
   pC<-braw.env$plotColours
@@ -301,14 +302,22 @@ doMetaScience<-function(metaScience,showType="rse",
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=2
     )
+    if (showW) 
+      tabContents<-c(
+        paste0(showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
+        paste0(showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
+        paste0(showInference(showType="ws",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
+        paste0(showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory),"</svg>")
+      )
+    else 
+      tabContents<-c(
+        paste0(showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
+        paste0(showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),"</svg>")
+      )
+    
     investgS<-generate_tab("showS:",
                            tabs=c("rs","p","ws","wp"),
-                           tabContents=c(
-                             paste0(showInference(showType="rs",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
-                             paste0(showInference(showType="p",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
-                             paste0(showInference(showType="ws",orientation="horz",dimension=1,showTheory=showTheory),"</svg>"),
-                             paste0(showInference(showType="wp",orientation="horz",dimension=1,showTheory=showTheory),"</svg>")
-                           ),
+                           tabContents=tabContents,
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
     )
@@ -319,16 +328,24 @@ doMetaScience<-function(metaScience,showType="rse",
       open<-2                   
     else open<-1
   } else {
-    # investgS<-showMultiple(showType=showType,dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
+    if (showW) 
+      tabContents<-c(
+        paste0(showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
+        paste0(showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
+        paste0(showMultiple(showType="ws",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
+        paste0(showMultiple(showType="wp",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>")
+      )
+    else 
+      tabContents<-c(
+        paste0(showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
+        paste0(showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>")      
+        )
+    
+    # investgS<-showMultiple(showType=showType,dimension=1,orientation="horz",whichEffect = "Main 1",effectType="direct",showTheory=showTheory)
     investgS<-generate_tab("showSM:",
                            tabs=c("rs","p","ws","wp"),
-                           tabContents=c(
-                             paste0(showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
-                             paste0(showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
-                             paste0(showMultiple(showType="ws",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
-                             paste0(showMultiple(showType="wp",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>")
-                           ),
+                           tabContents=tabContents,
                            width=350*1.5+10,
                            topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1)
     if (stepMetaSci=="5") {
