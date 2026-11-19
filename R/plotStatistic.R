@@ -171,7 +171,8 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
                           theoryFullAll<-theoryFullAll+theoryPartAll/sum(theoryPartAll)*rSourcePopdens[i]
                           theoryFullSig<-theoryFullSig+theoryPartSig/sum(theoryPartAll)*rSourcePopdens[i]
                         }
-                        theoryDens_all<-theoryFullAll+theoryDens_ns
+                        if (!evidence$sigOnly)
+                          theoryDens_all<-theoryFullAll+theoryDens_ns
                         theoryDens_sig<-theoryFullSig
                       } else {
                         theoryDens_all<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=sig_only,HQ=braw.env$showTheoryHQ)
