@@ -216,7 +216,8 @@ makeReplication<-function(On=TRUE,Repeats=1,Keep="Cautious",RepAlpha=0.05,
                           forceSigOriginal=FALSE,forceSign=TRUE,
                           maxN=2000,
                           BudgetType="Unlimited",Budget=1000,
-                          RepNoStudies=1
+                          RepNoStudies=1,
+                          onlyReplication=FALSE
                           ) {
   
   replication<-list(On=On,Repeats=Repeats,Keep=Keep,RepAlpha=RepAlpha,
@@ -225,7 +226,8 @@ makeReplication<-function(On=TRUE,Repeats=1,Keep="Cautious",RepAlpha=0.05,
                     replicateAll=replicateAll,
                     forceSigOriginal=forceSigOriginal,forceSign=forceSign,
                     maxN=maxN,
-                    BudgetType=BudgetType,Budget=Budget
+                    BudgetType=BudgetType,Budget=Budget,
+                    onlyReplication=onlyReplication
                     )
 }
 

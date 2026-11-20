@@ -162,9 +162,9 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
                           theoryPartAll<-theoryPartSig<-0
                           nUse<-unique(n2)
                           for (i2 in 1:length(nUse)) {
+                            rCrit<-wn2r(0.5,nUse[i2])
                             rdens<-samp1Dens[n2==nUse[i2]]
                             rS<-rSamplingDistr(rvals,rSourceVals[i],nUse[i2])
-                            rCrit<-wn2r(0.5,nUse[i2])
                             theoryPartAll<-theoryPartAll+rS*sum(rdens)
                             theoryPartSig<-theoryPartSig+rS*(abs(rvals)>rCrit)*sum(rdens)
                           }
@@ -173,6 +173,7 @@ makeTheoryMultiple<-function(hypothesis,design,evidence,showType,
                         }
                         if (!evidence$sigOnly)
                           theoryDens_all<-theoryFullAll+theoryDens_ns
+                        else theoryDens_all<-theoryFullAll
                         theoryDens_sig<-theoryFullSig
                       } else {
                         theoryDens_all<-fullRSamplingDist(rvals,effectTheory$world,design,rOff,logScale=logScale,sigOnly=sig_only,HQ=braw.env$showTheoryHQ)
@@ -966,8 +967,7 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
       use<-c(which(pts$sig & pts$notNull),which(!pts$sig & pts$notNull),which(!pts$sig & !pts$notNull),which(pts$sig & !pts$notNull))
       pts<-pts[use,]
     }
-    
-    # xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
+    xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
     
     # if (sequence && !is.na(histGain)) histGain<-0.8
     switch(orientation,
@@ -975,19 +975,15 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
            "vert"=hoff<-0
            )
     dotSize<-min(4,braw.env$dotSize*sqrt(min(1,100/length(pts$y1))))
-    if (any(!is.na(histGain))) {
-      xr<-runif(length(pts$y1),0,1)
-      xrTheory<-approx(histGain$theoryVals,histGain$theoryDens_all,pts$y1)$y
-      xrTheory[is.na(xrTheory)]<-0
-      xr<-xr*xrTheory
-    } else {
-      xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
-      xr<-xr/max(abs(xr))*0.8
+    # if (max(abs(xr))>0) xr<-xr*hgain/max(abs(xr))
+    if (!is.na(histGain)) {
+      xr<-xr*histGain
     }
-    # xr<-xr*min(1,length(xr)/100)
+    if (max(xr)>0.8) xr<-xr/max(abs(xr))*0.8
+    xr<-xr*min(1,length(xr)/100)
     xr<-xr+hoff
     
-    pts$x<-pts$x+xr#*sum(width)*0.3/0.35
+    pts$x<-pts$x+xr*sum(width)*0.3/0.35
     if (sequence)  {
       pts$x<-0+((1:nrow(pts))-1)/nrow(pts)/5
       if (design$Replication$On && design$Replication$Keep=="MetaAnalysis") {
@@ -1522,7 +1518,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                         labelNSig=labelNSig,labelSig=labelSig,distGain=distGain)
                    )
       }
-      if (evidence$sigOnly==7) {
+      if (evidence$sigOnly>0 && !design$Replication$On) {
         theory$theoryDens_sig<-theory$theoryDens_sig/max(theory$theoryDens_sig)
         theory$theoryDens_all<-theory$theoryDens_sig
       }
@@ -1586,7 +1582,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
       else
         g<-simulations_plot(g,pts,showType,analysis$hypothesis$effect$world$On,analysis$design,
                           i,orientation=orientation,
-                       ylim=ylim,histGain=theory,histGainrange=histGainrange,
+                       ylim=ylim,histGain=histGain,histGainrange=histGainrange,
                        sequence=sequence)
 
       ns<-c()

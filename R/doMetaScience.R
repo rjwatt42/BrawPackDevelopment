@@ -7,15 +7,15 @@ stepMS<-function(doing) gsub('[A-Za-z]*([0-9]*)[A-Da-d]*','\\1',doing)
 #' @export
 partMS<-function(doing) toupper(gsub('[A-Za-z]*[0-9]*([A-Da-b]*)','\\1',doing))
 #' @export
-singleMS<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
+singleMS<-function(doing) !grepl('m',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crom]*)','\\1',doing)),fixed=TRUE)
 #' @export
-replicateMS<-function(doing) grepl('r',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
+replicateMS<-function(doing) grepl('r',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crom]*)','\\1',doing)),fixed=TRUE)
 #' @export
-replicateFirstMS<-function(doing) grepl('rm',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
+replicateFirstMS<-function(doing) grepl('o',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crom]*)','\\1',doing)),fixed=TRUE)
 #' @export
-combineMS<-function(doing) grepl('c',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
+combineMS<-function(doing) grepl('c',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crom]*)','\\1',doing)),fixed=TRUE)
 #' @export
-combineFirstMS<-function(doing) grepl('cm',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crm]*)','\\1',doing)),fixed=TRUE)
+combineFirstMS<-function(doing) grepl('co',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]*([crom]*)','\\1',doing)),fixed=TRUE)
 
 #' @export
 prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
@@ -230,10 +230,6 @@ doMetaScience<-function(metaScience,showType="rse",
                                     rangeVar=rangeVar,rangeP=rangeP,analysisTerms=analysisTerms
     )
 
-  setBrawDef("hypothesis",metaScience$hypothesis)
-  setBrawDef("design",metaScience$design)
-  setBrawDef("evidence",metaScience$evidence)
-  
   setHTML()
   doingMetaScience<-metaScience$step
   stepMetaSci<-stepMS(doingMetaScience)
@@ -244,14 +240,21 @@ doMetaScience<-function(metaScience,showType="rse",
   replicate<-replicateMS(doingMetaScience)
   combine<-combineMS(doingMetaScience)
   
+  if (single && (replicate || combine)) 
+    metaScience$design$Replication$onlyReplication<-TRUE
+  if (!single && (replicate || combine)) 
+    metaScience$design$Replication$onlyReplication<-replicateFirstMS(doingMetaScience)
+  
+  setBrawDef("hypothesis",metaScience$hypothesis)
+  setBrawDef("design",metaScience$design)
+  setBrawDef("evidence",metaScience$evidence)
+  
   doingMore<-identical(braw.def$hypothesis,braw.res$multiple$hypothesis) &&
     identical(braw.def$design,braw.res$multiple$design) &&
     identical(braw.def$evidence,braw.res$multiple$evidence) && !single
   
   if (single) {
-    if (replicate || combine) 
-            doSingle(onlyReplication=TRUE)    
-    else    doSingle()
+    doSingle()
     if (stepMetaSci=="5") {
       result<-braw.res$result
       result$hypothesis$IV2<-NULL
@@ -262,7 +265,7 @@ doMetaScience<-function(metaScience,showType="rse",
     if (steppartMetaSci=="2B")   setBrawRes("multiple",braw.res$result)
   } else {
     if (steppartMetaSci=="3B" && single) nreps<-nreps/4
-    doMultiple(nreps,onlyReplication=replicateFirstMS(doingMetaScience))
+    doMultiple(nreps)
     outputNow<-"Multiple"
   }
   

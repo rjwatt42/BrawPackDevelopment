@@ -5,7 +5,7 @@
 #' @examples
 #' analysis<-doSingle(hypothesis=makeHypothesis(),design=makeDesign(),evidence=makeEvidence(),autoShow=braw.env$autoShow)#' make a multiple samples
 #' @export
-doSingle<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,onlyReplication=FALSE,autoShow=braw.env$autoShow){
+doSingle<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidence=braw.def$evidence,autoShow=braw.env$autoShow){
   # sample<-doSample(hypothesis=hypothesis,design=design,autoShow=FALSE)
   # result<-doAnalysis(sample,evidence=evidence,autoShow=autoShow)
   if (evidence$metaAnalysis$On) {
@@ -17,12 +17,12 @@ doSingle<-function(hypothesis=braw.def$hypothesis,design=braw.def$design,evidenc
   
   evidence$shortHand<-FALSE
   oldResult<-NULL
-  if (onlyReplication) {
-    if (design$Replication$Keep=="MetaAnalysis") oldResult<-braw.res$result
-    else {
+  if (design$Replication$onlyReplication) {
+    # if (design$Replication$Keep=="MetaAnalysis") oldResult<-braw.res$result
+    # else {
     if (!is.null(braw.res$result$ResultHistory$original)) oldResult<-braw.res$result$ResultHistory$original
     else oldResult<-braw.res$result
-    }
+    # }
     if (is.null(oldResult)) {
       design$Replication$On<-FALSE
       oldResult<-doSingle(hypothesis=hypothesis,design=design,evidence=evidence)
@@ -341,7 +341,7 @@ appendList <- function (x1, x2)
   x1
 }
 
-multipleAnalysis<-function(nsims=1,hypothesis,design,evidence,newResult=c(),onlyReplication=NULL,oldResult=NULL){
+multipleAnalysis<-function(nsims=1,hypothesis,design,evidence,newResult=c(),oldResult=NULL){
   rho<-hypothesis$effect$rIV
   rho2<-hypothesis$effect$rIV2
   
