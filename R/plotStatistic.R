@@ -966,26 +966,28 @@ simulations_plot<-function(g,pts,showType=NULL,simWorld,design,
       use<-c(which(pts$sig & pts$notNull),which(!pts$sig & pts$notNull),which(!pts$sig & !pts$notNull),which(pts$sig & !pts$notNull))
       pts<-pts[use,]
     }
-    xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
     
-    # pa<-chull(pts$y1,xr)
-    # p1<-abs(polyarea(pts$y1[pa],xr[pa]))
-    # 
-    if (sequence && !is.na(histGain)) histGain<-0.8
+    # xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
+    
+    # if (sequence && !is.na(histGain)) histGain<-0.8
     switch(orientation,
            "horz"=hoff<-0.015,
            "vert"=hoff<-0
            )
     dotSize<-min(4,braw.env$dotSize*sqrt(min(1,100/length(pts$y1))))
-    # if (max(abs(xr))>0) xr<-xr*hgain/max(abs(xr))
-    if (!is.na(histGain)) {
-      xr<-xr*histGain
+    if (any(!is.na(histGain))) {
+      xr<-runif(length(pts$y1),0,1)
+      xrTheory<-approx(histGain$theoryVals,histGain$theoryDens_all,pts$y1)$y
+      xrTheory[is.na(xrTheory)]<-0
+      xr<-xr*xrTheory
+    } else {
+      xr<-makeFiddle(pts$y1,2/40/braw.env$plotArea[4],orientation)
+      xr<-xr/max(abs(xr))*0.8
     }
-    if (max(xr)>0.8) xr<-xr/max(abs(xr))*0.8
-    xr<-xr*min(1,length(xr)/100)
+    # xr<-xr*min(1,length(xr)/100)
     xr<-xr+hoff
     
-    pts$x<-pts$x+xr*sum(width)*0.3/0.35
+    pts$x<-pts$x+xr#*sum(width)*0.3/0.35
     if (sequence)  {
       pts$x<-0+((1:nrow(pts))-1)/nrow(pts)/5
       if (design$Replication$On && design$Replication$Keep=="MetaAnalysis") {
@@ -1536,7 +1538,10 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
       histGainrange<-sort(c(theoryVals[1],theoryVals[length(theoryVals)]))
       if (is.element(showType,c("wp","ws")))   histGainrange<-c(0.06,0.99)
       use<-theoryVals>=histGainrange[1] & theoryVals<=histGainrange[2]
-      histGain<-abs(sum(theoryDens_all[use]*c(0,diff(theoryVals[use]))))
+      if (evidence$sigOnly) 
+        histGain<-abs(sum(theoryDens_sig[use]*c(0,diff(theoryVals[use]))))
+      else 
+        histGain<-abs(sum(theoryDens_all[use]*c(0,diff(theoryVals[use]))))
       # histGain<-histGain*distGain
     } else theory<-NULL
     
@@ -1581,7 +1586,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
       else
         g<-simulations_plot(g,pts,showType,analysis$hypothesis$effect$world$On,analysis$design,
                           i,orientation=orientation,
-                       ylim=ylim,histGain=histGain,histGainrange=histGainrange,
+                       ylim=ylim,histGain=theory,histGainrange=histGainrange,
                        sequence=sequence)
 
       ns<-c()
