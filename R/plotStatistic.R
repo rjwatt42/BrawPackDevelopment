@@ -1582,7 +1582,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
       else
         g<-simulations_plot(g,pts,showType,analysis$hypothesis$effect$world$On,analysis$design,
                           i,orientation=orientation,
-                       ylim=ylim,histGain=histGain,histGainrange=histGainrange,
+                       ylim=ydlim,histGain=histGain,histGainrange=histGainrange,
                        sequence=sequence)
 
       ns<-c()
