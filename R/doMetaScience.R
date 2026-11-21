@@ -302,7 +302,7 @@ doMetaScience<-function(metaScience,showType="rse",
     # investgD<-showDescription()
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
     open<-2
-    if (stepMetaSci=="10") open<-3
+    if (is.element(steppartMetaSci,c("2B","3B","4A","4B"))) open<-3
     investgD<-generate_tab("showD:",
                            tabs=c("variables","effect"),
                            tabContents=c(
@@ -310,7 +310,8 @@ doMetaScience<-function(metaScience,showType="rse",
                              paste0(showDescription(),"</svg>")
                            ),
                            width=350*1.5+10,
-                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=2
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,
+                           open=2
     )
     if (showW) {
       tabs<-c("rs","p","ws","wp")
@@ -331,14 +332,12 @@ doMetaScience<-function(metaScience,showType="rse",
                            tabs=tabs,
                            tabContents=tabContents,
                            width=350*1.5+10,
-                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,open=1
+                           topMargin=0,titleWidth=0,indent=10,plainTabs=TRUE,
+                           open=1
     )
     if (is.element(steppartMetaSci,c("2B")))
       investgR<-reportMultiple(showType="NHST",compact=TRUE)
     else     investgR<-reportInference(compact=TRUE)
-    if (is.element(steppartMetaSci,c("2B","3B","4A","4B")))
-      open<-2                   
-    else open<-1
   } else {
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
     if (showW) {
@@ -414,6 +413,9 @@ doMetaScience<-function(metaScience,showType="rse",
   } else {
     history<-list(content=NULL)
   }
+  
+  if (!single || replicate || combine) open<-2
+  else open<-1
   
   investgResults<-
     generate_tab(
