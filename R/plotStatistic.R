@@ -4,7 +4,7 @@ theoryPlot<-function(g,theory,orientation,baseColour,theoryAlpha,xoff,lineOnly=F
   theoryDens_sig<-theory$theoryDens_sig
   showAll<-!isempty(theoryDens_sig) && all(theoryDens_all==theoryDens_sig)
   if (showAll) theoryDens_all<-theoryDens_all*0
-  
+
   switch(orientation,
          "horz"={
            ln<-length(theoryVals)
