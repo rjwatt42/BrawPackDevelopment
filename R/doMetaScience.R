@@ -23,7 +23,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
                           sN=NULL,sMethod="Random",sMethodSeverity=0.1,metaPublicationBias=FALSE,
                           sBudget=100,sSplits=1,sCheating="None",sCheatingProportion=0.05,
                           sReplicationKeep="Cautious",sReplicationPower=0.9,
-                          sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
+                          sReplicationAll=FALSE,
                           sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,
                           differenceSource="Interaction",range=NULL,rangeWidth=0,
                           rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE,FALSE)
@@ -122,7 +122,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
   
                        })
              }
-           evidence<-makeEvidence(sigOnly=sReplicationSigOriginal)
+           evidence<-makeEvidence(sigOnly=metaPublicationBias)
          },
          "5"={
            switch (partMetaSci,
@@ -159,7 +159,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
            design$sRangeProb<-rangeP
            design$sRangeVary<-rangeVar
            evidence<-makeEvidence(AnalysisTerms=analysisTerms,sigOnly=0)
-           if (replicateMS(doingMetaScience))  evidence$sigOnly<-sReplicationSigOriginal
+           if (replicateMS(doingMetaScience))  evidence$sigOnly<-metaPublicationBias
          },
          "10"={
            hypothesis<-makeHypothesis(effect=makeEffect(world=getWorld(world,rp=rp)))
@@ -205,7 +205,7 @@ doMetaScience<-function(metaScience,showType="rse",
                         sMethod="Random",sMethodSeverity=0.1,sBudget=100,sSplits=1,
                         sCheating="None",sCheatingProportion=0.05,
                         sReplicationKeep="Cautious",sReplicationPower=0.9,
-                        sReplicationAll=FALSE,sReplicationSigOriginal=TRUE,
+                        sReplicationAll=FALSE,
                         sReplicationOriginalAnomaly="Random",sReplicationUseLikelihood=FALSE,
                         differenceSource="Interaction",range=NULL,rangeWidth=0,
                         rangeVar=NULL,rangeP=NULL,analysisTerms=c(TRUE,FALSE,FALSE,FALSE),
@@ -229,7 +229,7 @@ doMetaScience<-function(metaScience,showType="rse",
                                     sN=sN,sMethod=sMethod,sMethodSeverity=sMethodSeverity,sBudget=sBudget,sSplits=sSplits,
                                     sCheating=sCheating,sCheatingProportion=sCheatingProportion,
                                     sReplicationKeep=sReplicationKeep,sReplicationPower=sReplicationPower,
-                                    sReplicationAll=sReplicationAll,sReplicationSigOriginal=sReplicationSigOriginal,
+                                    sReplicationAll=sReplicationAll,
                                     sReplicationOriginalAnomaly=sReplicationOriginalAnomaly,sReplicationUseLikelihood=sReplicationUseLikelihood,
                                     differenceSource=differenceSource,range=range,rangeWidth=rangeWidth,
                                     rangeVar=rangeVar,rangeP=rangeP,analysisTerms=analysisTerms
@@ -301,6 +301,8 @@ doMetaScience<-function(metaScience,showType="rse",
     # investgS<-showInference(showType=showType,orientation="horz",dimension=1,showTheory=showTheory)
     # investgD<-showDescription()
     svgBox(height=350,aspect=1.5,fontScale=1.2,margin=0)
+    open<-2
+    if (stepMetaSci=="10") open<-3
     investgD<-generate_tab("showD:",
                            tabs=c("variables","effect"),
                            tabContents=c(
