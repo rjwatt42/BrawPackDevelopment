@@ -36,6 +36,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
   steppartMetaSci<-paste0(stepMetaSci,partMetaSci)
   replicate<-replicateMS(doingMetaScience)
   combine<-combineMS(doingMetaScience)
+  onlyReplicate=replicateFirstMS(doingMetaScience)
   
   if (is.null(sN)) {
     if (stepMetaSci=="2") sN<-100
@@ -97,6 +98,10 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
          "4"={
            hypothesis<-makeHypothesis(effect=makeEffect(world=getWorld(world,rp=rp)))
            if (world!="Plain") hypothesis$effect$world$pRplus<-pRplus
+           if ((replicate || combine) && onlyReplicate) {
+             hypothesis$effect$world$On=FALSE
+             hypothesis$effect$rIV<-braw.res$result$rpIV
+           }
            design<-makeDesign(sN=sN)
            if (!alt4B)
              if (partMetaSci=="B") {

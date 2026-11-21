@@ -1182,7 +1182,7 @@ r_plot<-function(analysis,showType="rs",logScale=FALSE,otheranalysis=NULL,
                  showTheory=TRUE,showData=TRUE,showLegend=FALSE,showNsims=FALSE,
                  showYaxis=TRUE,
                  g=NULL){
-
+  
   if (braw.env$useSignificanceCols)
     baseColour<-braw.env$plotColours$infer_nsigC
   else 
