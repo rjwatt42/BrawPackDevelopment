@@ -19,7 +19,6 @@ combineFirstMS<-function(doing) grepl('co',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]
 
 #' @export
 prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
-                             alt4B=FALSE,
                           sN=NULL,sMethod="Random",sMethodSeverity=0.1,metaPublicationBias=FALSE,
                           sBudget=100,sSplits=1,sCheating="None",sCheatingProportion=0.05,
                           sReplicationKeep="Cautious",sReplicationPower=0.9,
@@ -103,7 +102,6 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
              hypothesis$effect$rIV<-braw.res$result$rpIV
            }
            design<-makeDesign(sN=sN)
-           if (!alt4B)
              if (partMetaSci=="B") {
                switch (sReplicationOriginalAnomaly,
                        "Random"={},
@@ -181,11 +179,10 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
          }
   )
   if (replicate) {
-    design$Replication<-makeReplication(TRUE,Keep=sReplicationKeep,
+    design$Replication<-makeReplication(TRUE,Keep="Cautious",
                                         Power=sReplicationPower,
                                         replicateAll=sReplicationAll,
                                         UseLikelihood=sReplicationUseLikelihood)
-    if (alt4B && steppartMetaSci=="4B") design$Replication$Keep<-"MetaAnalysis"
   }
   if (combine) {
     design$Replication<-makeReplication(TRUE,Keep="MetaAnalysis",
@@ -199,7 +196,7 @@ prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
 
 #' @export
 doMetaScience<-function(metaScience,showType="rse",
-                        nreps=200,alt4B=FALSE,showOutput=TRUE,doHistory=FALSE,showHelp=TRUE,
+                        nreps=200,showOutput=TRUE,doHistory=FALSE,showHelp=TRUE,
                         world="Psych50",rp=0.3,pRplus=0.5,metaPublicationBias=FALSE,
                         sN=NULL,
                         sMethod="Random",sMethodSeverity=0.1,sBudget=100,sSplits=1,
@@ -224,7 +221,7 @@ doMetaScience<-function(metaScience,showType="rse",
   }
   else {
   if (is.character(metaScience)) 
-    metaScience<-prepareMetaScience(metaScience,alt4B=alt4B,
+    metaScience<-prepareMetaScience(metaScience,
                                     world=world,rp=rp,pRplus=pRplus,metaPublicationBias=metaPublicationBias,
                                     sN=sN,sMethod=sMethod,sMethodSeverity=sMethodSeverity,sBudget=sBudget,sSplits=sSplits,
                                     sCheating=sCheating,sCheatingProportion=sCheatingProportion,
