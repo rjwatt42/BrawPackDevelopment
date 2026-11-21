@@ -350,7 +350,7 @@ doMetaScience<-function(metaScience,showType="rse",
     } else {
       tabs<-c("rs","p")
       tabContents<-c(
-        paste0(showMultiple(showType="rs",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
+        paste0(showMultiple(showType="rse",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>"),
         paste0(showMultiple(showType="p",orientation="horz",dimension=1,whichEffect = "Main 1",effectType="direct",showTheory=showTheory),"</svg>")      
         )
     }
