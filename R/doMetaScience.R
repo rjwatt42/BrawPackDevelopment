@@ -214,17 +214,6 @@ doMetaScience<-function(metaScience,showType="rse",
   
   pC<-braw.env$plotColours
   setColours("meta")
-  
-  setHTML()
-  doingMetaScience<-metaScience$step
-  stepMetaSci<-stepMS(doingMetaScience)
-  partMetaSci<-partMS(doingMetaScience)
-  steppartMetaSci<-paste0(stepMetaSci,partMetaSci)
-  rootMetaSci<-paste0("Step",stepMetaSci,partMetaSci)
-  single<-singleMS(doingMetaScience)
-  replicate<-replicateMS(doingMetaScience)
-  combine<-combineMS(doingMetaScience)
-  
   if (is.null(metaScience)) {
     tabs<-c("Plan","Data","Inference")
     tabContents=c(nullPlot(),nullPlot(),nullPlot())
@@ -246,6 +235,16 @@ doMetaScience<-function(metaScience,showType="rse",
                                     rangeVar=rangeVar,rangeP=rangeP,analysisTerms=analysisTerms
     )
 
+  setHTML()
+  doingMetaScience<-metaScience$step
+  stepMetaSci<-stepMS(doingMetaScience)
+  partMetaSci<-partMS(doingMetaScience)
+  steppartMetaSci<-paste0(stepMetaSci,partMetaSci)
+  rootMetaSci<-paste0("Step",stepMetaSci,partMetaSci)
+  single<-singleMS(doingMetaScience)
+  replicate<-replicateMS(doingMetaScience)
+  combine<-combineMS(doingMetaScience)
+  
   if (single && (replicate || combine)) 
     metaScience$design$Replication$onlyReplication<-TRUE
   if (!single && (replicate || combine)) 
@@ -398,6 +397,10 @@ doMetaScience<-function(metaScience,showType="rse",
   
   tabs<-c("Plan","Data","Inference")
   tabContents<-c(showP,show1,show2)
+  
+  if (!single || replicate || combine) open<-2
+  else open<-1
+  
 }
 
   if (showHelp) {
@@ -414,9 +417,6 @@ doMetaScience<-function(metaScience,showType="rse",
   } else {
     history<-list(content=NULL)
   }
-  
-  if (!single || replicate || combine) open<-2
-  else open<-1
   
   investgResults<-
     generate_tab(
