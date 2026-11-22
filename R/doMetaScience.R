@@ -19,7 +19,7 @@ combineFirstMS<-function(doing) grepl('co',tolower(gsub('[A-Za-z]*[0-9]*[A-Da-b]
 
 #' @export
 prepareMetaScience<-function(doingMetaScience,world="Psych50",rp=0.3,pRplus=0.5,
-                          sN=NULL,sMethod="Random",sMethodSeverity=0.1,metaPublicationBias=FALSE,
+                          sN=50,sMethod="Random",sMethodSeverity=0.1,metaPublicationBias=FALSE,
                           sBudget=100,sSplits=1,sCheating="None",sCheatingProportion=0.05,
                           sReplicationKeep="Cautious",sReplicationPower=0.9,
                           sReplicationAll=FALSE,
