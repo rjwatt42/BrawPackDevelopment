@@ -1012,8 +1012,24 @@ dataLegend<-function(data,title="",titleCol="black",fontsize=1,shape=21,location
   return(g)
 }
 
-dataContour<-function(data,colour="#000000",fill=NA,breaks=seq(0.1,0.9,0.1),linewidth=0.25,linetype="solid") {
+dataContour<-function(data,colour="#000000",fill=NA,nbins=NA,breaks=seq(0.1,0.9,0.1),linewidth=0.25,linetype="solid") {
 
+  if (is.null(data$z)) {
+    if (is.na(nbins))
+    nbins<-min(51,round(sqrt(length(data$x))/2))
+    breaksx<-seq(min(data$x),max(data$x)*1.01,length.out=nbins+1)
+    breaksy<-seq(min(data$y),max(data$y)*1.01,length.out=nbins+1)
+    z<-matrix(0,nbins,nbins)
+    for (ix in 1:nbins)
+      for (iy in 1:nbins) {
+        use<-(data$x>=breaksx[ix]) & (data$x<breaksx[ix+1]) &
+             (data$y>=breaksy[iy]) & (data$y<breaksy[iy+1])
+        z[iy,ix]<-mean(use)
+      }
+    breaksx<-(breaksx[1:nbins]+breaksx[2:(nbins+1)])/2
+    breaksy<-(breaksy[1:nbins]+breaksy[2:(nbins+1)])/2
+    data<-list(x=breaksx,y=breaksy,z=z)
+  }
   # because the x & y values may have been truncated to ylim
   usex<-c(diff(data$x)>0,TRUE) 
   usey<-c(diff(data$y)>0,TRUE) & rowSums(is.na(data$z))==0

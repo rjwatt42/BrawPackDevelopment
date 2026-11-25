@@ -389,7 +389,7 @@ fullPSig<-function(world,design,HQ=FALSE,alpha=braw.env$alphaSig) {
 }
 
 #' @export
-fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly=0,sigOnlyCompensate=FALSE,HQ=FALSE,separate=FALSE,quantiles=NULL) {
+fullSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly=0,sigOnlyCompensate=FALSE,HQ=FALSE,separate=FALSE,quantiles=NULL) {
   # sampling distribution from specified populations (pRho)
   if (is.null(vals)) 
     vals<-seq(-1,1,length=braw.env$worldNPoints)*braw.env$r_range
@@ -419,11 +419,17 @@ fullRSamplingDist<-function(vals,world,design,doStat="rs",logScale=FALSE,sigOnly
       d1<-0
       for (ni in 1:length(nvals)) {
         switch (doStat,
+                "zs"={
+                  rp<-vals
+                  addition<-zSamplingDistr(vals,rvals[ei],nvals[ni])
+                  if (length(vals)>1)
+                    addition<-addition*(vals[2]-vals[1])
+                },
                 "rs"={
                   rp<-vals
                   addition<-rSamplingDistr(vals,rvals[ei],nvals[ni])
                   if (length(vals)>1)
-                  addition<-addition*(vals[2]-vals[1])
+                    addition<-addition*(vals[2]-vals[1])
                 },
                 "re"={
                   rp<-vals

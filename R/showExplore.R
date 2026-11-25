@@ -441,7 +441,7 @@ showExplore<-function(exploreResult=braw.res$explore,showType="Basic",dimension=
           hypothesis$effect$world$PDFk<-rVals[i]
           design$sN<-nVals[i]
           hypothesis$effect$world$pRplus<-rplusPs[i]
-          r<-fullRSamplingDist(basevals,hypothesis$effect$world,design,
+          r<-fullSamplingDist(basevals,hypothesis$effect$world,design,
                                doStat=showType[si],logScale=logScale,quantiles=c(quants,0.5,1-quants))
           if (length(r)==1) theoryVals<-c(theoryVals,r)
           else {

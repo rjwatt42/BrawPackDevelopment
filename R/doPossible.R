@@ -93,7 +93,7 @@ doPossible <- function(possible=braw.def$possible,possibleResult=NULL){
   }
   
   # enumerate the source populations
-  sD<-fullRSamplingDist(rs,source,design,separate=TRUE,
+  sD<-fullSamplingDist(rs,source,design,separate=TRUE,
                         sigOnly=possible$sigOnly,sigOnlyCompensate=possible$sigOnlyCompensate,
                         HQ=possible$HQ)
   sourceRVals<-sD$vals
@@ -140,7 +140,7 @@ doPossible <- function(possible=braw.def$possible,possibleResult=NULL){
   }
   
   # enumerate the prior populations
-  pD<-fullRSamplingDist(rp,prior,design,separate=TRUE,HQ=TRUE)
+  pD<-fullSamplingDist(rp,prior,design,separate=TRUE,HQ=TRUE)
   priorRVals<-pD$vals
   priorSampDens_r<-pD$dens
   priorSampDens_r_plus<-pD$densPlus

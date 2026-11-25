@@ -404,7 +404,7 @@ showDesign<-function(design=braw.def$design,hypothesis=braw.def$hypothesis,plotA
       hypothesis$effect$world$RZ<-"r"
       hypothesis$effect$world$pRplus<-1
     }
-    nRepDens<-fullRSamplingDist(nbin,hypothesis$effect$world,design,"nw",logScale=(braw.env$nPlotScale=="log10"),sigOnly=0)
+    nRepDens<-fullSamplingDist(nbin,hypothesis$effect$world,design,"nw",logScale=(braw.env$nPlotScale=="log10"),sigOnly=0)
     y<-c(0,nRepDens,0)/max(nRepDens)*0.4
     x<-nbin[c(1,1:length(nbin),length(nbin))]
     pts=data.frame(x=log10(x),y=y)
@@ -561,8 +561,8 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   design1<-design
   design$Replication$On<-FALSE
   
-  rdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly,HQ=HQ) 
-  rdens0<-fullRSamplingDist(rx,world,design,sigOnly=0,HQ=HQ) 
+  rdens<-fullSamplingDist(rx,world,design,sigOnly=evidence$sigOnly,HQ=HQ) 
+  rdens0<-fullSamplingDist(rx,world,design,sigOnly=0,HQ=HQ) 
   if (braw.env$RZ=="z") {
     rdens<-rdens2zdens(rdens,rx)
     rdens0<-rdens2zdens(rdens0,rx)
@@ -574,7 +574,7 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   rdens0<-rdens0*gn
   
   if (design1$Replication$On) {
-    dens1<-fullRSamplingDist(rx,world,design1,sigOnly=evidence$sigOnly,HQ=HQ) 
+    dens1<-fullSamplingDist(rx,world,design1,sigOnly=evidence$sigOnly,HQ=HQ) 
     dens1<-dens1/sum(dens1)
   } else dens1<-NA
   gain<-max(max(rdens),max(dens1),na.rm=TRUE)
@@ -602,9 +602,9 @@ showWorldSampling<-function(hypothesis=braw.def$hypothesis,design=braw.def$desig
   if (!is.null(showSinglePopulation)) {
     world<-makeWorld(TRUE,"Single","r",showSinglePopulation,pRplus=1)
     if (braw.env$RZ=="r")
-      sdens<-fullRSamplingDist(rx,world,design,sigOnly=evidence$sigOnly) 
+      sdens<-fullSamplingDist(rx,world,design,sigOnly=evidence$sigOnly) 
     else
-      sdens<-fullRSamplingDist(tanh(rx),world,design,sigOnly=evidence$sigOnly) 
+      sdens<-fullSamplingDist(tanh(rx),world,design,sigOnly=evidence$sigOnly) 
     
     sdens<-sdens/max(sdens)*approx(rx,rdens0,showSinglePopulation)$y
     pts<-data.frame(x=c(rx[1],rx,rx[length(rx)]),y=c(0,sdens,0))

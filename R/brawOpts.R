@@ -206,6 +206,7 @@ BrawOpts<-function(BW=FALSE,graphC="transparent",fontScale=1,graphicsSize=c(16,1
           braw.env$varNPoints<-201
           braw.env$nscaleLog<-FALSE
           braw.env$maxnPlot<-200
+          braw.env$constantArea<-FALSE
           
           braw.env$maxBins<-maxBins
           
